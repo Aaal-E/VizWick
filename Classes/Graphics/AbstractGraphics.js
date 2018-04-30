@@ -22,50 +22,52 @@ class AbstractGraphics{
         };
         
         if(!container) container=$("body");
-        this.cont = $(container);
+        this.container = $(container);
         
         //shape data storage
-        this.shapeList = [];
-        this.activeShapeList = []; //the shapes that are currently actively updated
-        this.rbush = new rbush3d(16, ['.aabb.minX', '.aabb.minY', '.aabb.minZ', '.aabb.maxX', '.aabb.maxY', '.aabb.maxZ']);;
+        this.shapes = [];
+        this.activeShapes = []; //the shapes that are currently actively updated
+        this.spatialTree = new rbush3d(16, ['.aabb.minX', '.aabb.minY', '.aabb.minZ', '.aabb.maxX', '.aabb.maxY', '.aabb.maxZ']);;
         
         //update active shapes
-        this.update(function(delta){
-            for(var i=0; i<this.activeShapeList.length; i++){
-                this.activeShapeList[i].update(delta);
+        this.onUpdate(function(delta){
+            for(var i=0; i<this.activeShapes.length; i++){
+                this.activeShapes[i].__triggerUpdate(delta);
             }
         });
     }
-    camera(){
-        return this.cam;
+    getCamera(){
+        return this.camera;
     }
-    spatialTree(){
-        return this.rbush;
+    getSpatialTree(){
+        return this.spatialTree;
     }
     
     //just retrieve some container info
-    width(){
+    getWidth(){
         return this.size.width;
     }
-    height(){
+    getHeight(){
         return this.size.height;
     }
-    container(){
-        return this.cont;
+    getContainer(){
+        return this.container;
     }
     
     //a method to add an event that fires whenever the screen is rendered
-    update(listener){
-        if(listener instanceof Function){
-            var index = this.updateListeners.indexOf(listener);
-            if(index==-1)
-                this.updateListeners.push(listener);
-            else
-                this.updateListeners.splice(index, 1);
-        }else{
-            for(var i=0; i<this.updateListeners.length; i++)
-                this.updateListeners[i].apply(this, arguments);
-        }
+    onUpdate(listener){
+        this.updateListeners.push(listener);
+        return this;
+    }
+    offUpdate(listener){
+        var index = this.updateListeners.indexOf(listener);
+        if(index!=-1) this.updateListeners.splice(index, 1);
+        return this;
+    }
+    __triggerUpdate(){
+        for(var i=0; i<this.updateListeners.length; i++)
+            this.updateListeners[i].apply(this, arguments);
+        return this;
     }
     
     //methods to add and remove shapes from the window
@@ -83,29 +85,29 @@ class AbstractGraphics{
     //methods to active or deactive shapes
     activateShape(shape){
         for(var i=0; i<arguments.length; i++)
-            this.activeShapeList.push(arguments[i]);
+            this.activeShapes.push(arguments[i]);
         return this;
     }
     deactivateShape(shape){
         for(var i=0; i<arguments.length; i++){
             var shape = arguments[i];
             var index = indexOf(shape);
-            if(index!=-1) this.activeShapeList.splice(index, 1);
+            if(index!=-1) this.activeShapes.splice(index, 1);
         }
         return this;
     }
     
     //background color
-    background(color){
-        if(color!=null){
-            this.background = color;
-            return this;
-        }
+    setBackground(color){
+        this.background = color;
+        return this;
+    }
+    getBackground(){
         return this.background;
     }
     
     //get all shapes
-    shapes(){
-        return this.shapeList;
+    getShapes(){
+        return this.shapes;
     }
 }

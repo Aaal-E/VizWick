@@ -11,33 +11,25 @@ class CompoundShape2d extends Shape2d{
     }
     
     //updating shapes
-    addShape(shape, dontRedraw){
+    addShape(shape){
         if(!this.graphics) throw Error("Please add the compound shape to graphics before adding sub shapes");
-        this.shapes.push(shape);
-        if(!dontRedraw) this.redraw();
+        for(var i=0; i<arguments.length; i++)
+            this.shapes.push(arguments[i]);
+        this.__redraw();
+        return this;
     }
-    addShapes(){
+    removeShape(shape){
         for(var i=0; i<arguments.length; i++){
-            this.addShape(arguments[i], true);
+            var index = this.shapes.indexOf(arguments[i]);
+            if(index!=-1)
+                this.shapes.splice(index, 1);
         }
-        this.redraw();
-    }
-    removeShape(shape, dontRedraw){
-        var index = this.shapes.indexOf(shape);
-        if(index!=-1){
-            this.shapes.splice(index, 1);
-            if(!dontRedraw) this.redraw();
-        }
-    }
-    removeShapes(){
-        for(var i=0; i<arguments.length; i++){
-            this.removeShape(arguments[i], true);
-        }
-        this.redraw();
+        this.__redraw();
+        return this;
     }
     
     //redraw shapes
-    redraw(){
+    __redraw(){
         var aabb = {
             minX: Infinity,
             maxX: -Infinity,
@@ -67,15 +59,16 @@ class CompoundShape2d extends Shape2d{
         this.gfx.setTexture(rt);
         
         //update width and height
-        this.width = Math.max(-aabb.minX, aabb.maxX)*2;
-        this.height = Math.max(-aabb.minY, aabb.maxY)*2;
+        this.size = {
+            width: Math.max(-aabb.minX, aabb.maxX)*2,
+            height: Math.max(-aabb.minY, aabb.maxY)*2
+        }
         this.gfx.pivot.x = -aabb.minX;
         this.gfx.pivot.y = -aabb.minY;
     }
-    __getWidth(){
-        return this.width;
-    }
-    __getHeight(){
-        return this.height;
+    __getRadius(){
+        var x = this.size.width/2;
+        var y = this.size.height/2;
+        return Math.sqrt(x*x + y*y);
     }
 }

@@ -11,12 +11,12 @@ class Camera2d extends AbstractCamera{
         
         //update camera on pos/rot change
         var This = this;
-        this.loc.listen(function(){
-            This.stage.x = This.graphics.width()/2-this.x();
-            This.stage.y = This.graphics.height()/2-this.y();
+        this.loc.onChange(function(){
+            This.stage.x = This.graphics.getWidth()/2-this.getX();
+            This.stage.y = This.graphics.getHeight()/2-this.getY();
         });
-        this.rot.listen(function(){
-            This.stage.rotation = -this.z();
+        this.rot.onChange(function(){
+            This.stage.rotation = -this.getZ();
         });
         
         //update camera pos

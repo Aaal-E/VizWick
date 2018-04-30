@@ -6,29 +6,32 @@
 class Circle2d extends Shape2d{
     constructor(radius, color){
         super(color);
-        this.radius(radius);
+        this.setRadius(radius);
     }   
+    //the draw method
     __redraw(){
+        //draw the shape
         this.gfx.clear();
         this.gfx.beginFill(this.color);
-        this.gfx.drawCircle(0, 0, this.rad);
+        this.gfx.drawCircle(0, 0, this.radius);
         this.gfx.endFill();
+        
+        //setup the hitbox (used for interaction events)
+        this.gfx.hitArea = new PIXI.Circle(0, 0, this.radius);
     }
-    radius(radius){
-        if(radius!=null){
-            this.rad = radius;
-            this.__redraw();
-            return this;
-        }
-        return this.rad;
+    
+    //the radius of the circle
+    setRadius(radius){
+        this.radius = radius;
+        this.__redraw();
+        return this;
     }
-    __getRadius(){  //the radius tp be used for the AABB
-        return this.rad;
+    getRadius(){
+        return this.radius;
     }
-    __getWidth(){
-        return this.rad*2;
-    }
-    __getHeight(){
-        return this.rad*2;
+    
+    //the radius to be used for the AABB
+    __getRadius(){  
+        return this.radius;
     }
 }

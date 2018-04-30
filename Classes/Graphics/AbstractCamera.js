@@ -6,30 +6,30 @@
 class AbstractCamera{
     constructor(graphics){
         this.graphics = graphics;
-        this.loc = new Loc(0, 0, 0);
-        this.rot = new Loc(0, 0, 0);
+        this.loc = new XYZ(0, 0, 0);
+        this.rot = new XYZ(0, 0, 0);
     }
     //position
-    x(x){
-        if(x!=null){
-            this.loc.x(x);
-            return this;
-        }
-        return this.loc.x();
+    setX(x){
+        this.loc.setX(x);
+        return this;
     }
-    y(y){
-        if(y!=null){
-            this.loc.y(y);
-            return this;
-        }
-        return this.loc.y();
+    getX(){
+        return this.loc.getX();
     }
-    z(z){
-        if(z!=null){
-            this.loc.z(z);
-            return this;
-        }
-        return this.loc.z();
+    setY(y){
+        this.loc.setY(y);
+        return this;
+    }
+    getY(){
+        return this.loc.getY();
+    }
+    setZ(z){
+        this.loc.setZ(z);
+        return this;
+    }
+    getZ(){
+        return this.loc.getZ();
     }
     setLoc(x, y, z){
         this.loc.set(x, y, z);
@@ -40,26 +40,26 @@ class AbstractCamera{
     }
     
     //rotation
-    xRot(x){
-        if(x!=null){
-            this.rot.x(x);
-            return this;
-        }
-        return this.rot.x();
+    setXRot(x){
+        this.rot.setX(x);
+        return this;
     }
-    yRot(y){
-        if(y!=null){
-            this.rot.y(y);
-            return this;
-        }
-        return this.rot.y();
+    getXRot(){
+        return this.rot.getX();
     }
-    zRot(z){
-        if(z!=null){
-            this.rot.z(z);
-            return this;
-        }
-        return this.rot.z();
+    setYRot(y){
+        this.rot.setY(y);
+        return this;
+    }
+    getYRot(){
+        return this.rot.getY();
+    }
+    setZRot(z){
+        this.rot.setZ(z);
+        return this;
+    }
+    getZRot(){
+        return this.rot.getZ();
     }
     setRot(x, y, z){
         this.rot.set(x, y, z);

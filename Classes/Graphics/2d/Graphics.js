@@ -8,19 +8,19 @@ class Graphics2d extends AbstractGraphics{
         super(width, height, container);
         
         //create the graphics environment
-        this.app = new PIXI.Application(this.width(), this.height(), {backgroundColor:this.background, antialias:true});
+        this.app = new PIXI.Application(this.getWidth(), this.getHeight(), {backgroundColor:this.background, antialias:true});
         
         //add graphics to the screen
-        this.cont.append(this.app.view);
+        this.container.append(this.app.view);
         
         //register update listener
         var This = this;
         this.app.ticker.add(function(delta){
-            This.update(delta);
+            This.__triggerUpdate(1/60/delta);
         });
         
         //connect a camera
-        this.cam = new Camera2d(this);
+        this.camera = new Camera2d(this);
     }
     __getStage(){
         return this.app.stage;
