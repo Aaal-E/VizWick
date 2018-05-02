@@ -24,12 +24,12 @@ class TreeNode{
 		this.children = new List();
 		if(inputparent){
 		this.parentnode = inputparent;
-		this.parentnode.addChild(this);
+		this.parentnode.__addChild(this);
 		}
 	}
 	
 	//set the name of the node
-	setName(newname){
+	__setName(newname){
 		this.name = newname;
 		return this;
 	}
@@ -40,7 +40,7 @@ class TreeNode{
 	}
 	
 	//set a node as one of the children
-	addChild(childnode){
+	__addChild(childnode){
 		this.children.add(childnode);
 		return this;
 	}
@@ -54,7 +54,7 @@ class TreeNode{
 	}
 	
 	//sets the tree, only used on the root
-	setTree(treeinput){
+	__setTree(treeinput){
 		this.tree = treeinput;
 		return this;
 	}
@@ -99,7 +99,7 @@ class TreeNode{
 	}
 	
 	//sets the value of the node
-	setValue(newvalue){
+	__setValue(newvalue){
 		this.value = newvalue;
 		return this;
 	}
@@ -134,11 +134,11 @@ class TreeNode{
 	}
 	
 	//recursively calculates the depth of the node
-	calculateDepth(){
+	__calculateDepth(){
 		if(parentnode){
 			this.depth = this.parentnode.getDepth() + 1
 			for(var i=0; i<children.length; i++){
-				children[i].calculateDepth();
+				children[i].__calculateDepth();
 			}
 		}else{
 			this.depth=1
@@ -151,11 +151,11 @@ class TreeNode{
 	}
 	
 	//recursively calculates the height of the node
-	calculateHeight(){
+	__calculateHeight(){
 		if(children.length>0){
 			var largestheight
 			for(var i=0; i<children.length; i++){
-				children[i].calculateHeight();
+				children[i].__calculateHeight();
 				if(!largestheight)
 					largestheight = children[i].getHeight();
 				if(largestheight < children[i].getHeight();
@@ -174,11 +174,11 @@ class TreeNode{
 	}	
 	
 	//recursively calculates the amount of nodes in subtrees rooted at a node
-	calculateSubtreeNodeCount(){
+	__calculateSubtreeNodeCount(){
 		this.subtreenodecount = 1;
 		if(children.length > 0){
 			for(var i=0; i<children.length;i++){
-				children[i].calculateSubtreeNodeCount()
+				children[i].__calculateSubtreeNodeCount()
 				this.subtreenodecount = this.subtreenodecount + children[i].getSubtreeNodeCount()
 			}
 		}
@@ -191,7 +191,7 @@ class TreeNode{
 	}
 	
 	//sets the data of this node
-	setData(inputdata){
+	__setData(inputdata){
 		this.data = inputdata;
 		return this;
 	}

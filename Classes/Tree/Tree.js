@@ -11,14 +11,18 @@ class Tree{
 	
 	//reads the input and convers it to a tree
 	constructor(input){
-		createNode(input);
-		root.calculateHeight();
-		root.calculateDepth();
-		root.calculateSubtreeNodeCount();
+		console.log("Constructing tree");
+		__createNode(input);
+		console.log("Calculating values");
+		root.__calculateHeight();
+		root.__calculateDepth();
+		root.__calculateSubtreeNodeCount();
+		this.depth = root.getHeight()
+		console.log("Tree constructed");
 	}
 	
 	//creates the next node of the tree, recursively creating its children
-	createNode(input, parentnode){
+	__createNode(input, parentnode){
 		//create a node for the current instance
 		currentnode = new Node(parentnode);
 		
@@ -32,13 +36,13 @@ class Tree{
 		
 		//recursively call for each child
 		for(var i=0; i<input.children.length; i++){	
-			createNode(input.children.get(i), currentnode);
+			__createNode(input.children.get(i), currentnode);
 		}
 		return this;
 	}
 	
 	//sets the root of the tree
-	setRoot(rootinput){
+	__setRoot(rootinput){
 		this.root = rootinput;
 		rootinput.setTree(this);
 		return this;
@@ -49,4 +53,13 @@ class Tree{
 		return this.root;
 	}
 	
+	//returns the height of the tree
+	getHeight() {
+		return this.depth;
+	}
+	
+	//returns the depth of the tree
+	getDepth() {
+		return this.depth;
+	}
 }
