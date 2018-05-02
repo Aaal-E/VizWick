@@ -14,6 +14,7 @@ class Tree{
 		createNode(input);
 		root.calculateHeight();
 		root.calculateDepth();
+		root.calculateSubtreeNodeCount();
 	}
 	
 	//creates the next node of the tree, recursively creating its children
@@ -24,9 +25,10 @@ class Tree{
 		//if this is the first call, make it the root
 		if (!parentnode) setRoot(currentnode);
 		
-		//set the name and value of the note
+		//set the name, value and data of the note
 		if (input.name) currentnode.setName(input.name);
 		if (input.value) currentnode.setvalue(input.value);
+		if (input.data) currentnode.setData(input.data);
 		
 		//recursively call for each child
 		for(var i=0; i<input.children.length; i++){	

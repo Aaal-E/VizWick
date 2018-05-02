@@ -73,19 +73,35 @@ class TreeNode{
 	}
 	
 	//adds a shape to represent the node
-	addShape(newshape){
-		shapes.add(newshape);
+	addShape(visualisation, newshape){
+		this.shapes[visualisation] = newshape;
+		return this;
 	}
 	
 	//removes a shape from representing the node
 	removeShape(oldshape){
-		if(shapes.has(oldshape)
-			shapes.delete(oldshape);
+		if(this.shapes.has(oldshape)
+			this.shapes.delete(oldshape);
+		return this;
+	}
+	
+	//returns the list of shapes associated with this node
+	getShapes(){
+		return this.shapes
+	}
+	
+	//returns the shape of the visualisation, if existing
+	getShape(visualisation){
+		if (this.shapes[visualisation])
+			return this.shapes[visualisation];
+		else
+			return;
 	}
 	
 	//sets the value of the node
 	setValue(newvalue){
 		this.value = newvalue;
+		return this;
 	}
 	
 	//gets the value of the node
@@ -98,9 +114,9 @@ class TreeNode{
 		var smallest
 		for (var i = 0; i < children.length; i++){
 			if(!smallest.getValue())
-				smallest = children.get(i);
-			if(smallest.getValue() > children.get(i).getValue())
-				smallest = children.get(i);
+				smallest = children[i];
+			if(smallest.getValue() > children[i].getValue())
+				smallest = children[i];
 		}
 		return smallest;
 	}
@@ -110,9 +126,9 @@ class TreeNode{
 		var largest
 		for (var i = 0; i < children.length; i++){
 			if(!largest.getValue())
-				largest = children.get(i);
-			if(largest.getValue() < children.get(i).getValue())
-				largest = children.get(i);
+				largest = children[i];
+			if(largest.getValue() < children[i].getValue())
+				largest = children[i];
 		}
 		return largest;
 	}
@@ -122,7 +138,7 @@ class TreeNode{
 		if(parentnode){
 			this.depth = this.parentnode.getDepth() + 1
 			for(var i=0; i<children.length; i++){
-				children.get(i).calculateDepth();
+				children[i].calculateDepth();
 			}
 		}else{
 			this.depth=1
@@ -138,22 +154,56 @@ class TreeNode{
 	calculateHeight(){
 		if(children.length>0){
 			var largestheight
-			for(var i='; i<children.length; i++){
-				children.get(i).calculateHeight();
+			for(var i=0; i<children.length; i++){
+				children[i].calculateHeight();
 				if(!largestheight)
-					largestheight = children.get(i).getHeight();
-				if(largestheight < children.get(i).getHeight();
-					largestheight = children.get(i).getHeight();
+					largestheight = children[i].getHeight();
+				if(largestheight < children[i].getHeight();
+					largestheight = children[i].getHeight();
 			}
 			this.height = largestheight + 1;
 		}else{
 			this.height = 1;
+		}
+		return this;
 	}
 	
 	//returns the height of the node
 	getHeight(){
 		return this.height;
 	}	
+	
+	//recursively calculates the amount of nodes in subtrees rooted at a node
+	calculateSubtreeNodeCount(){
+		this.subtreenodecount = 1;
+		if(children.length > 0){
+			for(var i=0; i<children.length;i++){
+				children[i].calculateSubtreeNodeCount()
+				this.subtreenodecount = this.subtreenodecount + children[i].getSubtreeNodeCount()
+			}
+		}
+		return this;
+	}
+	
+	//returns the amount of nodes in the subtree rooted at this node
+	getSubtreeNodeCount(){
+		return this.subtreenodecount
+	}
+	
+	//sets the data of this node
+	setData(inputdata){
+		this.data = inputdata;
+		return this;
+	}
+	
+	//returns the data of this node
+	getData(){
+		return this.data;
+	}
+	
+	
+	
+	
 	
 	
 	
