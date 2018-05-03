@@ -1,0 +1,29 @@
+<html>
+	<head>
+		<script src=../Classes/Tree/Tree.js></script>
+		<script src=../Classes/Tree/TreeNode.js></script>
+	</head>
+	<body>
+		
+	</body>
+	<script>
+		
+		function treeTest(){
+			root = new Object()
+			a = new Object()
+			b = new Object()
+			c = new Object()
+			this.root.name = "the root";
+			this.a.name = "nul";
+			this.b.name = "een";
+			this.c.name = "twee";
+			input = [this.a, this.b,this.c];
+			a.children = [this.b,this.c];
+			this.root.children = this.input
+			console.log(input)
+			//input[0].children[0].name = "subnul";
+			//input[0].children[1].name = "subeen";
+			tree = new Tree(root);
+		}
+	</script>
+</html>

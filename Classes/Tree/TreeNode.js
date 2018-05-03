@@ -10,21 +10,31 @@
 class TreeNode{
 
 	//TODO
-	//ADD AMOUNT OF NODES IN SUBTREE
 	//END TODO
 
-	
+	//creates the next node of the tree, recursively creating its children
 	//sets parent and adds this node to the parent's children
-	constructor(inputparent){
+	constructor(input, inputparent){
 		this.depth
 		this.height
 		this.value
-		this.shapes = new List();
-		this.parentnode;
-		this.children = new List();
+		this.shapes = [];
+		this.children = [];
 		if(inputparent){
-		this.parentnode = inputparent;
-		this.parentnode.__addChild(this);
+			this.parentnode = inputparent;
+			this.parentnode.__addChild(this);
+		}
+		
+		//set the name, value and data of the note
+		if (input.name) this.__setName(input.name);
+		if (input.value) this.__setvalue(input.value);
+		if (input.data) this.__setData(input.data);
+		
+		//recursively call for each child
+		if (input.children){
+			for(var i=0; i<input.children.length; i++){	
+				new TreeNode(input.children[i], this);
+			}
 		}
 	}
 	
@@ -41,7 +51,7 @@ class TreeNode{
 	
 	//set a node as one of the children
 	__addChild(childnode){
-		this.children.add(childnode);
+		this.children.push(childnode);
 		return this;
 	}
 	
@@ -80,7 +90,7 @@ class TreeNode{
 	
 	//removes a shape from representing the node
 	removeShape(oldshape){
-		if(this.shapes.has(oldshape)
+		if(this.shapes.has(oldshape))
 			this.shapes.delete(oldshape);
 		return this;
 	}
@@ -135,13 +145,15 @@ class TreeNode{
 	
 	//recursively calculates the depth of the node
 	__calculateDepth(){
-		if(parentnode){
+		if(this.parentnode){
 			this.depth = this.parentnode.getDepth() + 1
-			for(var i=0; i<children.length; i++){
-				children[i].__calculateDepth();
-			}
 		}else{
 			this.depth=1
+		}
+		if(this.children.length>0){
+			for(var i=0; i<this.children.length; i++){
+				this.children[i].__calculateDepth();
+			}
 		}
 	}
 	
@@ -152,19 +164,16 @@ class TreeNode{
 	
 	//recursively calculates the height of the node
 	__calculateHeight(){
-		if(children.length>0){
-			var largestheight
-			for(var i=0; i<children.length; i++){
-				children[i].__calculateHeight();
-				if(!largestheight)
-					largestheight = children[i].getHeight();
-				if(largestheight < children[i].getHeight();
-					largestheight = children[i].getHeight();
+		this.largestheight = 0
+		if(this.children.length>0){
+			for(var i=0; i<this.children.length; i++){
+				this.children[i].__calculateHeight();
+				if(this.largestheight < this.children[i].getHeight())
+					this.largestheight = this.children[i].getHeight();
 			}
-			this.height = largestheight + 1;
-		}else{
-			this.height = 1;
 		}
+		this.height = this.largestheight + 1;
+		
 		return this;
 	}
 	
@@ -176,10 +185,10 @@ class TreeNode{
 	//recursively calculates the amount of nodes in subtrees rooted at a node
 	__calculateSubtreeNodeCount(){
 		this.subtreenodecount = 1;
-		if(children.length > 0){
-			for(var i=0; i<children.length;i++){
-				children[i].__calculateSubtreeNodeCount()
-				this.subtreenodecount = this.subtreenodecount + children[i].getSubtreeNodeCount()
+		if(this.children.length > 0){
+			for(var i=0; i<this.children.length;i++){
+				this.children[i].__calculateSubtreeNodeCount()
+				this.subtreenodecount = this.subtreenodecount + this.children[i].getSubtreeNodeCount()
 			}
 		}
 		return this;

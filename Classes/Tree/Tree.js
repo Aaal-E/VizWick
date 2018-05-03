@@ -12,39 +12,21 @@ class Tree{
 	//reads the input and convers it to a tree
 	constructor(input){
 		console.log("Constructing tree");
-		__createNode(input);
+		this.root = new TreeNode(input);
 		console.log("Calculating values");
-		root.__calculateHeight();
-		root.__calculateDepth();
-		root.__calculateSubtreeNodeCount();
-		this.depth = root.getHeight()
+		this.root.__calculateHeight();
+		this.root.__calculateDepth();
+		this.root.__calculateSubtreeNodeCount();
+		this.depth = this.root.getHeight()
 		console.log("Tree constructed");
 	}
 	
-	//creates the next node of the tree, recursively creating its children
-	__createNode(input, parentnode){
-		//create a node for the current instance
-		currentnode = new Node(parentnode);
-		
-		//if this is the first call, make it the root
-		if (!parentnode) setRoot(currentnode);
-		
-		//set the name, value and data of the note
-		if (input.name) currentnode.setName(input.name);
-		if (input.value) currentnode.setvalue(input.value);
-		if (input.data) currentnode.setData(input.data);
-		
-		//recursively call for each child
-		for(var i=0; i<input.children.length; i++){	
-			__createNode(input.children.get(i), currentnode);
-		}
-		return this;
-	}
+	
 	
 	//sets the root of the tree
 	__setRoot(rootinput){
 		this.root = rootinput;
-		rootinput.setTree(this);
+		rootinput.__setTree(this);
 		return this;
 	}
 	
