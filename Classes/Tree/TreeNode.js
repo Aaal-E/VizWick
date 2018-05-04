@@ -18,7 +18,7 @@ class TreeNode{
 		this.depth
 		this.height
 		this.value
-		this.shapes = [];
+		this.shapes = {};
 		this.children = [];
 		if(inputparent){
 			this.parentnode = inputparent;
@@ -89,9 +89,9 @@ class TreeNode{
 	}
 	
 	//removes a shape from representing the node
-	removeShape(oldshape){
-		if(this.shapes.has(oldshape))
-			this.shapes.delete(oldshape);
+	removeShape(visualisation){
+		if(this.shapes[visualisation])
+			this.shapes[visualisation] = undefined;
 		return this;
 	}
 	
