@@ -1,0 +1,44 @@
+<html>
+    <head>
+        <!--libraries-->
+        <script src="../Libraries/jQuery.js"></script>
+        
+        <!--resize plugin-->
+        <script src="../Classes/GUI/resize.js"></script>
+    </head>
+    <body>
+        <div class=containerHor>
+            <div class=cont>
+                <div class=containerVer>
+                    <div class=q1 style=background-color:#FBB>
+                        test1
+                    </div>
+                    <div class=q2 style=background-color:#BBF>
+                        test2
+                    </div>
+                </div>
+            </div>
+            <div class=q3 style=background-color:#BFB>
+                test3
+            </div>
+            <div class=q4 style=background-color:#FBB>
+                test4
+            </div>
+        </div>
+        <style>
+            html, body{
+                width: 100%;
+                height: 100%;
+                margin: 0px;
+            }
+            .containerHor, .containerVer{
+                width: 100%;
+                height: 100%;
+            }
+        </style>
+        <script>
+            $(".containerHor").resizeContainer();
+            $(".containerVer").resizeContainer({vertical:true});
+        </script>
+    </body>
+</html>

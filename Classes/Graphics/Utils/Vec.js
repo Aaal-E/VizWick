@@ -1,3 +1,8 @@
+/*
+    A 3d vector class
+    Author: Tar van Krieken
+    Starting Date: 30/04/2018
+*/
 var getXYZ = function(x, y, z){
     if(x.x!=null ||
        x.y!=null ||

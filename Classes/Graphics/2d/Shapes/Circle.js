@@ -4,8 +4,8 @@
     Starting Date: 28/04/2018
 */
 class Circle2d extends Shape2d{
-    constructor(radius, color){
-        super(color);
+    constructor(graphics, radius, color){
+        super(graphics, color);
         this.setRadius(radius);
     }   
     //the draw method

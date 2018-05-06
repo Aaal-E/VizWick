@@ -9,8 +9,6 @@
 */
 class Graphics{
     constructor(width, height, container){
-        this.camera = 
-        
         var background = 0x000000;
         
         //if no height and width is defined, use size of container instead
@@ -54,102 +52,35 @@ class Shape{
         this.graphics = new PIXI.Graphics();
         this.create.apply(this, arguments);
         
-        this.loc = {x:0, y:0, z:0};
-        this.rot = {x:0, y:0, z:0};
-        this.color = 0;
-        this.hoverListeners = [];
-        this.clickListeners = [];
-        this.updateListeners = [];
+        this.x = 0;
+        this.y = 0;
+        this.z = 0;
+        this.xRot = 0;
+        this.yRot = 0;
+        this.zRot = 0;
+        
     }
     create(){}
-    //position
     setX(x){
-        this.loc.x = x;
+        this.graphics.x = x;
         return this;
     }
-    getX(){
-        return this.loc.x;
+    getX(x){
+        return this.graphics.x;
     }
     setY(y){
-        this.loc.y = y;
+        this.graphics.y = y;
         return this;
     }
-    getY(){
-        return this.loc.y;
+    getY(y){
+        return this.graphics.y;
     }
-    setZ(z){
-        this.loc.z = z;
+    setRot(angle){
+        this.graphics.rotation = angle;
         return this;
     }
-    getZ(){
-        return this.loc.z;
-    }
-    //rotation
-    setXRot(x){
-        this.rot.x =  x;
-        return this;
-    }
-    getXRot(){
-        return this.rot.x;
-    }
-    setYRot(y){
-        this.rot.y =  y;
-        return this;
-    }
-    getYRot(){
-        return this.rot.y;
-    }
-    setZRot(z){
-        this.rot.z =  z;
-        return this;
-    }
-    getZRot(){
-        return this.rot.z;
-    }
-    //color
-    setColor(color){
-        this.color = color;
-        return this
-    }
-    getColor(){
-        return this.color;
-    }
-    //event handlers
-    hover(listener){
-        if(listener instanceof Function){
-            var index = this.hoverListeners.indexOf(listener);
-            if(index==-1)
-                this.hoverListeners.push(listener);
-            else
-                this.hoverListeners.splice(index, 1);
-        }else{
-            for(var i=0; i<this.hoverListeners.length; i++)
-                this.hoverListeners[i].apply(this, arguments);
-        }
-    }
-    click(listener){
-        if(listener instanceof Function){
-            var index = this.clickListeners.indexOf(listener);
-            if(index==-1)
-                this.clickListeners.push(listener);
-            else
-                this.clickListeners.splice(index, 1);
-        }else{
-            for(var i=0; i<this.clickListeners.length; i++)
-                this.clickListeners[i].apply(this, arguments);
-        }
-    }
-    update(listener){
-        if(listener instanceof Function){
-            var index = this.updateListeners.indexOf(listener);
-            if(index==-1)
-                this.updateListeners.push(listener);
-            else
-                this.updateListeners.splice(index, 1);
-        }else{
-            for(var i=0; i<this.updateListeners.length; i++)
-                this.updateListeners[i].apply(this, arguments);
-        }
+    getRot(angle){
+        return this.graphics.rotation;
     }
 }
 /*
@@ -159,6 +90,13 @@ class Rectangle extends Shape{
     create(width, height, color){
         this.graphics.beginFill(color);
         this.graphics.drawRect(-width/2, -height/2, width, height);
+        this.graphics.endFill();
+    }
+}
+class Circle extends Shape{
+    create(radius, color){
+        this.graphics.beginFill(color);
+        this.graphics.drawCircle(0, 0, radius);
         this.graphics.endFill();
     }
 }

@@ -1,3 +1,8 @@
+/*
+    A 3d coordinate class
+    Author: Tar van Krieken
+    Starting Date: 28/04/2018
+*/
 var getXYZ = function(x, y, z){
     if(x.x!=null ||
        x.y!=null ||
@@ -116,6 +121,12 @@ class XYZ{
             this.y / xyz.y,
             this.z / xyz.z
         );
+    }
+    
+    //compare method
+    equals(x, y, z){
+        var xyz = getXYZ(x, y, z);
+        return xyz.x==this.x && xyz.y==this.y && xyz.z==this.z;
     }
     
     //create

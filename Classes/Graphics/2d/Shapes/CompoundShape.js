@@ -4,25 +4,30 @@
     Starting Date: 28/04/2018
 */
 class CompoundShape2d extends Shape2d{
-    constructor(){
-        super();
+    constructor(graphics){
+        super(graphics);
         this.shapes = [];
         this.gfx = new PIXI.Sprite();
     }
     
     //updating shapes
     addShape(shape){
-        if(!this.graphics) throw Error("Please add the compound shape to graphics before adding sub shapes");
-        for(var i=0; i<arguments.length; i++)
-            this.shapes.push(arguments[i]);
+        for(var i=0; i<arguments.length; i++){
+            var shape = arguments[i];
+            this.shapes.push(shape);
+            shape.setParentShape(this);
+        }
         this.__redraw();
         return this;
     }
     removeShape(shape){
         for(var i=0; i<arguments.length; i++){
-            var index = this.shapes.indexOf(arguments[i]);
-            if(index!=-1)
+            var shape = arguments[i];
+            var index = this.shapes.indexOf(shape);
+            if(index!=-1){
                 this.shapes.splice(index, 1);
+                shape.setParentShape(null);
+            }
         }
         this.__redraw();
         return this;

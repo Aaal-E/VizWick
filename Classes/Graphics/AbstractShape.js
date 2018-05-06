@@ -4,19 +4,38 @@
     Starting Date: 28/04/2018
 */
 class AbstractShape{
-    constructor(){
-        this.loc = new XYZ(0, 0, 0);
-        this.rot = new XYZ(0, 0, 0);
-        this.aabb = {minX:0, maxX:0, minY:0, maxY:0, minZ:0, maxZ:0};
-        this.color = 0;
+    constructor(graphics){
+        this.graphics = graphics; 
+        
+        this.loc = new XYZ(0, 0, 0);                                    //location
+        this.rot = new XYZ(0, 0, 0);                                    //rotation
+        this.velo = new Vec(0, 0, 0);                                   //velocity for 'physics'
+        this.aabb = {minX:0, maxX:0, minY:0, maxY:0, minZ:0, maxZ:0};   //loose bounding box
+        this.color = 0;                                                 //int color
+        this.isRendered = false;                                        //whether or not the shape is being rendered
+        
+        //interaction listeners
         this.hoverListeners = [];
         this.clickListeners = [];
+        this.mouseListeners = [];
         this.updateListeners = [];
+        
+        //whether updates and interactions are disabled
+        this.updatesDisabled = false;
+        this.interactionsDisabled = false;
         
         //add listener to loc changes in order to update aabb
         var This = this;
         this.loc.onChange(function(){
             This.__updateAABB();
+        });
+        
+        //velo listeners
+        this.velo.onChange(function(){
+             This.__updateUpdates();
+        });
+        this.onUpdate(function(delta){
+            this.loc.add(new Vec(this.velo).mul(delta));
         });
     }
     
@@ -50,6 +69,11 @@ class AbstractShape{
         return this.loc;
     }
     
+    //absolute position
+    getAbsoluteX(){}
+    getAbsoluteY(){}
+    getAbsoluteZ(){}
+    
     //rotation
     setXRot(x){
         this.rot.setX(x);
@@ -78,6 +102,12 @@ class AbstractShape{
     }
     getRot(){
         return this.rot;
+    }
+    
+    
+    //velocity
+    getVelo(){
+        return this.velo;
     }
     
     //color
@@ -126,18 +156,41 @@ class AbstractShape{
         return this;
     }
     
+    //mouse events
+    /*
+        Types:
+        -down
+        -up
+        -move
+    */
+    onMouseEvent(listener){
+        this.mouseListeners.push(listener);
+        this.__updateInteraction();
+        return this;
+    }
+    offMouseEvent(listener){
+        var index = this.mouseListeners.indexOf(listener);
+        if(index!=-1) this.mouseListeners.splice(index, 1);
+        this.__updateInteraction();
+        return this;
+    }
+    __triggerMouseEvent(){
+        for(var i=0; i<this.mouseListeners.length; i++)
+            this.mouseListeners[i].apply(this, arguments);
+        return this;
+    }
+    
     //update
     onUpdate(listener){
         this.updateListeners.push(listener);
-        if(this.updateListeners.length==1) this.enableUpdates();
+        this.__updateUpdates();
         return this;
     }
     offUpdate(listener){
         var index = this.updateListeners.indexOf(listener);
-        if(index!=-1){
+        if(index!=-1)
             this.updateListeners.splice(index, 1);
-            if(this.updateListeners.length==0) this.disableUpdates();
-        } 
+        this.__updateUpdates();
         return this;
     }
     __triggerUpdate(){
@@ -146,63 +199,100 @@ class AbstractShape{
         return this;
     }
     
+    //parent shape
+    setParentShape(parent){
+        this.parentShape = parent;
+        return this;
+    }
+    getParentShape(){
+        return this.parentShape;
+    }
+    
     //add or remove from graphics
-    addTo(graphics){
-        this.graphics = graphics;
-        this.graphics.getShapes().push(this);
+    getGraphics(){
+        return this.graphics;
+    }
+    add(){
+        this.graphics.__registerShape(this);
+        this.__updateUpdates();
         
         var tree = this.__getTree();
         if(tree)
             tree.insert(this);
-        return this;
-    }
-    removeFrom(graphics){
-        if(this.graphics==graphics)
-            this.remove();
+            
+        this.isRendered = true;
         return this;
     }
     remove(){
+        this.graphics.__deregisterShape(this);  //indicate that the node is being removed
+        return this.__delete();                 //fully remove it without an animation
+    }
+    __delete(){
         if(this.graphics){
-            var shapes = this.graphics.getShapes();
-            var index = shapes.indexOf(shapes);
-            if(index!=-1) shapes.splice(index, 1);
+            this.graphics.__deregisterShape(this, true); //remove the node entirely
+            this.disableUpdates(true);
             
             var tree = this.__getTree();
             if(tree)
                 tree.remove(this);
+                
+            this.isRendered = false;
         }
-        this.graphics = null;
         return this;
+    }
+    getIsRendered(){
+        return this.isRendered;
     }
     
     //enable/disable updates
-    enableUpdates(){
+    __updateUpdates(){
+        if(!this.updatesDisabled)
+            if(this.velo.getLength()<=0.001 && this.updateListeners.length<=1)
+                this.disableUpdates(true);
+            else
+                this.enableUpdates(true);
+    }
+    enableUpdates(internally){
+        if(!internally) this.updatesDisabled = false;
         if(this.graphics)
             this.graphics.activateShape(this);
         return this;
     }
-    disableUpdates(){
+    disableUpdates(internally){
+        if(!internally) this.updatesDisabled = true;
         if(this.graphics)
             this.graphics.deactivateShape(this);
         return this;
     }
     
     //enable/disable interaction
-    __updateInteraction(){
-        if(this.clickListeners.length==0 && this.hoverListeners.length==0)
-            this.disableInteraction();
-        else
-            this.enableInteraction();
+    __updateInteraction(internally){
+        if(!this.interactionDisabled)
+            if(this.clickListeners.length==0 && this.hoverListeners.length==0 && this.mouseListeners.length==0)
+                this.disableInteraction(true);
+            else
+                this.enableInteraction(true);
     }
-    enableInteraction(){}
-    disableInteraction(){}
+    enableInteraction(internally){
+        if(!internally) this.interactionsDisabled = false;
+    }
+    disableInteraction(internally){
+        if(!internally) this.interactionsDisabled = true;
+    }
+    
+    //physics methods
+    getDelta(xyz){
+        if(xyz instanceof AbstractShape)
+            xyz = xyz.getLoc();
+        return new Vec(this.getLoc()).sub(xyz);
+    }
     
     //spatial tree methods
     __getRadius(){
         return 0;
     }
     __getRadiusPadding(){
-        return 20;
+        return this.__getRadius();
     }
     __getTree(){
         if(this.graphics)
@@ -237,18 +327,6 @@ class AbstractShape{
             if(tree) tree.insert(this);
         }
         return this;
-    }
-    getDistance(shape){
-        var dx = this.getX() - shape.getX();
-        var dy = this.getY() - shape.getY();
-        var dz = this.getZ() - shape.getZ();
-        return Math.sqrt(dx*dx + dy*dy + dz*dz);
-    }
-    getSquaredDistance(shape){
-        var dx = this.getX() - shape.getX();
-        var dy = this.getY() - shape.getY();
-        var dz = this.getZ() - shape.getZ();
-        return dx*dx + dy*dy + dz*dz;
     }
     search(radius, filter){
         var tree = this.__getTree();

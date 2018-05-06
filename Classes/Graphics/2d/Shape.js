@@ -4,33 +4,66 @@
     Starting Date: 28/04/2018
 */
 class Shape2d extends AbstractShape{
-    constructor(color){
-        super();
+    constructor(graphics, color){
+        super(graphics);
         this.color = color;
         this.gfx = this.__createGfx();
+        this.gfx.zIndex = 0;            //orders the rendering of th shapes
         
         //add listeners to change pos/rot
         var This = this;
+        var oldZ = 0;
         this.loc.onChange(function(){
             This.gfx.x = this.getX();
             This.gfx.y = this.getY();
+            
+            var newZ = this.getZ();
+            if(oldZ!=newZ){
+                This.__updateZOrder();
+                oldZ = newZ;
+            }
         });
         this.rot.onChange(function(){
             This.gfx.rotation = this.getZ();
         });
         
         //add hover handlers
-        this.gfx.mouseover = function(data){
+        this.gfx.on("mouseover", function(data){
             This.__triggerHover(true, data);
-        };
-        this.gfx.mouseout = function(data){
+        });
+        this.gfx.on("mouseout", function(data){
             This.__triggerHover(false, data);
-        };
+        });
         
         //add click handler
-        this.gfx.click = function(data){
+        this.gfx.on("click", function(data){
             This.__triggerClick(data);
+        });
+        
+        //add mouse events
+        var mouseDown = function(){
+            var args = Array.from(arguments);
+            args.unshift("down");
+            This.__triggerMouseEvent.apply(This, args);
         };
+        var mouseUp = function(){
+            var args = Array.from(arguments);
+            args.unshift("up");
+            This.__triggerMouseEvent.apply(This, args);
+        };
+        var mouseMove = function(){
+            var args = Array.from(arguments);
+            args.unshift("move");
+            This.__triggerMouseEvent.apply(This, args);
+        };
+        this.gfx.on('mousedown', mouseDown)
+                .on('touchstart', mouseDown)
+                .on('mouseup', mouseUp)
+                .on('mouseupoutside', mouseUp)
+                .on('touchend', mouseUp)
+                .on('touchendoutside', mouseUp)
+                .on('mousemove', mouseMove)
+                .on('touchmove', mouseMove);
     }
     __redraw(){}
     __getGfx(){
@@ -38,6 +71,19 @@ class Shape2d extends AbstractShape{
     }
     __createGfx(){
         return new PIXI.Graphics();
+    }
+    __updateZOrder(){
+        var zOrder = -this.getZ();
+        this.gfx.zOrder = zOrder;
+        this.gfx.parentGroup = this.graphics.__getGroup();
+    }
+    
+    //absolute coordinates, relative to the screen
+    getAbsoluteX(){
+        return this.gfx.worldTransform.tx;
+    }
+    getAbsoluteY(){
+        return this.gfx.worldTransform.ty;
     }
     
     //method alias
@@ -56,23 +102,25 @@ class Shape2d extends AbstractShape{
     }
     
     //enable/disabling interactions
-    enableInteraction(){
+    enableInteraction(internally){
         this.gfx.interactive = true;
+        super.enableInteraction(internally);
     }
-    disableInteraction(){
+    disableInteraction(internally){
         this.gfx.interactive = false;
+        super.disableInteraction(internally);
     }
     
     //add to/remove from graphics
-    addTo(graphics){
-        super.addTo(graphics);
-        graphics.__getStage().addChild(this.gfx);
+    add(){
+        super.add();
+        this.graphics.__getStage().addChild(this.gfx);
+        this.gfx.parentGroup = graphics.group;
     }
     remove(){
-        super.remove();
         if(this.graphics)
             this.graphics.__getStage().removeChild(this.gfx);
-        return this;
+        return super.remove();
     }
     
     //get size information to be used by the compount shape texture to determine the texture size

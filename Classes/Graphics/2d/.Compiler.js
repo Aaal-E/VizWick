@@ -1,6 +1,8 @@
 var Compiler = require("../../../Compiler/Compiler.js");
 Compiler.compile([
+    "../../../Libraries/jQuery.js",
     "../../../Libraries/pixi.min.js",
+    "../../../Libraries/pixiLayers.js",
     "../../../Libraries/stats.js",
     "../../../Libraries/RBush-3d.js",
     
