@@ -21,7 +21,12 @@ class Tree{
 		console.log("Tree constructed");
 	}
 	
-	
+	//recalculates all the values of the tree
+	__recalculateValues(){
+		this.root.__calculateDepth();
+		this.root.__calculateHeight();
+		this.root.__calculateSubtreeNodeCount();
+	}
 	
 	//sets the root of the tree
 	__setRoot(rootinput){

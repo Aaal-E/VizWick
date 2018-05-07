@@ -30,6 +30,14 @@ class TreeNode{
 		if (input.value) this.__setvalue(input.value);
 		if (input.data) this.__setData(input.data);
 		
+		//
+		if (input.movedchildren){
+			this.children = input.movedchildren;
+			for(var i=0; i<input.movedchildren.length; i++){
+				input.movedchildren.updateParent(this);
+			}
+		}
+		
 		//recursively call for each child
 		if (input.children){
 			for(var i=0; i<input.children.length; i++){	
@@ -53,6 +61,22 @@ class TreeNode{
 	__addChild(childnode){
 		this.children.push(childnode);
 		return this;
+	}
+	
+	//adds a node after the tree was already generated
+	addNode(newnode){
+		
+		this.addednode = new TreeNode(newnode, this);
+		this.updateParentPath();
+		this.addednode.setHeightAndDepth(this.height, this.depth + 1);
+		this.addednode.__calculateSubTreeNodeCount();
+		return this
+	}
+	
+	//sets the height and depth manually
+	setHeightAndDepth(newheight,newdepth){
+		this.height = newheight;
+		this.depth = newdepth;
 	}
 	
 	//returns the node if its the root, otherwise recurses towards the root
@@ -210,7 +234,54 @@ class TreeNode{
 		return this.data;
 	}
 	
+	//inserts a node between this and its children
+	insertNode(insert){
+		this.insert.movedchildren = this.children;
+		this.children = [insert];
+		new TreeNode(insert, this);
+		this.updateParentPath();
+		this.__calculateDepth();
+	}
 	
+	//updates the parent of a node
+	updateParent(newparent){
+		this.parentnode = newparent; 
+	}
+	
+	deleteNode(){
+		for(var i=0; i<children.length; i++){
+			this.parentnode.addChild(this.children[i]);
+			this.children[i].updateParent(this.parentnode);
+		}
+		this.updateParentPath();
+		this.__calculateDepth();
+	}
+	
+	//increases the variables of higher nodes when a node was added
+	__updateParentPath(){
+		this.subtreenodecount = 1;
+		if(this.children.length > 0){
+			for(var i=0; i<this.children.length;i++){
+				this.subtreenodecount = this.subtreenodecount + this.children[i].getSubtreeNodeCount()
+			}
+		}
+		return this;
+		this.__recalculateHeight();
+	}
+	
+	//recalculates the height
+	__recalculateHeight(){
+		this.largestheight = 0
+		if(this.children.length>0){
+			for(var i=0; i<this.children.length; i++){
+				if(this.largestheight < this.children[i].getHeight())
+					this.largestheight = this.children[i].getHeight();
+			}
+		}
+		this.height = this.largestheight + 1;
+		
+		return this;
+	}
 	
 	
 	
