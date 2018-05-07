@@ -20,6 +20,9 @@ class TreeNode{
 		this.value
 		this.shapes = {};
 		this.children = [];
+		this.deletelistener = [];
+		this.addlistener = [];
+		this.insertlistener = [];
 		if(inputparent){
 			this.parentnode = inputparent;
 			this.parentnode.__addChild(this);
@@ -34,7 +37,7 @@ class TreeNode{
 		if (input.movedchildren){
 			this.children = input.movedchildren;
 			for(var i=0; i<input.movedchildren.length; i++){
-				input.movedchildren.updateParent(this);
+				input.movedchildren.__updateParent(this);
 			}
 		}
 		
@@ -76,6 +79,7 @@ class TreeNode{
 		this.addednode.__calculateDepth();
 		this.addednode.__calculateHeight();
 		this.addednode.__calculateSubTreeNodeCount();
+		this.__triggerAddListener();
 		return this
 	}
 	
@@ -136,6 +140,14 @@ class TreeNode{
 			return this.shapes[visualisation];
 		else
 			return;
+	}
+	
+	//forwards a function to all shapes assigned to this node
+	forwardToShapes(forwardfunction, argument){
+		var keys = Object.keys(this.shapes)
+		for (i=0; i<keys.length; i++){
+			forwardfunction.apply(shapes[keys[i]], argument);
+		}
 	}
 	
 	//sets the value of the node
@@ -247,10 +259,11 @@ class TreeNode{
 		new TreeNode(insert, this);
 		this.__updateParentPath();
 		this.__calculateDepth();
+		this.__triggerInsertListener();
 	}
 	
 	//updates the parent of a node
-	updateParent(newparent){
+	__updateParent(newparent){
 		this.parentnode = newparent; 
 	}
 	
@@ -258,12 +271,12 @@ class TreeNode{
 	deleteNode(){
 		for(var i=0; i<children.length; i++){
 			this.parentnode.addChild(this.children[i]);
-			this.children[i].updateParent(this.parentnode);
+			this.children[i].__updateParent(this.parentnode);
 		}
 		this.parentnode.__removeChild(this);
 		this.__updateParentPath();
 		this.__calculateDepth();
-		
+		this.__triggerDeleteListener();
 	}
 	
 	//increases the variables of higher nodes when a node was added
@@ -289,6 +302,60 @@ class TreeNode{
 		this.height = this.largestheight + 1;
 		
 		return this;
+	}
+	
+	//adds a function to the addlistener
+	addAddListener(listener){
+		this.addlistener.push(listener);
+	}
+	
+	//removes a function from the addlistener
+	deleteAddListener(listener){
+		var index = this.addListener.indexOf(listener);
+        if(index!=-1) this.addListener.splice(index, 1);
+	}
+	
+	//triggers the addlistener
+	__triggerAddListener(){
+		for(var i=0; i<this.addListener.length; i++)
+            this.addListener[i].apply(this, arguments);
+        return this;
+	}
+	
+	//adds a function to the deletelistener
+	addDeleteListener(listener){
+		this.deletelistener.push(listener);
+	}
+	
+	//removes a function from the deletelistener
+	deleteDeleteListener(listener){
+		var index = this.deleteListener.indexOf(listener);
+        if(index!=-1) this.deleteListener.splice(index, 1);
+	}
+	
+	//triggers the deletelistener
+	__triggerDeleteListener(){
+		for(var i=0; i<this.deleteListener.length; i++)
+            this.deleteListener[i].apply(this, arguments);
+        return this;
+	}
+	
+	//adds a function to the insertlistener
+	addInsertListener(listener){
+		this.insertlistener.push(listener);
+	}
+	
+	//removes a function from the insertlistener
+	deleteInsertListener(listener){
+		var index = this.insertListener.indexOf(listener);
+        if(index!=-1) this.insertListener.splice(index, 1);
+	}
+	
+	//triggers the insertlistener
+	__triggerInsertListener(){
+		for(var i=0; i<this.insertListener.length; i++)
+            this.insertListener[i].apply(this, arguments);
+        return this;
 	}
 	
 	
