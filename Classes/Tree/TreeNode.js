@@ -68,15 +68,10 @@ class TreeNode{
 		
 		this.addednode = new TreeNode(newnode, this);
 		this.updateParentPath();
-		this.addednode.setHeightAndDepth(this.height, this.depth + 1);
+		this.addednode.__calculateDepth();
+		this.addednode.__calculateHeight();
 		this.addednode.__calculateSubTreeNodeCount();
 		return this
-	}
-	
-	//sets the height and depth manually
-	setHeightAndDepth(newheight,newdepth){
-		this.height = newheight;
-		this.depth = newdepth;
 	}
 	
 	//returns the node if its the root, otherwise recurses towards the root
@@ -104,6 +99,12 @@ class TreeNode{
 	//returns the children in a list
 	getChildren(){
 		return this.children;
+	}
+	
+	//removes a child from the list
+	__removeChild(oldchild){
+		var index = this.children.indexOf(oldchild);
+		this.children.splice(index,1);
 	}
 	
 	//adds a shape to represent the node
@@ -239,7 +240,7 @@ class TreeNode{
 		this.insert.movedchildren = this.children;
 		this.children = [insert];
 		new TreeNode(insert, this);
-		this.updateParentPath();
+		this.__updateParentPath();
 		this.__calculateDepth();
 	}
 	
@@ -253,8 +254,10 @@ class TreeNode{
 			this.parentnode.addChild(this.children[i]);
 			this.children[i].updateParent(this.parentnode);
 		}
-		this.updateParentPath();
+		this.parentnode.__removeChild(this);
+		this.__updateParentPath();
 		this.__calculateDepth();
+		
 	}
 	
 	//increases the variables of higher nodes when a node was added
@@ -265,7 +268,6 @@ class TreeNode{
 				this.subtreenodecount = this.subtreenodecount + this.children[i].getSubtreeNodeCount()
 			}
 		}
-		return this;
 		this.__recalculateHeight();
 	}
 	
