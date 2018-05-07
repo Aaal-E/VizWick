@@ -63,6 +63,11 @@ class TreeNode{
 		return this;
 	}
 	
+	//returns the parent
+	getParent(){
+		return this.parentnode;
+	}
+	
 	//adds a node after the tree was already generated
 	addNode(newnode){
 		
@@ -213,7 +218,7 @@ class TreeNode{
 		if(this.children.length > 0){
 			for(var i=0; i<this.children.length;i++){
 				this.children[i].__calculateSubtreeNodeCount()
-				this.subtreenodecount = this.subtreenodecount + this.children[i].getSubtreeNodeCount()
+				this.subtreenodecount = this.subtreenodecount + this.children[i].getSubtreeNodeCount();
 			}
 		}
 		return this;
@@ -249,6 +254,7 @@ class TreeNode{
 		this.parentnode = newparent; 
 	}
 	
+	//deletes a node, the recalculates the missing values
 	deleteNode(){
 		for(var i=0; i<children.length; i++){
 			this.parentnode.addChild(this.children[i]);
@@ -265,7 +271,7 @@ class TreeNode{
 		this.subtreenodecount = 1;
 		if(this.children.length > 0){
 			for(var i=0; i<this.children.length;i++){
-				this.subtreenodecount = this.subtreenodecount + this.children[i].getSubtreeNodeCount()
+				this.subtreenodecount = this.subtreenodecount + this.children[i].getSubtreeNodeCount();
 			}
 		}
 		this.__recalculateHeight();
