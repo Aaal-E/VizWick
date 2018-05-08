@@ -14,7 +14,7 @@
         __redraw() {
           this.gfx.clear();
           this.gfx.beginFill(this.color);
-          this.gfx.drawRoundedRectangle(0, 0, this.width, this.height, this.radius);
+          this.gfx.drawRoundedRect(0, 0, this.width, this.height, this.radius);
           this.gfx.endFill();
 
           this.gfx.hitArea = new PIXI.RoundedRectangle(0, 0, this.width, this.height, this.radius);
