@@ -13,7 +13,7 @@
         __redraw() {
           this.gfx.clear();
           this.gfx.beginFill(this.color);
-          this.gfx.drawRectangle(0, 0, this.width, this.height);
+          this.gfx.drawRect(0, 0, this.width, this.height);
           this.gfx.endFill();
 
           this.gfx.hitArea = new PIXI.Rectangle(0, 0, this.width, this.height);
