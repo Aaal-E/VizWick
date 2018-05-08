@@ -13,7 +13,7 @@
 
          __redraw() {
            this.gfx.clear();
-           this.gfx.beginFill(this.color);
+           this.gfx.lineStyle(this, width, this.color);
            this.gfx.moveTo(startX, startY);
            this.gfx.lineTo(endX, endY);
            this.gfx.endFill();
