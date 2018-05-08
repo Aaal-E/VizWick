@@ -38,6 +38,10 @@
           return this.height;
         }
 
+        getRadius() {
+          return this.radius;
+        }
+
         __getRadius() {
           return this.radius;
         }
