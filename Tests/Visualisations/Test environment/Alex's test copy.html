@@ -1,0 +1,109 @@
+<htmL>
+    <head>
+        <script src=tree.js></script>
+        <script src=visualisation.js></script>
+    </head>
+    <body>
+    </body>
+    <style>
+        html, body{
+            width: 100%;
+            height: 100%;
+            margin: 0px;
+        }
+    </style>
+    <script>
+        this.debug = true; //shows the fps coounter
+        
+        //the visualisation class that you create
+        class Visualisation extends Visualisation2d{
+            constructor(container, tree, options){
+                super(container, tree, options);
+            }
+            __getNodeShapeClass(){
+                var camera = this.camera;
+                var c = this.c;
+                var gfx = this.graphics;
+                var initWidth = 400;
+                return class NodeShape extends c.NodeShape{
+                    constructor(gfx, node, scale){
+                        super(gfx, node, {scale:scale||1});
+                        
+                        //create primary circle shape
+                        this.circle = new c.Circle(gfx, 30*this.scale, 0xff0000);
+                        this.addShape(this.circle);
+                        
+                        //create return button cicle shape
+                        this.ret = new c.Circle(gfx, 10*this.scale, 0x00ff00);
+                        this.ret.setLoc(-20*this.scale, 0);
+                        this.addShape(this.ret);
+                        var This = this;
+                        this.ret.onClick(function(){ //select parent when this is clicked
+                            This.createParent();
+                            var p = This.getParent();
+                            if(p) p.selectNode();
+                            return true;
+                        });
+                        
+                    //    this.onUpdate(function(){
+                    //        this.getLoc().add((Math.random()-0.5)*this.scale, (Math.random()-0.5)*this.scale);
+                    //    });
+                        this.onClick(function(){
+                            this.selectNode();
+                        });
+                    }
+                    selectNode(){
+                        camera.setTarget(this, this, 1/this.scale);
+                        
+                        this.createDescendants(2);  //creates 2 layers of descendants
+                        this.destroyDescendants(2); //destroys any descendants above those 2 layers
+                        
+                        this.createAncestors(2);    //creates 2 layers of ancestors
+                        this.destroyAncestors(2, true);   //destroys any ancestors below those 2 layers
+                    }
+                    __setupConnection(first){
+                        var parent = this.getParent();
+                        if(parent && first){
+							var offset = 0;
+							for (var i=0;i<this.getIndex(); i++){
+								offset = offset + parent.getChildren()[i].scale;
+								console.log(offset)
+							}
+                            var w = (-parent.scale/2 + offset + 0.5*this.scale)*initWidth;
+                            this.setLoc(new c.Vec(parent.getLoc()).add(w, -130*parent.scale, 0));
+                        }
+                    }
+                    __showExpanded(){
+                        this.circle.setColor(0x0000ff);
+                    }
+                    __showCollapsed(){
+                        this.circle.setColor(0xff0000);
+                    }
+                    
+                    __createNodeShape(node){
+                        var scale = this.scale*node.getSubtreeNodeCount()/this.getNode().getSubtreeNodeCount();
+                        return new (this.__getClass())(this.getGraphics(), node, scale);
+                    }
+                }
+            }
+        }
+        
+        //visualisation setup code that will be somewhere else eventually and that you can ignore
+        var createTree = function(name, height){
+            var children = [];
+            if(height>0){
+                var childCount = Math.floor(Math.random()*6)+1;
+                for(var i=0; i<childCount; i++){
+                    children.push(createTree(name+"-"+i, height-1));
+                }
+            }
+            return {
+                name: name,
+                children: children
+            };
+        }
+        var tree = new Tree(createTree("Stuff", 10));
+        var options = new Options();
+        var visualisation = new Visualisation(null, tree, options);
+    </script>
+</html>
