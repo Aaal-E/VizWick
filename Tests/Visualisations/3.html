@@ -1,0 +1,162 @@
+<htmL>
+    <head>
+        <script src="../../Classes/Tree/.Compiled.js"></script>
+        <script src="../../Classes/Graphics/2d/.Compiled.js"></script>
+        <script src="../../Classes/GUI/resize.js"></script>
+    </head>
+    <body>
+        <div class=container>
+            <div class=q1 style=background-color:#BFB>
+                
+            </div>
+            <div class=q2 style=background-color:#FBB>
+                test4
+            </div>
+        </div>
+    </body>
+    <style>
+        html, body{
+            width: 100%;
+            height: 100%;
+            margin: 0px;
+        }
+        .container{
+            width: 100%;
+            height: 100%;
+            vertical-align: top;
+        }
+        .pixi{
+            position: relative;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+    <script>
+        this.debug = true;
+        
+        //call the initialisation  code for my system
+        $(".container").resizeContainer({vertical:false});
+        
+        //from: https://stackoverflow.com/a/17243070
+        function HSVtoInt(h, s, v){
+            var r, g, b, i, f, p, q, t;
+            if (arguments.length === 1) {
+                s = h.s, v = h.v, h = h.h;
+            }
+            i = Math.floor(h * 6);
+            f = h * 6 - i;
+            p = v * (1 - s);
+            q = v * (1 - f * s);
+            t = v * (1 - (1 - f) * s);
+            switch (i % 6) {
+                case 0: r = v, g = t, b = p; break;
+                case 1: r = q, g = v, b = p; break;
+                case 2: r = p, g = v, b = t; break;
+                case 3: r = p, g = q, b = v; break;
+                case 4: r = t, g = p, b = v; break;
+                case 5: r = v, g = p, b = q; break;
+            }
+            return (Math.round(r * 255)<<16) + (Math.round(g * 255)<<8) + Math.round(b * 255);
+        }
+        
+        //the visualisation class
+        class Visualisation extends Visualisation2d{
+            constructor(container, tree, options){
+                super(container, tree, options);
+            }
+            __getNodeShapeClass(){
+                var camera = this.camera;
+                var c = this.c;
+                var gfx = this.graphics;
+                var initWidth = 400;
+                return class NodeShape extends c.NodeShape{
+                    constructor(gfx, node, size){
+                        super(gfx, node, {size:size||30});
+                        
+                        //create primary circle shape
+                        this.circle = new c.Circle(gfx, this.size, HSVtoInt(this.getDepth()/12, 1, 1));
+                        this.addShape(this.circle);
+                        // this.speedFactor = 6;
+                        
+                        this.onUpdate(function(time){
+                            var force = new c.Vec();
+                            
+                            //compute force from parent
+                            var parent = this.getParent();
+                            if(parent){
+                                var connectedNodeCount = parent.__getChildNodes().length+(parent.__getParentNode()!=null?1:0);
+                                var angle = Math.PI*2*(this.getIndex()+1)/connectedNodeCount+(parent.getAngle());
+                                var radius = parent.__getRadius()+this.__getRadius()*2;
+                                var target = new c.Vec(radius, 0).setAngle(angle).add(parent.getLoc());
+                                var delta = this.getDelta(target);
+                                force.sub(delta.mul(1));
+                            }
+                            
+                            
+                            //compute force from collisions
+                            var closeCircles = this.search(this.size);
+                            for(var i=0; i<closeCircles.length; i++){
+                                var cc = closeCircles[i];
+                                var delta = cc.getDelta(this);
+                                var radius = cc.__getRadius()+this.__getRadius();
+                                var strength = delta.getLength()-radius;
+                                if(strength<0){
+                                    force.add(delta.setLength(strength*20).div(Math.pow(1.5, cc.getDepth())));
+                                }
+                            }
+                            
+                            if(this.__getParentNode()!=null){ //don't do for root
+                                this.velo.add(force);
+                                this.velo.mul(0.80);
+                                
+                                //set the correct angle
+                                var p = this.getParent();
+                                this.setAngle(p.getDelta(this).getAngle());
+                                // console.log(p.getDelta(this), p.getDelta(this).getAngle());
+                            }
+                        });
+                        this.onClick(function(){
+                            
+                        });
+                    }
+                    __setupConnection(first){
+                        if(first){
+                            this.setLoc((Math.random()-0.5)*gfx.getWidth(), (Math.random()-0.5)*gfx.getHeight());
+                        }
+                    }
+                    __showExpanded(){
+                        // this.circle.setColor(0x0000ff);
+                    }
+                    __showCollapsed(){
+                        // this.circle.setColor(0xff0000);
+                    }
+                    
+                    __createNodeShape(node){
+                        var size = this.size/Math.pow(this.__getChildNodes().length, 1/2.4);
+                        return new (this.__getClass())(this.getGraphics(), node, size);
+                    }
+                }
+            }
+        }
+        
+        //visualisation setup
+        var createTree = function(name, height){
+            var children = [];
+            if(height>0){
+                var childCount = Math.floor(Math.random()*3)+1;
+                for(var i=0; i<childCount; i++){
+                    children.push(createTree(name+"-"+i, height-1));
+                }
+            }
+            return {
+                name: name,
+                children: children
+            };
+        }
+        var tree = new Tree(createTree("Stuff", 10));
+        var options = new Options();
+        var visualisation = new Visualisation($(".q1"), tree, options);
+        visualisation.graphics.getShapes()[0].createDescendants(8);
+    </script>
+</html>

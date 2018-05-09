@@ -4,8 +4,8 @@
     Starting Date: 28/04/2018
 */
 class Shape2d extends AbstractShape{
-    constructor(graphics, color){
-        super(graphics);
+    constructor(graphics, color, extraFields){
+        super(graphics, extraFields);
         this.color = color;
         this.gfx = this.__createGfx();
         this.gfx.zIndex = 0;            //orders the rendering of th shapes
@@ -29,32 +29,38 @@ class Shape2d extends AbstractShape{
         
         //add hover handlers
         this.gfx.on("mouseover", function(data){
-            This.__triggerHover(true, data);
+            if(This.__triggerHover(true, data))
+                data.stopPropagation();
         });
         this.gfx.on("mouseout", function(data){
-            This.__triggerHover(false, data);
+            if(This.__triggerHover(false, data))
+                data.stopPropagation();
         });
         
         //add click handler
         this.gfx.on("click", function(data){
-            This.__triggerClick(data);
+            if(This.__triggerClick(data))
+                data.stopPropagation();
         });
         
         //add mouse events
-        var mouseDown = function(){
+        var mouseDown = function(data){
             var args = Array.from(arguments);
             args.unshift("down");
-            This.__triggerMouseEvent.apply(This, args);
+            if(This.__triggerMouseEvent.apply(This, args))
+                data.stopPropagation();
         };
-        var mouseUp = function(){
+        var mouseUp = function(data){
             var args = Array.from(arguments);
             args.unshift("up");
-            This.__triggerMouseEvent.apply(This, args);
+            if(This.__triggerMouseEvent.apply(This, args))
+                data.stopPropagation();
         };
-        var mouseMove = function(){
+        var mouseMove = function(data){
             var args = Array.from(arguments);
             args.unshift("move");
-            This.__triggerMouseEvent.apply(This, args);
+            if(This.__triggerMouseEvent.apply(This, args))
+                data.stopPropagation();
         };
         this.gfx.on('mousedown', mouseDown)
                 .on('touchstart', mouseDown)
@@ -91,7 +97,7 @@ class Shape2d extends AbstractShape{
         return this.setZRot(angle);
     }
     getAngle(){
-        return this.getZRot(angle);
+        return this.getZRot();
     }
     
     //update color
@@ -115,7 +121,7 @@ class Shape2d extends AbstractShape{
     add(){
         super.add();
         this.graphics.__getStage().addChild(this.gfx);
-        this.gfx.parentGroup = graphics.group;
+        this.gfx.parentGroup = this.graphics.group;
     }
     remove(){
         if(this.graphics)

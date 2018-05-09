@@ -1,0 +1,190 @@
+<htmL>
+    <head>
+        <!--<script src="../Classes/Graphics/2d/.Compiled.js"></script>-->
+        
+        <!--libraries-->
+        <script src="../../Libraries/jQuery.js"></script>
+        <script src="../../Libraries/pixi.min.js"></script>
+        <script src="../../Libraries/pixiLayers.js"></script>
+        <script src="../../Libraries/stats.js"></script>
+        <script src="../../Libraries/RBush-3d.js"></script>
+        
+        <!--resize system-->
+        <script src="../../Classes/GUI/resize.js"></script>
+        
+        <!--Alex's tree system-->
+        <script src="../../Classes/Tree/Tree.js"></script>
+        <script src="../../Classes/Tree/TreeNode.js"></script>
+        
+        <!--graphics interface-->
+        <script src="../../Classes/Graphics/Utils/XYZ.js"></script>
+        <script src="../../Classes/Graphics/Utils/Vec.js"></script>
+        <script src="../../Classes/Graphics/Options.js"></script>
+        
+        <script src="../../Classes/Graphics/AbstractCamera.js"></script>
+        <script src="../../Classes/Graphics/AbstractGraphics.js"></script>
+        <script src="../../Classes/Graphics/AbstractShape.js"></script>
+        <script src="../../Classes/Graphics/AbstractVisualisation.js"></script>
+        
+        <!--2d graphics api-->
+        <script src="../../Classes/Graphics/2d/Camera.js"></script>
+        <script src="../../Classes/Graphics/2d/Graphics.js"></script>
+        <script src="../../Classes/Graphics/2d/Shape.js"></script>
+        <script src="../../Classes/Graphics/2d/Shapes/Circle.js"></script>
+        <script src="../../Classes/Graphics/2d/Shapes/CompoundShape.js"></script>
+        <script src="../../Classes/Graphics/2d/Shapes/ShapeGroup.js"></script>
+        <script src="../../Classes/Graphics/2d/Shapes/NodeShape.js"></script>
+        <script src="../../Classes/Graphics/2d/IO2d.js"></script>
+        <script src="../../Classes/Graphics/2d/Visualisation.js"></script>
+    </head>
+    <body>
+        <div class=container>
+            <div class=q1 style=background-color:#BFB>
+                
+            </div>
+            <div class=q2 style=background-color:#FBB>
+                test4
+            </div>
+        </div>
+    </body>
+    <style>
+        html, body{
+            width: 100%;
+            height: 100%;
+            margin: 0px;
+        }
+        .container{
+            width: 100%;
+            height: 100%;
+            vertical-align: top;
+        }
+        .pixi{
+            position: relative;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+    <script>
+        this.debug = true;
+        
+        //call the initialisation  code for my system
+        $(".container").resizeContainer({vertical:false});
+        
+        //from: https://stackoverflow.com/a/17243070
+        function HSVtoInt(h, s, v){
+            var r, g, b, i, f, p, q, t;
+            if (arguments.length === 1) {
+                s = h.s, v = h.v, h = h.h;
+            }
+            i = Math.floor(h * 6);
+            f = h * 6 - i;
+            p = v * (1 - s);
+            q = v * (1 - f * s);
+            t = v * (1 - (1 - f) * s);
+            switch (i % 6) {
+                case 0: r = v, g = t, b = p; break;
+                case 1: r = q, g = v, b = p; break;
+                case 2: r = p, g = v, b = t; break;
+                case 3: r = p, g = q, b = v; break;
+                case 4: r = t, g = p, b = v; break;
+                case 5: r = v, g = p, b = q; break;
+            }
+            return (Math.round(r * 255)<<16) + (Math.round(g * 255)<<8) + Math.round(b * 255);
+        }
+        
+        //the visualisation class
+        class Visualisation extends Visualisation2d{
+            constructor(container, tree, options){
+                super(container, tree, options);
+            }
+            __getNodeShapeClass(){
+                var camera = this.camera;
+                var c = this.c;
+                var gfx = this.graphics;
+                var initWidth = 400;
+                return class NodeShape extends c.NodeShape{
+                    constructor(gfx, node, size){
+                        super(gfx, node, {size:size||30});
+                        
+                        //create primary circle shape
+                        this.circle = new c.Circle(gfx, this.size, HSVtoInt(this.getDepth()/12, 1, 1));
+                        this.addShape(this.circle);
+                        // this.speedFactor = 6;
+                        
+                        this.onUpdate(function(time){
+                            var force = new Vec();
+                            
+                            //compute force from parent
+                            var parent = this.getParent();
+                            if(parent){
+                                var delta = parent.getDelta(this);
+                                var radius = parent.__getRadius()+this.__getRadius();
+                                var strength = delta.getLength()-radius;
+                                force.add(delta.setLength(strength));
+                            }
+                            
+                            
+                            //compute force from collisions
+                            var closeCircles = this.search(this.size);
+                            for(var i=0; i<closeCircles.length; i++){
+                                var cc = closeCircles[i];
+                                // if(cc!=parent && !this.isChild(cc)){
+                                    var delta = cc.getDelta(this);
+                                    var radius = cc.__getRadius()+this.__getRadius();
+                                    var strength = delta.getLength()-radius;
+                                    if(strength<0){
+                                        force.add(delta.setLength(strength*20).div(Math.pow(1.5, cc.getDepth())));
+                                    }
+                                // }
+                            }
+                            
+                            if(this.__getParentNode()!=null){ //don't do for root
+                                this.velo.add(force);
+                                this.velo.mul(0.80);
+                            }
+                        });
+                        this.onClick(function(){
+                            
+                        });
+                    }
+                    __setupConnection(first){
+                        if(first){
+                            this.setLoc((Math.random()-0.5)*gfx.getWidth(), (Math.random()-0.5)*gfx.getHeight());
+                        }
+                    }
+                    __showExpanded(){
+                        // this.circle.setColor(0x0000ff);
+                    }
+                    __showCollapsed(){
+                        // this.circle.setColor(0xff0000);
+                    }
+                    
+                    __createNodeShape(node){
+                        var size = this.size/Math.pow(this.__getChildNodes().length, 1/3);
+                        return new (this.__getClass())(this.getGraphics(), node, size);
+                    }
+                }
+            }
+        }
+        
+        //visualisation setup
+        var createTree = function(name, height){
+            var children = [];
+            if(height>0){
+                var childCount = Math.floor(Math.random()*3)+1;
+                for(var i=0; i<childCount; i++){
+                    children.push(createTree(name+"-"+i, height-1));
+                }
+            }
+            return {
+                name: name,
+                children: children
+            };
+        }
+        var tree = new Tree(createTree("Stuff", 10));
+        var options = new Options();
+        var visualisation = new Visualisation($(".q1"), tree, options);
+        visualisation.graphics.getShapes()[0].createDescendants(7);
+    </script>
+</html>

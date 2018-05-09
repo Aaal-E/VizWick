@@ -4,8 +4,8 @@
     Starting Date: 30/04/2018
 */
 class ShapeGroup2d extends Shape2d{
-    constructor(graphics){
-        super(graphics);
+    constructor(graphics, extraFields){
+        super(graphics, null, extraFields);
         this.shapes = [];
     }
     __createGfx(){
@@ -23,6 +23,7 @@ class ShapeGroup2d extends Shape2d{
             this.shapes.push(shape);
             shape.setParentShape(this);
         }
+        this.__updateRadius();
         return this;
     }
     removeShape(shape){
@@ -35,6 +36,17 @@ class ShapeGroup2d extends Shape2d{
                 shape.setParentShape(null);
             }
         }
+        this.__updateRadius();
         return this;
+    }
+    __updateRadius(){
+        this.radius = 0;
+        for(var i=0; i<this.shapes.length; i++){
+            var shape = this.shapes[i];
+            this.radius = Math.max(this.radius, new Vec(shape.getLoc()).getLength()+shape.__getRadius());
+        }
+    }
+    __getRadius(){
+        return this.radius;
     }
 }

@@ -50,3 +50,4 @@ class Tree{
 		return this.depth;
 	}
 }
+window.Tree = Tree;

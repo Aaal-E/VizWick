@@ -4,12 +4,21 @@
     Starting Date: 28/04/2018
 */
 class AbstractShape{
-    constructor(graphics){
+    constructor(graphics, extraFields){
+        //setup extra fields that get passed
+        if(extraFields){
+            var keys = Object.keys(extraFields);
+            for(var i=0; i<keys.length; i++)
+                this[keys[i]] = extraFields[keys[i]];
+        }
+            
+        //set fields
         this.graphics = graphics; 
         
         this.loc = new XYZ(0, 0, 0);                                    //location
         this.rot = new XYZ(0, 0, 0);                                    //rotation
         this.velo = new Vec(0, 0, 0);                                   //velocity for 'physics'
+        this.speedFactor = 1;                                           //a constant to multiply the velo with
         this.aabb = {minX:0, maxX:0, minY:0, maxY:0, minZ:0, maxZ:0};   //loose bounding box
         this.color = 0;                                                 //int color
         this.isRendered = false;                                        //whether or not the shape is being rendered
@@ -35,7 +44,7 @@ class AbstractShape{
              This.__updateUpdates();
         });
         this.onUpdate(function(delta){
-            this.loc.add(new Vec(this.velo).mul(delta));
+            this.loc.add(new Vec(this.velo).mul(delta*this.speedFactor));
         });
     }
     
@@ -133,9 +142,11 @@ class AbstractShape{
         return this;
     }
     __triggerHover(){
+        var ret = false;
         for(var i=0; i<this.hoverListeners.length; i++)
-            this.hoverListeners[i].apply(this, arguments);
-        return this;
+            if(this.hoverListeners[i].apply(this, arguments))
+                ret = true;
+        return ret;
     }
     
     //click
@@ -151,9 +162,11 @@ class AbstractShape{
         return this;
     }
     __triggerClick(){
+        var ret = false;
         for(var i=0; i<this.clickListeners.length; i++)
-            this.clickListeners[i].apply(this, arguments);
-        return this;
+            if(this.clickListeners[i].apply(this, arguments))
+                ret = true;
+        return ret;
     }
     
     //mouse events
@@ -175,9 +188,11 @@ class AbstractShape{
         return this;
     }
     __triggerMouseEvent(){
+        var ret = false;
         for(var i=0; i<this.mouseListeners.length; i++)
-            this.mouseListeners[i].apply(this, arguments);
-        return this;
+            if(this.mouseListeners[i].apply(this, arguments))
+                ret = true;
+        return ret;
     }
     
     //update

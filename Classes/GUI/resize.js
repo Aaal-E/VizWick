@@ -203,16 +203,19 @@
     $("head").append("<style>"+
         ".resizeContainer{"+
         "   position: relative;"+
-        "   display: table;"+
         "}"+
         //horizontal content
         ".horizontal>.resizeContent{"+
-        "   display: table-cell;"+
+        "   display: inline-block;"+
+        "   overflow: hidden;"+
+        "   vertical-align: top;"+
+        "   height: 100%;"+
         "}"+
         ".horizontal>.resizeHandle{"+
+        "   display: inline-block;"+
         "   width: 0px;"+
-        "   display: table-cell;"+
         "   position: relative;"+
+        "   height: 100%;"+
         "}"+
         ".horizontal>.resizeHandle>.resizeHandleInner{"+
         "   z-index: 1000;"+
@@ -233,12 +236,11 @@
         "}"+
         //vertical content
         ".vertical>.resizeContent{"+
-        "   display: table-row;"+
+        "   overflow: hidden;"+
         "}"+
         ".vertical>.resizeHandle{"+
         "   height: 0px;"+
         "   width: 100%;"+
-        "   display: table-row;"+
         "   position: absolute;"+
         "}"+
         ".vertical>.resizeHandle>.resizeHandleInner{"+

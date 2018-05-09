@@ -11,10 +11,31 @@ class Graphics2d extends AbstractGraphics{
         this.app = new PIXI.Application(this.getWidth(), this.getHeight(), {backgroundColor:this.background, antialias:true});
         
         //add graphics to the screen
+        var This = this;
+        $(this.app.view).addClass("pixi");
         this.container.append(this.app.view);
+        this.container.on("finishResize", function(event, size){
+            var view = $(This.__getRenderer().view);
+            var ratio = view.width()/view.height();
+            
+            size.width += 1;    //prevent some background leakage by rounding errors
+            size.height += 1;
+            if(size.width/size.height <= ratio){
+                var w = size.height*ratio;
+                var h = size.height;
+            }else{
+                var w = size.width;
+                var h = size.width/ratio;
+            }
+            view.width(w).height(h);
+            
+            var scale = This.size.width/w;
+            This.camera.__setStretchScale(scale);
+            
+            This.camera.__updateLoc();
+        });
         
         //register update listener
-        var This = this;
         this.updating = true;
         this.app.ticker.add(function(delta){
             if(This.updating)

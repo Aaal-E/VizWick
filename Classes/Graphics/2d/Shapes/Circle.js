@@ -13,11 +13,12 @@ class Circle2d extends Shape2d{
         //draw the shape
         this.gfx.clear();
         this.gfx.beginFill(this.color);
-        this.gfx.drawCircle(0, 0, this.radius);
+        this.gfx.drawCircle(0, 0, 1);
         this.gfx.endFill();
+        this.gfx.scale.set(this.radius); //setting the circle size by scaling in order to maintain quality for really small radii 
         
         //setup the hitbox (used for interaction events)
-        this.gfx.hitArea = new PIXI.Circle(0, 0, this.radius);
+        this.gfx.hitArea = new PIXI.Circle(0, 0, 1);
     }
     
     //the radius of the circle

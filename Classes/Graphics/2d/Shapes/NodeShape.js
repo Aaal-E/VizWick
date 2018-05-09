@@ -4,8 +4,8 @@
     Starting Date: 30/04/2018
 */
 class NodeShape2d extends ShapeGroup2d{
-    constructor(graphics, node){
-        super(graphics);
+    constructor(graphics, node, extraFields){ //attributes will just be stored in the object
+        super(graphics, extraFields);
         this.node = node;
         
         this.connectionHasBeenSetup = false; //track if an initial connection has ever been made
@@ -27,7 +27,7 @@ class NodeShape2d extends ShapeGroup2d{
     __showCollapsed(){}             //method to be extended to indicate that not all children are shown}
     
     //to be used when creating child or parent instances
-    __getClass(){
+    __getClass(node){
         return this.__proto__.constructor;
     }
     
@@ -136,8 +136,48 @@ class NodeShape2d extends ShapeGroup2d{
     getParent(){
         return this.parent;
     }
+    isParent(shape){
+        return this.parent==shape;
+    }
     getChildren(){
         return this.children;
+    }
+    isChild(shape){
+        return this.children.indexOf(shape)!=-1;
+    }
+    getAncestors(depth){
+        if(depth==null) depth=Infinity;
+        if(depth<=0) return [];
+        
+        var ret = [];
+        var p = this.getParent();
+        if(p){
+            ret.push(p);
+            ret.push.apply(p, p.getAncestors(depth-1));
+        }
+        return ret;
+    }
+    getAncestorsTo(shape){
+        var ret = [];
+        var p = this.getParent();
+        if(p && p!=shape){
+            ret.push(p);
+            ret.push.apply(p, p.getAncestors(depth-1));
+        }
+        return ret;
+    }
+    getDescendants(depth){
+        if(depth==null) depth=Infinity;
+        if(depth<=0) return [];
+        
+        var ret = [];
+        var children = this.getChildren();
+        ret.push.apply(ret, children);
+        for(var i=0; i<children.length; i++){
+            var child = children[i];
+            ret.push.apply(ret, child.getDescendants(depth-1));
+        }
+        return ret;
     }
     
     __getParentFromNode(){  //get parent node through the tree, as it might not have been connected yet
@@ -176,21 +216,24 @@ class NodeShape2d extends ShapeGroup2d{
         return children;
     }
     __getChildNodes(){
-        if(this.graphics && this.node)
-            return this.node.getChildren();
+        return this.node.getChildren();
     }
     __getParentNode(){
-        if(this.graphics && this.node)
-            return this.node.parentnode;
+        return this.node.getParent();
     }
     
     //tree statistics methods
     getDepth(){
-        if(this.node)
-            return this.node.getDepth();
+        return this.node.getDepth();
+    }
+    getIndex(){
+        return this.__getParentNode()?this.__getParentNode().getChildren().indexOf(this.node):0;
     }
     
     //methods for creating parent/children nodes
+    __createNodeShape(node){
+        return new (this.__getClass(node))(this.getGraphics(), node);
+    }
     createParent(){
         if(!this.getParent()){ //make sure there isn't already a parent shape
             var UID = this.graphics.getUID();
@@ -201,10 +244,24 @@ class NodeShape2d extends ShapeGroup2d{
                 if(shape)
                     shape.__setup();
                 else
-                    shape = new clas(this.getGraphics(), parentNode);
+                    shape = this.__createNodeShape(parentNode);
                 return shape.add();
             }
         }
+    }
+    createAncestors(depth){
+        //depth indicates how many layers to create
+        if(depth==null) depth = 1;
+        
+        var ret = [];
+        if(depth>=1){
+            var p = this.createParent();
+            if(p) ret.push(p);  //only add p if it waas just created
+            
+            var p = this.getParent();
+            if(p) ret.push.apply(ret, p.createAncestors(depth-1)); //recurse
+        }
+        return ret;
     }
     destroyParent(){
         var parent = this.getParent();
@@ -212,9 +269,24 @@ class NodeShape2d extends ShapeGroup2d{
             return parent.remove();
         }
     }
+    destroyAncestors(depth, fully){
+        //depth indicates how many layers to keep
+        //fully indicates whether to also destroy descendants
+        if(depth==null) depth = 0;
+        
+        var ret = [];
+        var parent = this.getParent();
+        if(parent){
+            if(fully)
+                ret.push.apply(ret, parent.destroyDescendants(0, [this])); //don't destroy this decendant
+            ret.push.apply(ret, parent.destroyAncestors(depth-1, fully));
+            if(depth<=0)
+                ret.push(parent.remove());
+        }
+        return ret;
+    }
     createChild(){
         var UID = this.graphics.getUID();
-        var clas = this.__getClass();
         var graphics = this.getGraphics();
         var missingChildNodes = this.__getMissingChildNodes();
         
@@ -224,34 +296,68 @@ class NodeShape2d extends ShapeGroup2d{
             if(shape)
                 shape.__setup();
             else
-                shape = new clas(this.getGraphics(), node);
+                shape = this.__createNodeShape(node);
             return shape.add();
         }
     }
     createChildren(){
         var UID = this.graphics.getUID();
-        var clas = this.__getClass();
         var graphics = this.getGraphics();
         var missingChildNodes = this.__getMissingChildNodes();
         
-        var ret = []
+        var ret = [];
         for(var i=0; i<missingChildNodes.length; i++){
             var node = missingChildNodes[i];
             var shape = node.getShape(UID);
             if(shape)
                 shape.__setup();
             else
-                shape = new clas(this.getGraphics(), node);
+                shape = this.__createNodeShape(node);
             ret.push(shape.add());
         }
         return ret;
     }
-    destroyChildren(){
+    createDescendants(depth){
+        //depth indicates how many layers to create
+        if(depth==null) depth = 1;
+        
+        var ret = [];
+        if(depth>=1){
+            ret.push.apply(ret, this.createChildren());
+            
+            var children = this.getChildren();
+            for(var i=0; i<children.length; i++){
+                var child = children[i];
+                ret.push.apply(ret, child.createDescendants(depth-1));
+            }
+        }
+        return ret;
+    }
+    destroyChildren(keep){
+        //keep is a list of shapes you don't want to destroy
+        var children = this.getChildren();
+        for(var i=children.length-1; i>=0; i--){
+            var child = children[i];
+            if(!keep || keep.indexOf(child)==-1)
+                child.remove();
+        }
+        return children;
+    }
+    destroyDescendants(depth, keep){
+        //depth indicates how many layers to keep
+        //keep is a list of shapes you don't want to destroy
+        if(depth==null) depth = 0;
+        
+        var ret = [];
         var children = this.getChildren();
         for(var i=0; i<children.length; i++){
             var child = children[i];
-            child.remove();
+            if(!keep || keep.indexOf(child)==-1)
+                ret.push.apply(ret, child.destroyDescendants(depth-1, keep));
         }
-        return children;
+        
+        if(depth<=0)
+            ret.push.apply(ret, this.destroyChildren(keep));
+        return ret;
     }
 }

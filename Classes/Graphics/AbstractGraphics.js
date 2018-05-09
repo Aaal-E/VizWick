@@ -33,7 +33,7 @@ class AbstractGraphics{
             leave: [],      //shapes that don't have any children
             collapsed: []   //shapes that don't show all their children
         };
-        this.maxNodeCount = 6;  //the max number of nodes that can be visible at any point
+        this.maxNodeCount = 12;  //the max number of nodes that can be visible at any point
         this.spatialTree = new rbush3d(16, ['.aabb.minX', '.aabb.minY', '.aabb.minZ', '.aabb.maxX', '.aabb.maxY', '.aabb.maxZ']);;
         
         //update active shapes

@@ -16,10 +16,12 @@
         <!--graphics interface-->
         <script src="../Classes/Graphics/Utils/XYZ.js"></script>
         <script src="../Classes/Graphics/Utils/Vec.js"></script>
+        <script src="../Classes/Graphics/Options.js"></script>
         
         <script src="../Classes/Graphics/AbstractCamera.js"></script>
         <script src="../Classes/Graphics/AbstractGraphics.js"></script>
         <script src="../Classes/Graphics/AbstractShape.js"></script>
+        <script src="../Classes/Graphics/AbstractVisualisation.js"></script>
         
         <!--2d graphics api-->
         <script src="../Classes/Graphics/2d/Camera.js"></script>
@@ -30,6 +32,7 @@
         <script src="../Classes/Graphics/2d/Shapes/ShapeGroup.js"></script>
         <script src="../Classes/Graphics/2d/Shapes/NodeShape.js"></script>
         <script src="../Classes/Graphics/2d/IO2d.js"></script>
+        <script src="../Classes/Graphics/2d/Visualisation.js"></script>
     </head>
     <body>
         
@@ -55,34 +58,48 @@
         var graphics = new Graphics();
         var gfx = graphics;
         var camera = graphics.getCamera();
-        var tree = new Tree({
-            name: "Root",
-            children: [{
-                name: "Root-1",
-                children: [{
-                    name: "Root-1-1",
-                    children: []
-                }, {
-                    name: "Root-1-2",
-                    children: [{
-                        name: "Root-1-2-1",
-                        children: []
-                    }]
-                }]
-            }, {
-                name: "Root-2",
-                children: [{
-                    name: "Root-2-1",
-                    children: []
-                }, {
-                    name: "Root-2-2",
-                    children: [{
-                        name: "Root-2-2-1",
-                        children: []
-                    }]
-                }]
-            }]
-        });
+        // var tree = new Tree({
+        //     name: "Root",
+        //     children: [{
+        //         name: "Root-1",
+        //         children: [{
+        //             name: "Root-1-1",
+        //             children: []
+        //         }, {
+        //             name: "Root-1-2",
+        //             children: [{
+        //                 name: "Root-1-2-1",
+        //                 children: []
+        //             }]
+        //         }]
+        //     }, {
+        //         name: "Root-2",
+        //         children: [{
+        //             name: "Root-2-1",
+        //             children: []
+        //         }, {
+        //             name: "Root-2-2",
+        //             children: [{
+        //                 name: "Root-2-2-1",
+        //                 children: []
+        //             }]
+        //         }]
+        //     }]
+        // });
+        var createTree = function(name, height){
+            var children = [];
+            if(height>0){
+                var childCount = Math.floor(Math.random()*3)+1;
+                for(var i=0; i<childCount; i++){
+                    children.push(createTree(name+"-"+i, height-1));
+                }
+            }
+            return {
+                name: name,
+                children: children
+            };
+        }
+        var tree = new Tree(createTree("Stuff", 10));
         
         /*simple stress test*/
         function stressTest(){
@@ -257,30 +274,43 @@
         }
         
         function treeTest(){
+            var initWidth = 600;
+            
             class NodeCircle extends NodeShape2d{
-                constructor(gfx, node){
-                    super(gfx, node);
+                constructor(gfx, node, scale){
+                    super(gfx, node, {scale:scale||1});
                     // this.setX(Math.random()*100-50).setY(Math.random()*100-50);
-                    this.circle = new Circle(gfx, 10, 0xff0000);
+                    this.circle = new Circle(gfx, 30*this.scale, 0xff0000);
                     this.addShape(this.circle);
                     
+                    // this.setAngle(!scale?0:(Math.random()-0.5)*Math.PI*0.5);
+                    
                     this.onUpdate(function(){
-                        this.getLoc().add(Math.random()-0.5, Math.random()-0.5) 
+                        this.getLoc().add((Math.random()-0.5)*this.scale, (Math.random()-0.5)*this.scale);
                     });
                     this.onClick(function(){
-                        camera.setTargetLoc(this);
+                        camera.setTarget(this, this, 1/this.scale);
+                        // camera.setTargetLoc(this);
+                        // camera.setTargetScale(1/this.scale);
                     });
                 }
                 __setupConnection(first){
                     var parent = this.getParent();
-                    if(parent && first)
-                        this.setLoc(new Vec(parent.getLoc()).add(Math.random()*300-150, -80, 0));
+                    if(parent && first){
+                        var w = (-parent.scale/2 + (this.getIndex()+0.5)*this.scale)*initWidth;
+                        this.setLoc(new Vec(parent.getLoc()).add(w, -130*parent.scale, 0));
+                    }
                 }
                 __showExpanded(){
                     this.circle.setColor(0x0000ff);
                 }
                 __showCollapsed(){
                     this.circle.setColor(0xff0000);
+                }
+                
+                __createNodeShape(node){
+                    var scale = this.scale/this.__getChildNodes().length;
+                    return new (this.__getClass())(this.getGraphics(), node, scale);
                 }
             }
             

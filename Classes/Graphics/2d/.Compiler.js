@@ -8,9 +8,11 @@ Compiler.compile([
     
     "../Utils/XYZ.js",
     "../Utils/Vec.js",
+    "../Options.js",
     "../AbstractCamera.js",
     "../AbstractGraphics.js",
     "../AbstractShape.js",
+    "../AbstractVisualisation.js",
     
     "Camera.js",
     "Graphics.js",
@@ -21,5 +23,5 @@ Compiler.compile([
     "Shapes/ShapeGroup.js",
     "Shapes/NodeShape.js",
     
-    "IO2d.js",
+    "Visualisation.js",
 ], ".Compiled.js");

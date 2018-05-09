@@ -30,17 +30,19 @@ class AbstractCamera{
             
             //move to target pos if defined
             if(This.target.rot){
-                var delta = This.target.loc.getVec(This.rot);
+                var delta = This.target.rot.getVec(This.rot);
                 This.rot.add(delta.mul(This.targetTrailingSpeed.rot));
             }
             
             //move to target pos if defined
             if(This.target.scale){
                 var delta = This.target.scale-This.scale;
-                setScale(This.scale+delta*This.targetTrailingSpeed.scale);
+                This.setScale(This.scale+delta*This.targetTrailingSpeed.scale);
             }
         });
     }
+    __updateLoc(){}
+    
     //position
     setX(x){
         this.loc.setX(x);
@@ -126,7 +128,7 @@ class AbstractCamera{
     }
     setTargetRot(x, y, z){
         if(x instanceof AbstractShape)
-            x = x.getLoc();
+            x = x.getRot();
         if(x.x==null)
             x = new XYZ(x, y, z);
         this.target.rot = x;
