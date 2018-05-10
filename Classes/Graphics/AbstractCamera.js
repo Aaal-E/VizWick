@@ -9,36 +9,58 @@ class AbstractCamera{
         this.loc = new XYZ(0, 0, 0);
         this.rot = new XYZ(0, 0, 0);
         this.velo = new Vec(0, 0, 0);
+        this.rotVelo = new Vec(0, 0, 0);
         this.scale = 1;
+        this.scaleVelo = 0;
         
         this.target = {};
-        this.targetTrailingSpeed = {
-            scale: 0.1,
-            rot: 0.1,
-            loc: 0.1,
-        };
+        
+        //some constants to alter the targetting system
+        this.speed = {
+            scale: 600,
+            rot: 600,
+            loc: 600
+        }
+        this.targetForce = {
+            scale: 2,
+            rot: 3,
+            loc: 3
+        }
+        this.targetFriction = {
+            scale: 0.8,
+            rot: 0.8,
+            loc: 0.8
+        }
         
         var This = this;
-        graphics.onUpdate(function(delta){
-            This.loc.add(new Vec(This.velo).mul(delta)); 
-            
+        graphics.onUpdate(function(time){
             //move to target pos if defined
             if(This.target.loc){
                 var delta = This.target.loc.getVec(This.loc);
-                This.loc.add(delta.mul(This.targetTrailingSpeed.loc));
+                This.velo.add(delta.mul(time * This.targetForce.loc));
             }
             
             //move to target pos if defined
             if(This.target.rot){
                 var delta = This.target.rot.getVec(This.rot);
-                This.rot.add(delta.mul(This.targetTrailingSpeed.rot));
+                This.rotVelo.add(delta.mul(time * This.targetForce.rot));
             }
             
             //move to target pos if defined
             if(This.target.scale){
                 var delta = This.target.scale-This.scale;
-                This.setScale(This.scale+delta*This.targetTrailingSpeed.scale);
+                This.scaleVelo += delta * time * This.targetForce.scale;
             }
+            
+            
+            //apply velocity
+            This.velo.mul(1-Math.pow(This.targetFriction.loc, time*60));   //drag
+            This.rotVelo.mul(1-Math.pow(This.targetFriction.rot, time*60));   
+            This.scaleVelo *= 1-Math.pow(This.targetFriction.scale, time*60);   
+            
+            This.loc.add(new Vec(This.velo).mul(time * This.speed.loc));
+            This.rot.add(new Vec(This.rotVelo).mul(time * This.speed.rot));
+            This.setScale(This.scale + This.scaleVelo*time * This.speed.scale);
         });
     }
     __updateLoc(){}
@@ -115,6 +137,16 @@ class AbstractCamera{
     //velocity
     getVelo(){
         return this.velo;
+    }
+    getRotVelo(){
+        return this.rotVelo();
+    }
+    setScaleVelo(scaleVelo){
+        this.scaleVelo = scaleVelo;
+        return this;
+    }
+    getScaleVelo(){
+        return this.scaleVelo;
     }
     
     //targetting methods

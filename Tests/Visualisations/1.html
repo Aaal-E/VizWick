@@ -39,11 +39,10 @@
     </head>
     <body>
         <div class=container>
-            <div class=q1 style=background-color:#BFB>
+            <div class=q1>
                 
             </div>
-            <div class=q2 style=background-color:#FBB>
-                test4
+            <div class=q2>
             </div>
         </div>
     </body>
@@ -64,6 +63,13 @@
             left: 50%;
             transform: translate(-50%, -50%);
         }
+        .resizeHandleInnerDisplay{
+            background-color: white !important;
+        }
+        .q1,.q2{
+            background-color: black;
+            position: relative;
+        }
     </style>
     <script>
         this.debug = true;
@@ -76,28 +82,29 @@
             constructor(container, tree, options){
                 super(container, tree, options);
             }
-            __getNodeShapeClass(){
-                var camera = this.camera;
-                var c = this.c;
-                var gfx = this.graphics;
+            __getNodeShapeClass(VIZ){
+                var camera = this.getCamera();
+                var gfx = this;
                 var initWidth = 400;
-                return class NodeShape extends c.NodeShape{
+                return class NodeShape extends VIZ.NodeShape{
                     constructor(gfx, node, scale){
                         super(gfx, node, {scale:scale||1});
                         
                         //create primary circle shape
-                        this.circle = new c.Circle(gfx, 30*this.scale, 0xff0000);
+                        this.circle = new VIZ.Circle(gfx, 30*this.scale, 0xff0000);
                         this.addShape(this.circle);
                         
+                        this.setAngle(Math.random());
+                        
                         //create return button cicle shape
-                        this.ret = new c.Circle(gfx, 10*this.scale, 0x00ff00);
+                        this.ret = new VIZ.Circle(gfx, 10*this.scale, 0x00ff00);
                         this.ret.setLoc(-20*this.scale, 0);
                         this.addShape(this.ret);
                         var This = this;
                         this.ret.onClick(function(){ //select parent when this is clicked
                             This.createParent();
                             var p = This.getParent();
-                            if(p) p.selectNode();
+                            if(p) p.focus();
                             return true;
                         });
                         
@@ -105,30 +112,28 @@
                             this.getLoc().add((Math.random()-0.5)*this.scale, (Math.random()-0.5)*this.scale);
                         });
                         this.onClick(function(){
-                            this.selectNode();
+                            this.focus();
                         });
                     }
-                    selectNode(){
-                        camera.setTarget(this, this, 1/this.scale);
+                    __stateChanged(field, val, oldState){
+                        if(field=="focused" && val==true){
+                            camera.setTarget(this, this, 1/this.scale);
                         
-                        this.createDescendants(2);  //creates 2 layers of descendants
-                        this.destroyDescendants(2); //destroys any descendants above those 2 layers
+                            this.createDescendants(2);      //creates 2 layers of descendants
+                            this.destroyDescendants(2);     //destroys any descendants above those 2 layers
+                            
+                            this.createAncestors(2);        //creates 2 layers of ancestors
+                            this.destroyAncestors(2, true); //destroys any ancestors below those 2 layers
+                        }
                         
-                        this.createAncestors(2);    //creates 2 layers of ancestors
-                        this.destroyAncestors(2, true);   //destroys any ancestors below those 2 layers
+                        this.circle.setColor(this.state.expanded?0x0000ff:0xff0000);
                     }
-                    __setupConnection(first){
+                    __parentConnectionChange(first){
                         var parent = this.getParent();
                         if(parent && first){
                             var w = (-parent.scale/2 + (this.getIndex()+0.5)*this.scale)*initWidth;
-                            this.setLoc(new Vec(parent.getLoc()).add(w, -130*parent.scale, 0));
+                            this.setLoc(new VIZ.Vec(parent.getLoc()).add(w, -130*parent.scale, 0));
                         }
-                    }
-                    __showExpanded(){
-                        this.circle.setColor(0x0000ff);
-                    }
-                    __showCollapsed(){
-                        this.circle.setColor(0xff0000);
                     }
                     
                     __createNodeShape(node){
@@ -156,5 +161,7 @@
         var tree = new Tree(createTree("Stuff", 10));
         var options = new Options();
         var visualisation = new Visualisation($(".q1"), tree, options);
+        
+        var visualisation = new Visualisation($(".q2"), tree, options);
     </script>
 </html>

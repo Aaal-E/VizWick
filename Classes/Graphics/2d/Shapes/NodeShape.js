@@ -15,19 +15,48 @@ class NodeShape2d extends ShapeGroup2d{
         this.children = [];
         this.__init();      //seperate method in order to allow for it to be overwritten
         this.__setup();     //seperate method in order to allow for it to be overwritten
+        
+        //save state data
+        this.state = {
+            hover: false,
+            expanded: false,
+            selected: false,
+            focused: false,
+        };
     }
     getNode(){
         return this.node;
     }
     
+    //build in listeners
+    __registerUpdateListener(){
+        return this.onUpdate(this.__onUpdate);
+    }
+    __deregisterUpdateListener(){
+        return this.offUpdate(this.__onUpdate);
+    }
+    __onUpdate(){}                         //method to be extended to be called every 'tick'
+    
     
     //rendering related methods
-    __setupConnection(firstTime){}  //method to be extended to connect to parent graphically
-    __showExpanded(){}              //method to be extended to indicate that all children are shown
-    __showCollapsed(){}             //method to be extended to indicate that not all children are shown}
+    __parentConnectionChange(firstTime){}  //method to be extended to connect to parent graphically
+    __stateChanged(field, val, oldState){} //method to be extended to update the visuals to represent the state
+    
+    __changeState(field, value){
+        var oldState = Object.assign({}, this.state);
+        this.state[field] = value;
+        var changed = oldState[field]!=this.state[field];
+        this.__stateChanged(changed?field:null, changed?value:null, oldState);
+        return this;
+    }
     
     //to be used when creating child or parent instances
     __getClass(node){
+        //attempt to get from graphics
+        var getFromGFX = this.graphics.__getNodeShapeClass;
+        if(getFromGFX) return getFromGFX.call(this.graphics, Visualisation2d.classes, node);
+        
+        //otherwise return this class
         return this.__proto__.constructor;
     }
     
@@ -63,6 +92,11 @@ class NodeShape2d extends ShapeGroup2d{
             this.__addChild(children[i]);
         return this;
     }
+    add(){
+        var ret = super.add();
+        this.__stateChanged();
+        return ret;
+    }
     __delete(){
         //test: keep the node around, but don't render it
         // //if the shape is deleted from the visualisation, disconnect it from the tree
@@ -89,7 +123,7 @@ class NodeShape2d extends ShapeGroup2d{
         return super.__delete();
     }
     
-    
+    //relation methods
     __setParent(parentShape){
         if(this.parent!=parentShape){
             this.parent = parentShape;
@@ -100,7 +134,7 @@ class NodeShape2d extends ShapeGroup2d{
                 this.graphics.__registerShapeRoot(this);    //indicate that this shape is now a root
             }
             
-            this.__setupConnection(!this.connectionHasBeenSetup);   //with argument true the first time
+            this.__parentConnectionChange(!this.connectionHasBeenSetup);   //with argument true the first time
             this.connectionHasBeenSetup = true;
         }
         return this;
@@ -114,7 +148,7 @@ class NodeShape2d extends ShapeGroup2d{
                 this.graphics.__deregisterShapeLeave(this);    //indicate that this shape is no longer a leave
             if(this.__getChildNodes().length==this.children.length){
                 this.graphics.__deregisterShapeCollapsed(this); //indicate that there is nothing left to expand
-                this.__showExpanded();
+                this.__changeState("expanded", true);
             }
         } 
         return this;
@@ -128,7 +162,7 @@ class NodeShape2d extends ShapeGroup2d{
             this.children.splice(index, 1);
             if(this.children.length==0)
                 this.graphics.__registerShapeLeave(this);    //indicate that this shape is now a leave
-            this.__showCollapsed();
+            this.__changeState("expanded", false);
         }
         return this;
     }
@@ -359,5 +393,47 @@ class NodeShape2d extends ShapeGroup2d{
         if(depth<=0)
             ret.push.apply(ret, this.destroyChildren(keep));
         return ret;
+    }
+    
+    //methods for changing the state
+    forwardToVisualisations(func){
+        this.getNode().forwardToShapes(func, this);
+        return this;
+    }
+    select(forwarded){
+        if(!this.state.selected){
+            this.graphics.selectShape(this);
+            if(!forwarded)
+                this.forwardToVisualisations(function(){
+                    this.select(true);
+                });
+        }
+    }
+    deselect(forwarded){
+        if(this.state.selected){
+            this.graphics.selectShape(null);
+            if(!forwarded)
+                this.forwardToVisualisations(function(){
+                    this.deselect(true);
+                });
+        }
+    }
+    focus(forwarded){
+        if(!this.state.focused){
+            this.graphics.focusShape(this);
+            if(!forwarded)
+                this.forwardToVisualisations(function(){
+                    this.focus(true);
+                });
+        }
+    }
+    defocus(forwarded){
+        if(this.state.focused){
+            this.graphics.focusShape(null);
+            if(!forwarded)
+                this.forwardToVisualisations(function(){
+                    this.defocus(true);
+                });
+        }
     }
 }

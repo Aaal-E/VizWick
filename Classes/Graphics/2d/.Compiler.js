@@ -24,4 +24,4 @@ Compiler.compile([
     "Shapes/NodeShape.js",
     
     "Visualisation.js",
-], ".Compiled.js");
+], [".Compiled.js", "../../../Tests/Visualisations/Test environment/visualisation.js"]);

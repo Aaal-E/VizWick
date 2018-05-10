@@ -24,7 +24,6 @@
         <script src="../../Classes/Graphics/AbstractCamera.js"></script>
         <script src="../../Classes/Graphics/AbstractGraphics.js"></script>
         <script src="../../Classes/Graphics/AbstractShape.js"></script>
-        <script src="../../Classes/Graphics/AbstractVisualisation.js"></script>
         
         <!--2d graphics api-->
         <script src="../../Classes/Graphics/2d/Camera.js"></script>
@@ -98,22 +97,21 @@
             constructor(container, tree, options){
                 super(container, tree, options);
             }
-            __getNodeShapeClass(){
-                var camera = this.camera;
-                var c = this.c;
-                var gfx = this.graphics;
+            __getNodeShapeClass(VIZ){
+                var camera = this.getCamera();
+                var gfx = this;
                 var initWidth = 400;
-                return class NodeShape extends c.NodeShape{
+                return class NodeShape extends VIZ.NodeShape{
                     constructor(gfx, node, size){
                         super(gfx, node, {size:size||30});
                         
                         //create primary circle shape
-                        this.circle = new c.Circle(gfx, this.size, HSVtoInt(this.getDepth()/12, 1, 1));
+                        this.circle = new VIZ.Circle(gfx, this.size, HSVtoInt(this.getDepth()/12, 1, 1));
                         this.addShape(this.circle);
                         // this.speedFactor = 6;
                         
                         this.onUpdate(function(time){
-                            var force = new Vec();
+                            var force = new VIZ.Vec();
                             
                             //compute force from parent
                             var parent = this.getParent();
@@ -129,14 +127,13 @@
                             var closeCircles = this.search(this.size);
                             for(var i=0; i<closeCircles.length; i++){
                                 var cc = closeCircles[i];
-                                // if(cc!=parent && !this.isChild(cc)){
-                                    var delta = cc.getDelta(this);
-                                    var radius = cc.__getRadius()+this.__getRadius();
-                                    var strength = delta.getLength()-radius;
-                                    if(strength<0){
-                                        force.add(delta.setLength(strength*20).div(Math.pow(1.5, cc.getDepth())));
-                                    }
-                                // }
+                                
+                                var delta = cc.getDelta(this);
+                                var radius = cc.__getRadius()+this.__getRadius();
+                                var strength = delta.getLength()-radius;
+                                if(strength<0){
+                                    force.add(delta.setLength(strength*20).div(Math.pow(1.5, cc.getDepth())));
+                                }
                             }
                             
                             if(this.__getParentNode()!=null){ //don't do for root
@@ -144,24 +141,32 @@
                                 this.velo.mul(0.80);
                             }
                         });
-                        this.onClick(function(){
-                            
-                        });
                     }
-                    __setupConnection(first){
+                    __parentConnectionChange(first){
                         if(first){
                             this.setLoc((Math.random()-0.5)*gfx.getWidth(), (Math.random()-0.5)*gfx.getHeight());
                         }
                     }
-                    __showExpanded(){
-                        // this.circle.setColor(0x0000ff);
-                    }
-                    __showCollapsed(){
-                        // this.circle.setColor(0xff0000);
-                    }
                     
                     __createNodeShape(node){
-                        var size = this.size/Math.pow(this.__getChildNodes().length, 1/3);
+                        //Calculate the scale we want the node shape to have:
+                        var size = 1;  //just as a placeholder
+                        
+                        //First retrieve the scale of the parent
+                        var ID = this.graphics.getUID();
+                        var parent = node.getParent();  //this will be a node
+                        if(parent){                     //check if it isn't the root
+                            var parentSize = 1;        //default scale
+                            
+                            var parentShape = parent.getShape(ID); //get the nodeShape attached to parent
+                            if(parentShape)             //if such a shape exists
+                                parentSize = parentShape.size; //copy its scale
+                            
+                            //Sets the scale n times as small as its parent, with n being the childcount
+                            size = parentSize/Math.pow(parent.getChildren().length, 1/2.2);    
+                        }
+                        
+                        //Create a new instance of your NodeShape and pass the scale
                         return new (this.__getClass())(this.getGraphics(), node, size);
                     }
                 }
@@ -185,6 +190,6 @@
         var tree = new Tree(createTree("Stuff", 10));
         var options = new Options();
         var visualisation = new Visualisation($(".q1"), tree, options);
-        visualisation.graphics.getShapes()[0].createDescendants(7);
+        visualisation.getShapes()[0].createDescendants(7);
     </script>
 </html>

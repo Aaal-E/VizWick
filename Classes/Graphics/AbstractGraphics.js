@@ -45,6 +45,8 @@ class AbstractGraphics{
         
         //create an UID to be used when searching for shapes in the tree
         this.UID = Math.floor(Math.random()*Math.pow(10, 10));
+        
+        if(window.debug) this.__setupFpsCounter();
     }
     getCamera(){
         return this.camera;
@@ -54,6 +56,17 @@ class AbstractGraphics{
     }
     getUID(){
         return this.UID;
+    }
+    
+    __setupFpsCounter(){
+        var stats = new Stats();
+        stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
+        this.getContainer().append(stats.domElement);
+        $(stats.domElement).css("position", "absolute");
+        this.onUpdate(function(delta){
+            stats.end();
+            stats.begin();
+        });
     }
     
     //start/stop rendering

@@ -143,10 +143,19 @@ class TreeNode{
 	}
 	
 	//forwards a function to all shapes assigned to this node
-	forwardToShapes(forwardfunction, argument){
-		var keys = Object.keys(this.shapes)
-		for (i=0; i<keys.length; i++){
-			forwardfunction.apply(shapes[keys[i]], argument);
+	forwardToShapes(forwardfunction, ignore){
+		if(!ignore) ignore = [];
+		if(!(ignore instanceof Array)) ignore = [ignore];
+		
+		var args = Array.from(arguments);
+		args.pop();
+		args.pop();
+		
+		var keys = Object.keys(this.shapes);
+		for (var i=0; i<keys.length; i++){
+			var shape = this.shapes[keys[i]];
+			if(ignore.indexOf(shape)==-1)
+				forwardfunction.apply(shape, args);
 		}
 	}
 	

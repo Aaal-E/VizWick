@@ -38,7 +38,7 @@ _createClass(TreeNode,[{key:"__setName",value:function __setName(newname){this.n
 },{key:"removeShape",value:function removeShape(visualisation){if(this.shapes[visualisation])this.shapes[visualisation]=undefined;return this}//returns the list of shapes associated with this node
 },{key:"getShapes",value:function getShapes(){return this.shapes}//returns the shape of the visualisation, if existing
 },{key:"getShape",value:function getShape(visualisation){if(this.shapes[visualisation])return this.shapes[visualisation];else return}//forwards a function to all shapes assigned to this node
-},{key:"forwardToShapes",value:function forwardToShapes(forwardfunction,argument){var keys=Object.keys(this.shapes);for(i=0;i<keys.length;i++){forwardfunction.apply(shapes[keys[i]],argument)}}//sets the value of the node
+},{key:"forwardToShapes",value:function forwardToShapes(forwardfunction,ignore){if(!ignore)ignore=[];if(!(ignore instanceof Array))ignore=[ignore];var args=Array.from(arguments);args.pop();args.pop();var keys=Object.keys(this.shapes);for(var i=0;i<keys.length;i++){var shape=this.shapes[keys[i]];if(ignore.indexOf(shape)==-1)forwardfunction.apply(shape,args)}}//sets the value of the node
 },{key:"__setValue",value:function __setValue(newvalue){this.value=newvalue;return this}//gets the value of the node
 },{key:"getValue",value:function getValue(){return this.value}//gets the smallest child
 },{key:"getSmallestChild",value:function getSmallestChild(){var smallest;for(var i=0;i<children.length;i++){if(!smallest.getValue())smallest=children[i];if(smallest.getValue()>children[i].getValue())smallest=children[i]}return smallest}//returns the largest childgetSmallestChild(){

@@ -307,7 +307,7 @@ class AbstractShape{
         return 0;
     }
     __getRadiusPadding(){
-        return this.__getRadius();
+        return this.__getRadius()/2;
     }
     __getTree(){
         if(this.graphics)

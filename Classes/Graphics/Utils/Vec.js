@@ -46,17 +46,20 @@ class Vec extends XYZ{
     
     //angles
     setAngle(angle){
-        return this.setPitch(angle);
+        var zAxisDist = Math.sqrt(this.x*this.x + this.y*this.y);
+        var p = Math.atan2(this.z, zAxisDist);
+        var length = this.getLength();
+        return this.set(
+            Math.cos(angle)*Math.cos(p)*length,
+            Math.sin(angle)*Math.cos(p)*length,
+            Math.sin(p)*length
+        );
     }
     getAngle(){
-        var pitch = this.getPitch();    //pitch is bounded to -PI/2 and PI/2
-        var yaw = this.getYaw();        //yaw will switch between 0 and PI in 2d
-        if(yaw>0)           
-            pitch = yaw-pitch           //invert pitch if it is in opposite direction
-        return pitch;
+        return Math.atan2(this.y, this.x);
     }
     addAngle(angle){
-        return this.addPitch(angle);
+        return this.setAngle(this.getAngle()+angle);
     }
     
     setYaw(yaw){

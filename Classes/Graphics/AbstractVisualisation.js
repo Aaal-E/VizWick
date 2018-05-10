@@ -27,7 +27,6 @@ class AbstractVisualisation{
     //classes
     __getNodeShapeClass(){}
     __getGraphicsClass(){}
-    __setupShapeClasses(){}
     
     //setup
     __setupOptions(options){}
