@@ -4,8 +4,8 @@
     Starting Date: 30/04/2018
 */
 class NodeShape2d extends ShapeGroup2d{
-    constructor(graphics, node, extraFields){ //attributes will just be stored in the object
-        super(graphics, extraFields);
+    constructor(graphics, node, preInit){ //attributes will just be stored in the object
+        super(graphics, preInit);
         this.node = node;
         
         this.connectionHasBeenSetup = false; //track if an initial connection has ever been made
@@ -14,33 +14,24 @@ class NodeShape2d extends ShapeGroup2d{
         this.parent = null;
         this.children = [];
         this.__init();      //seperate method in order to allow for it to be overwritten
-        this.__setup();     //seperate method in order to allow for it to be overwritten
         
         //save state data
         this.state = {
             hover: false,
-            expanded: false,
+            expanded: this.node.getChildren().length==0,
             selected: false,
             focused: false,
+            dragged: false,
         };
+        this.__changeState(); //update state
     }
     getNode(){
         return this.node;
     }
     
-    //build in listeners
-    __registerUpdateListener(){
-        return this.onUpdate(this.__onUpdate);
-    }
-    __deregisterUpdateListener(){
-        return this.offUpdate(this.__onUpdate);
-    }
-    __onUpdate(){}                         //method to be extended to be called every 'tick'
-    
-    
     //rendering related methods
-    __parentConnectionChange(firstTime){}  //method to be extended to connect to parent graphically
-    __stateChanged(field, val, oldState){} //method to be extended to update the visuals to represent the state
+    __setupConnection(parent, child, first){}   //method to be extended to connect to parent graphically
+    __stateChanged(field, val, oldState){}      //method to be extended to update the visuals to represent the state
     
     __changeState(field, value){
         var oldState = Object.assign({}, this.state);
@@ -75,7 +66,8 @@ class NodeShape2d extends ShapeGroup2d{
     }
     
     //relation maintenance
-    __setup(){  //connect the shape to the tree, and to any shapes it has a relation with
+    add(){
+        var ret = super.add();
         
         //register shape as root and leave, as no parent or children are set up yet
         this.graphics.__registerShapeLeave(this);
@@ -90,19 +82,16 @@ class NodeShape2d extends ShapeGroup2d{
         var children = this.__getChildrenFromNode();
         for(var i=0; i<children.length; i++)
             this.__addChild(children[i]);
-        return this;
-    }
-    add(){
-        var ret = super.add();
-        this.__stateChanged();
+            
+        //setup connection
+        if(!this.__setupConnection(this.getParent(), this.getChildren()[0], !this.connectionHasBeenSetup))   //with argument true the first time
+            this.connectionHasBeenSetup = true;
+            
+        //update visuals for the state
+        this.__stateChanged(null, null, this.state);
         return ret;
     }
-    __delete(){
-        //test: keep the node around, but don't render it
-        // //if the shape is deleted from the visualisation, disconnect it from the tree
-        // if(this.graphics && this.node)
-        //     this.node.removeShape(this.graphics.getUID());
-            
+    remove(fully){
         //collapse the parent as not all its child nodes are shown anymore
         parent = this.getParent();
         if(parent) parent.__removeChild(this);
@@ -114,6 +103,15 @@ class NodeShape2d extends ShapeGroup2d{
         //clean up own relations
         this.__setParent(null);
         this.children = [];
+        
+        return super.remove(fully);
+    }
+    __delete(){
+        //test: keep the node around, but don't render it
+        // //if the shape is deleted from the visualisation, disconnect it from the tree
+        // if(this.graphics && this.node)
+        //     this.node.removeShape(this.graphics.getUID());
+            
         
             
         //indicate that this shape is no longer anything in tree
@@ -133,9 +131,6 @@ class NodeShape2d extends ShapeGroup2d{
             }else{
                 this.graphics.__registerShapeRoot(this);    //indicate that this shape is now a root
             }
-            
-            this.__parentConnectionChange(!this.connectionHasBeenSetup);   //with argument true the first time
-            this.connectionHasBeenSetup = true;
         }
         return this;
     }
@@ -172,6 +167,12 @@ class NodeShape2d extends ShapeGroup2d{
     }
     isParent(shape){
         return this.parent==shape;
+    }
+    isRoot(){
+        return !this.parent;
+    }
+    isLeave(){
+        return this.children.length==0;
     }
     getChildren(){
         return this.children;
@@ -212,6 +213,11 @@ class NodeShape2d extends ShapeGroup2d{
             ret.push.apply(ret, child.getDescendants(depth-1));
         }
         return ret;
+    }
+    getConnectedNodeShape(){
+        var parent = this.getParent();
+        if(parent) return parent;
+        return this.getChildren()[0];
     }
     
     __getParentFromNode(){  //get parent node through the tree, as it might not have been connected yet
@@ -271,13 +277,10 @@ class NodeShape2d extends ShapeGroup2d{
     createParent(){
         if(!this.getParent()){ //make sure there isn't already a parent shape
             var UID = this.graphics.getUID();
-            var clas = this.__getClass();
             var parentNode = this.__getParentNode();
             if(parentNode){
                 var shape = parentNode.getShape(UID);
-                if(shape)
-                    shape.__setup();
-                else
+                if(!shape)
                     shape = this.__createNodeShape(parentNode);
                 return shape.add();
             }
@@ -327,9 +330,7 @@ class NodeShape2d extends ShapeGroup2d{
         var node = missingChildNodes[0];
         if(node){
             var shape = node.getShape(UID);
-            if(shape)
-                shape.__setup();
-            else
+            if(!shape)
                 shape = this.__createNodeShape(node);
             return shape.add();
         }
@@ -343,9 +344,7 @@ class NodeShape2d extends ShapeGroup2d{
         for(var i=0; i<missingChildNodes.length; i++){
             var node = missingChildNodes[i];
             var shape = node.getShape(UID);
-            if(shape)
-                shape.__setup();
-            else
+            if(!shape)
                 shape = this.__createNodeShape(node);
             ret.push(shape.add());
         }

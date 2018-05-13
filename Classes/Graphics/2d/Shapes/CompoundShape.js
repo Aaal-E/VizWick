@@ -4,10 +4,19 @@
     Starting Date: 28/04/2018
 */
 class CompoundShape2d extends Shape2d{
-    constructor(graphics){
-        super(graphics);
+    constructor(graphics, preInit){
+        super(graphics, null, preInit);
         this.shapes = [];
-        this.gfx = new PIXI.Sprite();
+        
+        //forward location change to children (world location)
+        var This = this;
+        this.getLoc().onChange(function(){
+            for(var i=0; i<This.shapes.length; i++)
+                This.shapes[i].getLoc().__fireEvent();
+        });
+    }
+    __createGfx(){
+        return new PIXI.Sprite();
     }
     
     //updating shapes
@@ -15,7 +24,7 @@ class CompoundShape2d extends Shape2d{
         for(var i=0; i<arguments.length; i++){
             var shape = arguments[i];
             this.shapes.push(shape);
-            shape.setParentShape(this);
+            shape.__setParentShape(this);
         }
         this.__redraw();
         return this;
@@ -26,7 +35,7 @@ class CompoundShape2d extends Shape2d{
             var index = this.shapes.indexOf(shape);
             if(index!=-1){
                 this.shapes.splice(index, 1);
-                shape.setParentShape(null);
+                shape.__setParentShape(null);
             }
         }
         this.__redraw();
@@ -74,6 +83,6 @@ class CompoundShape2d extends Shape2d{
     __getRadius(){
         var x = this.size.width/2;
         var y = this.size.height/2;
-        return Math.sqrt(x*x + y*y);
+        return Math.sqrt(x*x + y*y)*this.getScale();
     }
 }

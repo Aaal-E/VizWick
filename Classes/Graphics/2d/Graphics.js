@@ -8,7 +8,7 @@ class Graphics2d extends AbstractGraphics{
         super(width, height, container);
         
         //create the graphics environment
-        this.app = new PIXI.Application(this.getWidth(), this.getHeight(), {backgroundColor:this.background, antialias:true});
+        this.app = new PIXI.Application(this.getWidth(), this.getHeight(), {transparent: true, antialias:true});
         
         //add graphics to the screen
         var This = this;
@@ -35,12 +35,21 @@ class Graphics2d extends AbstractGraphics{
             This.camera.__updateLoc();
         });
         
-        //register update listener
+        //register update listener, set to 30fps
         this.updating = true;
-        this.app.ticker.add(function(delta){
-            if(This.updating)
-                This.__triggerUpdate(1/60/delta);
+        var last = Date.now();
+        var delta = 1/30;
+        this.app.ticker.add(function(){
+            var now = Date.now();
+            if((now-last)/1000>delta){
+                if(This.updating)
+                    This.__onUpdate(delta);
+                last += delta*1000;
+                if(now-last>2000)
+                    last = now;
+            }
         });
+        // PIXI.settings.TARGET_FPMS = 30/1000;    //set target fps to 30
         
         //setup layered container
         this.app.stage = new PIXI.display.Stage();
@@ -104,17 +113,20 @@ class Graphics2d extends AbstractGraphics{
     }
     
     //mouse  methods
-    __getMousePos(){
+    getMouseScreenLoc(){
         return this.mouse;
+    }
+    getMouseLoc(){
+        return this.camera.translateScreenToWorldLoc(this.getMouseScreenLoc());
     }
     getMouseVec(x, y){
         var xyz;
         if(x instanceof AbstractShape)
-            xyz = new Vec(x.getAbsoluteX(), x.getAbsoluteY());
+            xyz = new Vec(x.getWorldLoc());
         else
             xyz = new Vec(x, y);
-        var pos = this.__getMousePos();
-        return xyz.sub(pos.x, pos.y);
+        var pos = this.getMouseLoc();
+        return xyz.sub(pos);
     }
     getMousePressed(){
         return this.mouse.pressed;

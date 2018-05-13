@@ -32,17 +32,26 @@ class AbstractCamera{
             loc: 0.8
         }
         
+        //location and rotation change
+        var This = this;
+        this.loc.onChange(function(){
+            This.graphics.__updateHtmlShapesLoc();
+        });
+        this.rot.onChange(function(){
+            This.graphics.__updateHtmlShapesLoc();
+        });
+        
         var This = this;
         graphics.onUpdate(function(time){
             //move to target pos if defined
             if(This.target.loc){
-                var delta = This.target.loc.getVec(This.loc);
+                var delta = This.loc.getVecTo(This.target.loc);
                 This.velo.add(delta.mul(time * This.targetForce.loc));
             }
             
             //move to target pos if defined
             if(This.target.rot){
-                var delta = This.target.rot.getVec(This.rot);
+                var delta = This.rot.getVecTo(This.target.rot);
                 This.rotVelo.add(delta.mul(time * This.targetForce.rot));
             }
             
@@ -54,9 +63,9 @@ class AbstractCamera{
             
             
             //apply velocity
-            This.velo.mul(1-Math.pow(This.targetFriction.loc, time*60));   //drag
-            This.rotVelo.mul(1-Math.pow(This.targetFriction.rot, time*60));   
-            This.scaleVelo *= 1-Math.pow(This.targetFriction.scale, time*60);   
+            This.velo.mul(1-This.targetFriction.loc);   //drag/friction
+            This.rotVelo.mul(1-This.targetFriction.rot);   
+            This.scaleVelo *= 1-This.targetFriction.scale;   
             
             This.loc.add(new Vec(This.velo).mul(time * This.speed.loc));
             This.rot.add(new Vec(This.rotVelo).mul(time * This.speed.rot));
@@ -128,6 +137,7 @@ class AbstractCamera{
     //scaling
     setScale(scale){
         this.scale = scale;
+        this.graphics.__updateHtmlShapesLoc();
         return this;
     }
     getScale(){
@@ -167,6 +177,8 @@ class AbstractCamera{
         return this;
     }
     setTargetScale(scale){
+        if(scale instanceof AbstractShape)
+            scale = 1/scale.getScale();
         this.target.scale = scale;
         return this;
     }
@@ -176,4 +188,8 @@ class AbstractCamera{
         this.setTargetScale(scale);
         return this;
     }
+    
+    //mouse interaction
+    translateScreenToWorldLoc(x, y, z){}
+    translateWorldToScreenLoc(x, y, z){}
 }

@@ -16,107 +16,113 @@
         this.debug = true; //shows the fps coounter
         
         //the visualisation class that you create
+        var initWidth = 100;
+        class NodeShape extends VIZ2D.NodeShape{
+            constructor(gfx, node, scale){
+                super(gfx, node, function(){
+                    this.scale = scale||1;
+                    this.angle = 0.5;
+                });
+                this.setScale(this.scale);  //update the actual shape scale
+                
+				
+                //create primary circle shape
+                this.circle = new VIZ2D.Circle(gfx, 30, 0xff0000);
+                this.addShape(this.circle);
+				this.label = new VIZ2D.Circle(gfx, 10, 0x70ff00ff);
+                this.label.setLoc(20, 20,0);
+				
+				this.onHover(
+					function(enter){
+						if(enter)
+						    this.addShape(this.label);
+						else
+						    this.removeShape(this.label);
+					}
+				);
+				
+                //create return button cicle shape
+                this.ret = new VIZ2D.Circle(gfx, 10, 0x00ff00);
+                this.ret.setLoc(-20, 0);
+                this.addShape(this.ret);
+                var This = this;
+                this.ret.onClick(function(){ //select parent when this is clicked
+                    This.createParent();
+                    var p = This.getParent();
+                    if(p) p.focus();
+                    return true;
+                });
+                
+            //    this.onUpdate(function(){
+            //        this.getLoc().add((Math.random()-0.5)*this.scale, (Math.random()-0.5)*this.scale);
+            //    });
+                this.onClick(function(){
+                    this.focus();
+                });
+                
+                //update expanded (if there are no children to start with)
+                this.__stateChanged("expanded");
+            }
+            
+            __stateChanged(field, val, oldState){
+                if(field=="focused" && val==true){
+                    this.getGraphics().getCamera().setTarget(this, this, this);
+                    
+                    this.createDescendants(2);      //creates 2 layers of descendants
+                    this.destroyDescendants(2);     //destroys any descendants above those 2 layers
+                    
+                    this.createAncestors(2);        //creates 2 layers of ancestors
+                    this.destroyAncestors(2, true); //destroys any ancestors below those 2 layers
+                }
+                
+                if(field=="expanded")
+                    this.circle.setColor(this.state.expanded?0x0000ff:0xff0000)
+            }
+            __setupConnection(parent, children, first){
+                if(parent && first){
+					var offset = 0;
+					for (var i=0;i<this.getIndex(); i++){
+						offset = offset + parent.getChildren()[i].scale;
+					}
+					this.angle = 0
+					this.angle = parent.angle - (0.3) + 0.6*((offset + 0.5*this.scale)/parent.scale)
+					this.setAngle((-this.angle*2+1)*Math.PI)
+					var w = initWidth * parent.scale
+                    this.setLoc(new VIZ2D.Vec(parent.getLoc()).add(w*Math.sin(this.angle*2*Math.PI), w*Math.cos(this.angle*2*Math.PI), 0));
+                    
+                    //could have been: (though your sin and cos are swapped...)
+                    // this.setLoc(new VIZ.Vec(w, 0).setAngle(this.angle*2*Math.PI).add(parent.getLoc()));
+                    //so:
+                    // this.setLoc(new VIZ.Vec(w, 0).setAngle((-this.angle*2+0.5)*Math.PI).add(parent.getLoc()));
+                }
+            }
+            
+            __createNodeShape(node){
+                //Calculate the scale we want the node shape to have:
+                var scale = 1;  //just as a placeholder
+                
+                //First retrieve the scale of the parent
+                var ID = this.graphics.getUID();
+                var parent = node.getParent();  //this will be a node
+                if(parent){                     //check if it isn't the root
+                    var parentScale = 1;        //default scale
+                    
+                    var parentShape = parent.getShape(ID); //get the nodeShape attached to parent
+                    if(parentShape)             //if such a shape exists
+                        parentScale = parentShape.scale; //copy its scale
+                        
+                    scale = parentScale * node.getSubtreeNodeCount()/node.getParent().getSubtreeNodeCount();
+                }
+                
+                return new (this.__getClass())(this.getGraphics(), node, scale);
+            }
+        }
         class Visualisation extends Visualisation2d{
             constructor(container, tree, options){
                 super(container, tree, options);
             }
             __getNodeShapeClass(VIZ){
-                var camera = this.getCamera();
-                var initWidth = 100;
-                return class NodeShape extends VIZ.NodeShape{
-                    constructor(gfx, node, scale){
-                        super(gfx, node, {scale:scale||1,angle:0.5});
-                        
-						
-                        //create primary circle shape
-                        this.circle = new VIZ.Circle(gfx, 30*this.scale, 0xff0000);
-                        this.addShape(this.circle);
-						this.label = new VIZ.Circle(gfx, 10*this.scale, 0x30ff00ff);
-                        this.label.setLoc(20*this.scale, 20*this.scale,0);
-						
-						this.onHover(
-							function(enter){
-								if(enter)
-								    this.addShape(this.label);
-								else
-								    this.removeShape(this.label);
-							}
-						);
-						
-                        //create return button cicle shape
-                        this.ret = new VIZ.Circle(gfx, 10*this.scale, 0x00ff00);
-                        this.ret.setLoc(-20*this.scale, 0);
-                        this.addShape(this.ret);
-                        var This = this;
-                        this.ret.onClick(function(){ //select parent when this is clicked
-                            This.createParent();
-                            var p = This.getParent();
-                            if(p) p.focus();
-                            return true;
-                        });
-                        
-                    //    this.onUpdate(function(){
-                    //        this.getLoc().add((Math.random()-0.5)*this.scale, (Math.random()-0.5)*this.scale);
-                    //    });
-                        this.onClick(function(){
-                            this.focus();
-                        });
-                    }
-                    
-                    __stateChanged(field, val, oldState){
-                        if(field=="focused" && val==true){
-                            camera.setTarget(this, this, 1/this.scale);
-                            
-                            this.createDescendants(2);      //creates 2 layers of descendants
-                            this.destroyDescendants(2);     //destroys any descendants above those 2 layers
-                            
-                            this.createAncestors(2);        //creates 2 layers of ancestors
-                            this.destroyAncestors(2, true); //destroys any ancestors below those 2 layers
-                        }
-                        
-                        if(field=="expanded")
-                        this.circle.setColor(this.state.expanded?0x0000ff:0xff0000)
-                    }
-                    __parentConnectionChange(first){
-                        var parent = this.getParent();
-                        if(parent && first){
-							var offset = 0;
-							for (var i=0;i<this.getIndex(); i++){
-								offset = offset + parent.getChildren()[i].scale;
-							}
-							this.angle = 0
-							this.angle = parent.angle - (0.3) + 0.6*((offset + 0.5*this.scale)/parent.scale)
-							this.setAngle((-this.angle*2+1)*Math.PI)
-							var w = initWidth * parent.scale
-                            this.setLoc(new VIZ.Vec(parent.getLoc()).add(w*Math.sin(this.angle*2*Math.PI), w*Math.cos(this.angle*2*Math.PI), 0));
-                            
-                            //could have been: (though your sin and cos are swapped...)
-                            // this.setLoc(new VIZ.Vec(w, 0).setAngle(this.angle*2*Math.PI).add(parent.getLoc()));
-                            //so:
-                            // this.setLoc(new VIZ.Vec(w, 0).setAngle((-this.angle*2+0.5)*Math.PI).add(parent.getLoc()));
-                        }
-                    }
-                    
-                    __createNodeShape(node){
-                        //Calculate the scale we want the node shape to have:
-                        var scale = 1;  //just as a placeholder
-                        
-                        //First retrieve the scale of the parent
-                        var ID = this.graphics.getUID();
-                        var parent = node.getParent();  //this will be a node
-                        if(parent){                     //check if it isn't the root
-                            var parentScale = 1;        //default scale
-                            
-                            var parentShape = parent.getShape(ID); //get the nodeShape attached to parent
-                            if(parentShape)             //if such a shape exists
-                                parentScale = parentShape.scale; //copy its scale
-                                
-                            scale = parentScale * node.getSubtreeNodeCount()/node.getParent().getSubtreeNodeCount();
-                        }
-                        
-                        return new (this.__getClass())(this.getGraphics(), node, scale);
-                    }
-                }
+                return NodeShape;
             }
         }
         

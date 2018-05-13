@@ -4,16 +4,16 @@
     Starting Date: 28/04/2018
 */
 class Shape2d extends AbstractShape{
-    constructor(graphics, color, extraFields){
-        super(graphics, extraFields);
-        this.color = color;
+    constructor(graphics, color, preInit){
+        super(graphics, preInit);
         this.gfx = this.__createGfx();
+        this.setColor(color);
         this.gfx.zIndex = 0;            //orders the rendering of th shapes
         
         //add listeners to change pos/rot
         var This = this;
         var oldZ = 0;
-        this.loc.onChange(function(){
+        this.getLoc().onChange(function(){
             This.gfx.x = this.getX();
             This.gfx.y = this.getY();
             
@@ -23,7 +23,7 @@ class Shape2d extends AbstractShape{
                 oldZ = newZ;
             }
         });
-        this.rot.onChange(function(){
+        this.getRot().onChange(function(){
             This.gfx.rotation = this.getZ();
         });
         
@@ -84,12 +84,30 @@ class Shape2d extends AbstractShape{
         this.gfx.parentGroup = this.graphics.__getGroup();
     }
     
+    //change scale
+    setScale(scale){
+        this.gfx.scale.set(scale);
+        return super.setScale(scale);
+    }
+    
     //absolute coordinates, relative to the screen
     getAbsoluteX(){
         return this.gfx.worldTransform.tx;
     }
     getAbsoluteY(){
         return this.gfx.worldTransform.ty;
+    }
+    
+    //world location (when in other shape)
+    getWorldLoc(){
+        if(this.parentShape){
+            var p = this.parentShape;
+            var vec = new Vec(this.getLoc());
+            vec.mul(p.getScale()).addAngle(p.getAngle());
+            vec.add(p.getWorldLoc());
+            return vec;
+        }
+        return this.getLoc();
     }
     
     //method alias
@@ -103,8 +121,16 @@ class Shape2d extends AbstractShape{
     //update color
     setColor(color){
         super.setColor(color);
+        this.setAlpha(1-(Math.floor(color/0xffffff)-1)/255);
         this.__redraw();
         return this;
+    }
+    setAlpha(alpha){
+        this.gfx.alpha = alpha;
+        return this;
+    }
+    getAlpha(){
+        return this.gfx.alpha;
     }
     
     //enable/disabling interactions
@@ -122,11 +148,30 @@ class Shape2d extends AbstractShape{
         super.add();
         this.graphics.__getStage().addChild(this.gfx);
         this.gfx.parentGroup = this.graphics.group;
+        return this;
     }
-    remove(){
+    __delete(){
         if(this.graphics)
             this.graphics.__getStage().removeChild(this.gfx);
-        return super.remove();
+        super.__delete();
+    }
+    
+    
+    //targetting ignore z
+    __onUpdate(deltaTime){
+        this.getVelo().setZ(0);
+        if(this.target.loc){
+            var delta = this.getVecTo((this.target.loc) instanceof Function?
+                                        this.target.loc.call(this):
+                                        this.target.loc).setZ(0);
+            var velo = this.getVelo();
+            if(delta.getLength()<1*this.getScale() && velo.getLength()<150*this.getScale() && this.target.callback.loc){
+                this.target.callback.loc.call(this);
+                this.target.callback.loc = null;
+            }
+        }
+        
+        return super.__onUpdate(deltaTime);
     }
     
     //get size information to be used by the compount shape texture to determine the texture size

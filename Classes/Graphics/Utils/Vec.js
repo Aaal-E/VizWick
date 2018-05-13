@@ -44,6 +44,12 @@ class Vec extends XYZ{
         super(x, y, z);
     }
     
+    //check if it is non zero
+    isNonZero(modifier){
+        modifier = modifier||1
+        return Math.abs(this.x)>1e-3*modifier || Math.abs(this.y)>1e-3*modifier || Math.abs(this.z)>1e-3*modifier;
+    }
+    
     //angles
     setAngle(angle){
         var zAxisDist = Math.sqrt(this.x*this.x + this.y*this.y);
@@ -103,5 +109,8 @@ class Vec extends XYZ{
     }
     addLength(length){
         return this.setLength(this.getLength()+length);
+    }
+    subLength(length){
+        return this.setLength(Math.max(0, this.getLength()-length));
     }
 }
