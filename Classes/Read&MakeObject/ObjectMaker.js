@@ -1,11 +1,12 @@
-var input = '(A,B,(C,D)E)F;' ; //test input
+var input = '(A,B ,(C,D)E)F;' ; //test input
 
 var endProduct = makeTreeObj(input);
 
 function makeTreeObj(input){
     var stack = []; //holds the currently open nodes till processed
-    var nodeObj = {name:null, parent:null, children:[]};
-    var rootOfRoot = Object.create(nodeObj);
+    //var nodeObj = {name:null, parent:null, children:[]};
+    var rootOfRoot = {name:null, parent:null, children:[]};
+    var regex = ",(); ";
     rootOfRoot.name = 'rootOfRoot';
     node = rootOfRoot;
     for (var i = input.length-1; i >= 0; i--) {
@@ -35,11 +36,11 @@ function makeTreeObj(input){
 
             default:
             // assume all other characters are node names
-                subNode = Object.create(nodeObj);
+                subNode = {name:null, parent:null, children:[]};
                 subNode.name = n;
                 var j = i-1;
-                while(input.charAt(j) != ( ',' || ' ' || ';' || ')' || '(' )){ //can be simplified later using regexp
-                    subNode.name += j;
+                while(regex.indexOf(input[j]) == -1 && j>= 0){ //can be simplified later using regexp
+                    subNode.name = input[j] + subNode.name;
                     j--;
                 }
                 i = j+1; //offset by one, as i is decremented at end of the loop
@@ -50,3 +51,5 @@ function makeTreeObj(input){
     }
     return rootOfRoot;
 }
+
+console.log(endProduct);
