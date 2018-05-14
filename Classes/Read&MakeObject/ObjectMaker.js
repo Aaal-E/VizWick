@@ -1,3 +1,6 @@
+
+/* Mehrdad Farsadyar  (1242624)*/
+
 var input = '(A,B ,(C,D)E)F;' ; //test input
 
 var endProduct = makeTreeObj(input);
