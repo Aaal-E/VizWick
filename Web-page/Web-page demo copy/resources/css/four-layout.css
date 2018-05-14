@@ -1,0 +1,86 @@
+.main-body {
+  float: right;
+  width: 70%;
+  padding: 5px;
+  overflow:auto;
+  height:calc(100% - 160px);
+}
+.header{
+  border-radius: 20px;
+  width: 30%;
+  margin-top: 100px;
+  overflow:auto;
+  height:5%;
+  overflow: hidden;
+  text-align: center;
+}
+#top_left
+ {
+   border-radius: 20px;
+   float: left;
+   height:50%;
+   width:50%;
+   background-color:#DCDCDC;
+   margin:auto;
+ }
+ #top_right
+ {
+   border-radius: 20px;
+   float: right;
+   height:50%;
+   width:50%;
+   margin:auto;
+   overflow: auto;
+ }
+ #down_left
+ {
+   border-radius: 20px;
+   float: left;
+   height:50%;
+   width:50%;
+   background-color:#C0C0C0;
+   margin:auto;
+ }
+ #down_right
+ {
+   border-radius: 20px;
+   float: right;
+   height:50%;
+   width:50%;
+   background-color:#A9A9A9;
+   margin:auto;
+ }
+ #p1{
+   display: run-in;
+ }
+
+  #p2, #p3, #p4 ,#p5, #p6{
+    display:none;
+}
+
+
+/*resize system*/
+.resizeDiv #top_right,
+.resizeDiv #top_left,
+.resizeDiv #down_right,
+.resizeDiv #down_left{
+    width: 100%;
+    float: none;
+}
+.resizeHandleInnerDisplay{
+    background: none!important;
+}
+.pixi{
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.visHeader{
+    position: absolute;
+    padding-left: 20px;
+}
+.visContent{
+    height: 100%;
+    width: 100%;
+}

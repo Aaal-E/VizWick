@@ -33,7 +33,7 @@
         <script src="../../Classes/Graphics/2d/Shapes/CompoundShape.js"></script>
         <script src="../../Classes/Graphics/2d/Shapes/ShapeGroup.js"></script>
         <script src="../../Classes/Graphics/2d/Shapes/NodeShape.js"></script>
-        <script src="../../Classes/Graphics/2d/IO2d.js"></script>
+        <script src="../../Classes/Graphics/2d/Shapes/HtmlShape.js"></script>
         <script src="../../Classes/Graphics/2d/Visualisation.js"></script>
     </head>
     <body>
@@ -103,47 +103,55 @@
                 var initWidth = 400;
                 return class NodeShape extends VIZ.NodeShape{
                     constructor(gfx, node, size){
-                        super(gfx, node, {size:size||30});
+                        super(gfx, node, function(){
+                            this.size = size||30;
+                        });
                         
                         //create primary circle shape
                         this.circle = new VIZ.Circle(gfx, this.size, HSVtoInt(this.getDepth()/12, 1, 1));
                         this.addShape(this.circle);
                         // this.speedFactor = 6;
                         
-                        this.onUpdate(function(time){
-                            var force = new VIZ.Vec();
-                            
-                            //compute force from parent
-                            var parent = this.getParent();
-                            if(parent){
-                                var delta = parent.getDelta(this);
-                                var radius = parent.__getRadius()+this.__getRadius();
-                                var strength = delta.getLength()-radius;
-                                force.add(delta.setLength(strength));
-                            }
-                            
-                            
-                            //compute force from collisions
-                            var closeCircles = this.search(this.size);
-                            for(var i=0; i<closeCircles.length; i++){
-                                var cc = closeCircles[i];
-                                
-                                var delta = cc.getDelta(this);
-                                var radius = cc.__getRadius()+this.__getRadius();
-                                var strength = delta.getLength()-radius;
-                                if(strength<0){
-                                    force.add(delta.setLength(strength*20).div(Math.pow(1.5, cc.getDepth())));
-                                }
-                            }
-                            
-                            if(this.__getParentNode()!=null){ //don't do for root
-                                this.velo.add(force);
-                                this.velo.mul(0.80);
-                            }
-                        });
+                        this.__registerUpdateListener();
+                        
+                        //update aabb
+                        this.storeInSpatialTree = true;
+                        this.__updateAABB();
                     }
-                    __parentConnectionChange(first){
-                        if(first){
+                    __onUpdate(time){
+                        var force = new VIZ.Vec();
+                        
+                        //compute force from parent
+                        var parent = this.getParent();
+                        if(parent){
+                            var delta = parent.getVecTo(this);
+                            var radius = parent.__getRadius()+this.__getRadius();
+                            var strength = radius-delta.getLength();
+                            force.add(delta.setLength(strength));
+                        }
+                        
+                        
+                        //compute force from collisions
+                        var closeCircles = this.search(this.size);
+                        for(var i=0; i<closeCircles.length; i++){
+                            var cc = closeCircles[i];
+                            
+                            var delta = cc.getVecTo(this);
+                            var radius = cc.__getRadius()+this.__getRadius();
+                            var strength = Math.sqrt(radius-delta.getLength());
+                            if(strength>0){
+                                force.add(delta.setLength(strength*20).div(Math.pow(1.5, cc.getDepth())));
+                            }
+                        }
+                        
+                        if(this.__getParentNode()!=null){ //don't do for root
+                            this.getVelo().add(force.mul(time*30)).mul(0.8);
+                        }
+                        
+                        return super.__onUpdate(time);
+                    }
+                    __setupConnection(parent, child, first){
+                        if(first && parent){
                             this.setLoc((Math.random()-0.5)*gfx.getWidth(), (Math.random()-0.5)*gfx.getHeight());
                         }
                     }
@@ -190,6 +198,6 @@
         var tree = new Tree(createTree("Stuff", 10));
         var options = new Options();
         var visualisation = new Visualisation($(".q1"), tree, options);
-        visualisation.getShapes()[0].createDescendants(7);
+        visualisation.getShapes()[0].createDescendants(8);
     </script>
 </html>

@@ -1,8 +1,43 @@
 <htmL>
     <head>
-        <script src="../../Classes/Tree/.Compiled.js"></script>
-        <script src="../../Classes/Graphics/2d/.Compiled.js"></script>
+        <!--<script src="../../Classes/Tree/.Compiled.js"></script>-->
+        <!--<script src="../../Classes/Graphics/2d/.Compiled.js"></script>-->
+        <!--<script src="../../Classes/GUI/resize.js"></script>-->
+        
+        
+        <!--libraries-->
+        <script src="../../Libraries/jQuery.js"></script>
+        <script src="../../Libraries/pixi.min.js"></script>
+        <script src="../../Libraries/pixiLayers.js"></script>
+        <script src="../../Libraries/stats.js"></script>
+        <script src="../../Libraries/RBush-3d.js"></script>
+        
+        <!--resize system-->
         <script src="../../Classes/GUI/resize.js"></script>
+        
+        <!--Alex's tree system-->
+        <script src="../../Classes/Tree/Tree.js"></script>
+        <script src="../../Classes/Tree/TreeNode.js"></script>
+        
+        <!--graphics interface-->
+        <script src="../../Classes/Graphics/Utils/XYZ.js"></script>
+        <script src="../../Classes/Graphics/Utils/Vec.js"></script>
+        <script src="../../Classes/Graphics/Options.js"></script>
+        
+        <script src="../../Classes/Graphics/AbstractCamera.js"></script>
+        <script src="../../Classes/Graphics/AbstractGraphics.js"></script>
+        <script src="../../Classes/Graphics/AbstractShape.js"></script>
+        
+        <!--2d graphics api-->
+        <script src="../../Classes/Graphics/2d/Camera.js"></script>
+        <script src="../../Classes/Graphics/2d/Graphics.js"></script>
+        <script src="../../Classes/Graphics/2d/Shape.js"></script>
+        <script src="../../Classes/Graphics/2d/Shapes/Circle.js"></script>
+        <script src="../../Classes/Graphics/2d/Shapes/CompoundShape.js"></script>
+        <script src="../../Classes/Graphics/2d/Shapes/ShapeGroup.js"></script>
+        <script src="../../Classes/Graphics/2d/Shapes/NodeShape.js"></script>
+        <script src="../../Classes/Graphics/2d/Shapes/HtmlShape.js"></script>
+        <script src="../../Classes/Graphics/2d/Visualisation.js"></script>
     </head>
     <body>
         <div class=container>
@@ -71,16 +106,37 @@
                 var gfx = this;
                 return class NodeShape extends VIZ.NodeShape{
                     constructor(gfx, node, size){
-                        super(gfx, node, {size:size||30});
+                        super(gfx, node, function(){
+                            this.size = size||30;
+                        });
                         
                         //create primary circle shape
-                        this.circle = new VIZ.Circle(gfx, this.size, HSVtoInt(this.getDepth()/12, 1, 1));
+                        this.color = HSVtoInt(this.getDepth()/12, 1, 1);
+                        this.circle = new VIZ.Circle(gfx, this.size, this.color);
                         this.addShape(this.circle);
-                        // this.speedFactor = 6;
+                        this.speedFactor = 2;
                         
-                        this.onUpdate(function(time){
+                        this.__registerUpdateListener();
+                        
+                        //update aabb
+                        this.storeInSpatialTree = true;
+                        this.__updateAABB();
+                        
+                        //dragging
+                        this.onMouseEvent(function(type){
+                            if(type=="down"){
+                                gfx.dragShape(this);
+                            }
+                        });
+                    }
+                    __onDrag(loc){
+                        this.getVelo().setLength(0);
+                        this.setLoc(loc);
+                    }
+                    __onUpdate(time){
+                        if(!this.state.dragged){
                             var force = new VIZ.Vec();
-                            
+                        
                             //compute force from parent
                             var parent = this.getParent();
                             if(parent){
@@ -88,37 +144,52 @@
                                 var angle = Math.PI*2*(this.getIndex()+1)/connectedNodeCount+(parent.getAngle());
                                 var radius = parent.__getRadius()+this.__getRadius()*2;
                                 var target = new VIZ.Vec(radius, 0).setAngle(angle).add(parent.getLoc());
-                                var delta = this.getDelta(target);
-                                force.sub(delta.mul(1));
+                                var delta = this.getVecTo(target);
+                                force.add(delta.mul(0.9));
                             }
                             
                             
-                            //compute force from collisions
+                            // compute force from collisions
                             var closeCircles = this.search(this.size);
                             for(var i=0; i<closeCircles.length; i++){
                                 var cc = closeCircles[i];
-                                var delta = cc.getDelta(this);
+                                var delta = this.getVecTo(cc);
                                 var radius = cc.__getRadius()+this.__getRadius();
-                                var strength = delta.getLength()-radius;
-                                if(strength<0){
-                                    force.add(delta.setLength(strength*20).div(Math.pow(1.5, cc.getDepth())));
+                                var strength = radius-delta.getLength();
+                                if(strength>0){
+                                    force.sub(delta.setLength(strength*20).div(Math.pow(1.5, cc.getDepth?cc.getDepth():1)));
                                 }
                             }
                             
                             if(this.__getParentNode()!=null){ //don't do for root
-                                this.velo.add(force);
-                                this.velo.mul(0.80);
+                                this.getVelo().mul(0.7).add(force);
                                 
                                 //set the correct angle
                                 var p = this.getParent();
-                                this.setAngle(p.getDelta(this).getAngle());
-                                // console.log(p.getDelta(this), p.getDelta(this).getAngle());
+                                this.setAngle(this.getVecTo(p).getAngle());
                             }
-                        });
+                        }
+                        
+                        // if(this.__getParentNode()!=null){ //don't do for root
+                        //     var p = this.getParent();
+                        //     this.setAngle(this.getVecTo(p).getAngle());
+                        // }
+                        
+                        return super.__onUpdate(time);
                     }
-                    __parentConnectionChange(first){
+                    
+                    
+                    __stateChanged(field, val, oldState){
+                        if(field=="dragged"){
+                            this.circle.setColor(this.state.dragged?0xff0000:this.color);
+                        }
+                    }
+                    
+                    __setupConnection(first){
                         if(first){
-                            this.setLoc((Math.random()-0.5)*gfx.getWidth(), (Math.random()-0.5)*gfx.getHeight());
+                            // this.setLoc((Math.random()-0.5)*gfx.getWidth(), (Math.random()-0.5)*gfx.getHeight());
+                            
+                            this.setLoc(new VIZ.Vec(0, this.getDepth()*500).setAngle(Math.random()*Math.PI*2));
                         }
                     }
                     
@@ -151,7 +222,7 @@
         var createTree = function(name, height){
             var children = [];
             if(height>0){
-                var childCount = 3-Math.floor(Math.sqrt(Math.random()*9));
+                var childCount = 3-Math.floor(Math.pow(Math.random()*7, 1/1.8));
                 for(var i=0; i<childCount; i++){
                     children.push(createTree(name+"-"+i, height-1));
                 }
@@ -161,9 +232,18 @@
                 children: children
             };
         }
-        var tree = new Tree(createTree("Stuff", 10));
+        var tree = new Tree(createTree("Stuff", 11));
         var options = new Options();
         var visualisation = new Visualisation($(".q1"), tree, options);
         visualisation.getShapes()[0].createDescendants(10);
+        
+        
+        // var m = new VIZ2D.Circle(visualisation, 30, 0x00ff00);
+        // m.add();
+        // m.storeInSpatialTree = true;
+        // visualisation.onUpdate(function(){
+        //      m.setLoc(this.getMouseLoc().setZ(m.getZ()));
+        //      m.setRadius(30/this.getCamera().getScale());
+        // });
     </script>
 </html>

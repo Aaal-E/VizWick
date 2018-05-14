@@ -12,10 +12,25 @@ class Visualisation2d extends Graphics2d{
         
         this.focusedShape = null;   //the shape in the center
         this.selectedShape = null;  //the highlighted shape
+        this.draggingShape = null;  //the shape that is being dragged around
         
         this.__setupRoot();
         this.__setupOptions(options);
+        
+        this.mouseUp = (function(){
+            if(this.draggingShape)
+                this.draggingShape.__changeState("dragged", false);
+            this.draggingShape = null;
+        }).bind(this);
+        $(window).on("mouseup", this.mouseUp);
     }
+    
+    //disposal
+    destroy(){
+        $(window).off("mouseup", this.mouseUp);
+        super.destroy();
+    }
+    
     //setup
     __setupOptions(options){}
     __setupRoot(){
@@ -41,12 +56,29 @@ class Visualisation2d extends Graphics2d{
             shape.__changeState("focused", true);
         return this;
     }
+    dragShape(shape){
+        if(this.draggingShape)
+            this.draggingShape.__changeState("dragged", false);
+        this.draggingShape = shape;
+        if(shape)
+            shape.__changeState("dragged", true);
+        return this;
+    }
+    
+    //shape dragging
+    __onUpdate(deltaTime){
+        if(this.draggingShape)
+            this.draggingShape.__onDrag(this.getMouseLoc());
+        super.__onUpdate(deltaTime);
+    }
     
     //classes
     __getNodeShapeClass(VIZ, node){}
 }
-window.Visualisation2d = window.VIZ2D = Visualisation2d;
-Visualisation2d.classes = {
+window.Visualisation2d = Visualisation2d;
+Visualisation2d.classes = window.VIZ2D = {
+    Visualisation2d: Visualisation2d,
+    
     //general classes
     XYZ: XYZ,
     Vec: Vec,
@@ -56,6 +88,7 @@ Visualisation2d.classes = {
     CompoundShape: CompoundShape2d,
     ShapeGroup: ShapeGroup2d,
     NodeShape: NodeShape2d,
+    HtmlShape: HtmlShape2d,
     
     Circle: Circle2d
 };

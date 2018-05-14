@@ -153,12 +153,12 @@
     function triggerResize(content){
         var newSize = {width:content.width(), height:content.height()};
         var event = new Event("resize");
-        content.add(content.find(".resizeContainer")).trigger("resize", {newSize:newSize, oldSize:content.data("size")});
+        content.add(content.find(".resizeContainer, canvas")).trigger("resize", {newSize:newSize, oldSize:content.data("size")});
         content.data("size", newSize);
     }
     function triggerFinishResize(content){
         var newSize = {width:content.width(), height:content.height()};
-        content.add(content.find(".resizeContainer")).trigger("finishResize", newSize);
+        content.add(content.find(".resizeContainer, canvas")).trigger("finishResize", newSize);
     }
     
     //create interface function

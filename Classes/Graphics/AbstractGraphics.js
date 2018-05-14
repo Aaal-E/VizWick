@@ -31,20 +31,15 @@ class AbstractGraphics{
             active: [],     //shapes that receive update events
             root: [],       //shapes that don't have visible parents
             leave: [],      //shapes that don't have any children
-            collapsed: []   //shapes that don't show all their children
+            collapsed: [],  //shapes that don't show all their children
+            html:[]         //html shapes that aren't part of pixi
         };
         this.maxNodeCount = 12;  //the max number of nodes that can be visible at any point
         this.spatialTree = new rbush3d(16, ['.aabb.minX', '.aabb.minY', '.aabb.minZ', '.aabb.maxX', '.aabb.maxY', '.aabb.maxZ']);;
         
-        //update active shapes
-        this.onUpdate(function(delta){
-            for(var i=0; i<this.shapes.active.length; i++){
-                this.shapes.active[i].__triggerUpdate(delta);
-            }
-        });
-        
         //create an UID to be used when searching for shapes in the tree
         this.UID = Math.floor(Math.random()*Math.pow(10, 10));
+        
         
         if(window.debug) this.__setupFpsCounter();
     }
@@ -59,19 +54,41 @@ class AbstractGraphics{
     }
     
     __setupFpsCounter(){
-        var stats = new Stats();
-        stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
+        var stats = this.stats = new Stats();
+        this.stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
         this.getContainer().append(stats.domElement);
         $(stats.domElement).css("position", "absolute");
-        this.onUpdate(function(delta){
-            stats.end();
-            stats.begin();
-        });
+    }
+    
+    //tree search
+    search(loc, radius, filter){
+        var tree = this.getSpatialTree();
+        if(tree){
+            //search the tree
+            var results = tree.search({
+                minX: loc.getX() - radius,
+                minY: loc.getY() - radius,
+                minZ: loc.getZ() - radius,
+                maxX: loc.getX() + radius,
+                maxY: loc.getY() + radius,
+                maxZ: loc.getZ() + radius,
+            });
+            
+            if(filter) //apply the filter and make sure to not include 'this'
+                return results.filter(filter);
+                
+            return results;
+        }
+        return [];
     }
     
     //start/stop rendering
     pause(fully){}
     start(){}
+    destroy(){ //dispose the graphics completely
+        for(var i=0; i<this.shapes.html.length; i++)
+            this.shapes.html[i].remove();
+    } 
     
     //just retrieve some container info
     getWidth(){
@@ -82,6 +99,9 @@ class AbstractGraphics{
     }
     getContainer(){
         return this.container;
+    }
+    getCanvas(){
+        return this.getContainer().find("canvas");
     }
     
     //a method to add an event that fires whenever the screen is rendered
@@ -94,9 +114,17 @@ class AbstractGraphics{
         if(index!=-1) this.updateListeners.splice(index, 1);
         return this;
     }
-    __triggerUpdate(){
+    __onUpdate(delta){
+        if(this.stats) this.stats.begin();
+        
+        //general listeners
         for(var i=0; i<this.updateListeners.length; i++)
             this.updateListeners[i].apply(this, arguments);
+        //active shape listeners
+        for(var i=0; i<this.shapes.active.length; i++)
+            this.shapes.active[i].__triggerUpdate(delta);
+            
+        if(this.stats) this.stats.end();
         return this;
     }
     
@@ -166,7 +194,9 @@ class AbstractGraphics{
     }
     
     //interactions
-    getMouseVec(){}
+    getMouseScreenLoc(){}
+    getMouseVec(x, y, z){}
+    getMouseLoc(){}
     getMousePressed(){}
     
     //dynamic tree growing/shrinking methods
@@ -287,5 +317,15 @@ class AbstractGraphics{
             if(shrinkNode) shrinkNode.remove();
         }
         return ret;
+    }
+    
+    //manage html shapes, update their locations
+    getShapesHtml(){
+        return this.shapes.html;
+    }
+    __updateHtmlShapesLoc(){
+        for(var i=0; i<this.shapes.html.length; i++){
+            this.shapes.html[i].__updateLoc();
+        }
     }
 }

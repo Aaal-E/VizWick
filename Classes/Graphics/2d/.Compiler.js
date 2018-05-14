@@ -22,6 +22,7 @@ Compiler.compile([
     "Shapes/CompoundShape.js",
     "Shapes/ShapeGroup.js",
     "Shapes/NodeShape.js",
+    "Shapes/HtmlShape.js",
     
     "Visualisation.js",
 ], [".Compiled.js", "../../../Tests/Visualisations/Test environment/visualisation.js"]);

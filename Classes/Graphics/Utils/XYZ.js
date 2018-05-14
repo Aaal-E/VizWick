@@ -55,6 +55,10 @@ class XYZ{
         if(index!=-1) this.l.splice(index, 1);
         return this;
     }
+    __fireEvent(old){
+        for(var i=0; i<this.l.length; i++) //notify all listeners
+            this.l[i].call(this, this, old||this);
+    }
     
     //set
     set(x, y, z){
@@ -65,9 +69,7 @@ class XYZ{
         this.y = xyz.y;
         this.z = xyz.z;
         
-        for(var i=0; i<this.l.length; i++) //notify all listeners
-            this.l[i].call(this, this, old);
-            
+        this.__fireEvent(old);
         return this;
     }
     setX(x){
@@ -130,7 +132,7 @@ class XYZ{
     }
     
     //create
-    getVec(x, y, z){
-        return new Vec(this).sub(x, y, z);
+    getVecTo(x, y, z){
+        return new Vec(x, y, z).sub(this);
     }
 }

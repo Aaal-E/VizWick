@@ -4,9 +4,17 @@
     Starting Date: 30/04/2018
 */
 class ShapeGroup2d extends Shape2d{
-    constructor(graphics, extraFields){
-        super(graphics, null, extraFields);
+    constructor(graphics, preInit){
+        super(graphics, null, preInit);
         this.shapes = [];
+        this.radius = 0;
+        
+        //forward location change to children (world location)
+        var This = this;
+        this.getLoc().onChange(function(){
+            for(var i=0; i<This.shapes.length; i++)
+                This.shapes[i].getLoc().__fireEvent();
+        });
     }
     __createGfx(){
         return new PIXI.Container();
@@ -21,7 +29,7 @@ class ShapeGroup2d extends Shape2d{
             var shape = arguments[i];
             this.gfx.addChild(shape.gfx);
             this.shapes.push(shape);
-            shape.setParentShape(this);
+            shape.__setParentShape(this);
         }
         this.__updateRadius();
         return this;
@@ -33,7 +41,7 @@ class ShapeGroup2d extends Shape2d{
             var index = this.shapes.indexOf(shape);
             if(index!=-1){
                 this.shapes.splice(index, 1);
-                shape.setParentShape(null);
+                shape.__setParentShape(null);
             }
         }
         this.__updateRadius();
@@ -47,6 +55,6 @@ class ShapeGroup2d extends Shape2d{
         }
     }
     __getRadius(){
-        return this.radius;
+        return this.radius*this.getScale();
     }
 }

@@ -24,9 +24,12 @@ class Camera2d extends AbstractCamera{
         this.setScale(this.getScale()); //update the scale
         return this;
     }
+    __getTotalScale(){
+        return this.getScale()*this.stretchScale;
+    }
     __updateLoc(){
         var angle = -this.getZRot();
-        var vec = new Vec(this.loc).mul(-this.scale*this.stretchScale).addAngle(angle).add(this.graphics.getWidth()/2, this.graphics.getHeight()/2);
+        var vec = new Vec(this.loc).mul(-this.__getTotalScale()).addAngle(angle).add(this.graphics.getWidth()/2, this.graphics.getHeight()/2);
         this.stage.rotation = angle;
         this.stage.x = vec.getX();
         this.stage.y = vec.getY();
@@ -38,5 +41,19 @@ class Camera2d extends AbstractCamera{
         super.setScale(scale);
         this.__updateLoc();
         return this;
+    }
+    
+    
+    translateScreenToWorldLoc(x, y, z){
+        var vec = new Vec(x, y, z);
+        var size = new XYZ(this.graphics.getWidth(), this.graphics.getHeight());
+        
+        return vec.sub(size.mul(0.5)).div(this.__getTotalScale()).addAngle(this.getZRot()).add(this.getLoc());
+    }
+    translateWorldToScreenLoc(x, y, z){
+        var vec = new Vec(x, y, z);
+        var size = new XYZ(this.graphics.getWidth(), this.graphics.getHeight());
+        
+        return vec.sub(this.getLoc()).addAngle(-this.getZRot()).mul(this.__getTotalScale()).add(size.mul(0.5));
     }
 }
