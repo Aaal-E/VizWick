@@ -4,18 +4,36 @@
 */
 
     class Line2d extends Shape2d {
-         constructor(graphics, startX, startY, endX, endY, width, color) {
+         constructor(graphics, startPoint, endPoint, width, color) {
            super(graphics, color);
            this.setWidth(width);
-           this.setStartPoints(startx, starty);
-           this.setEndPoints(endx, endy);
+           this.startPoint = this.getLoc();
+           this.endPoint = new XYZ(0,0,0);
+
+           var This = this;
+           this.startPoint.onChange(function() {
+             This.__redraw();
+           });
+
+           this.setStartPoint(startPoint);
+
+
+           this.endPoint.onChange(function() {
+             This.__redraw();
+           });
+           this.setEndPoint(endPoint);
          }
 
          __redraw() {
            this.gfx.clear();
-           this.gfx.lineStyle(this, width, this.color);
-           this.gfx.moveTo(startX, startY);
-           this.gfx.lineTo(endX, endY);
+           this.gfx.lineStyle(this.width, this.color);
+           this.gfx.moveTo(0, 0);
+
+           var delta = new Vec(this.endPoint).sub(this.getWorldLoc());
+           console.log(this.startPoint, this.endPoint, this.getWorldLoc());
+           console.trace('sometext');
+           this.gfx.lineTo(delta.getX(), delta.getY());
+          //this.gfx.lineTo(50, 50);
            this.gfx.endFill();
          }
 
@@ -24,16 +42,15 @@
            this.__redraw();
            return this;
          }
-
-         setStartPoints(startX, startY) {
-           this.startX = startX;
-           this.startY = startY;
+         // use loc thing
+         // this.getLoc()
+         setStartPoint(startX, startY) {
+           this.startPoint.set(startX, startY);
            return this;
          }
 
-         setEndPoints(endX, endY) {
-           this.endX = endX;
-           this.endY = endY;
+         setEndPoint(endX, endY) {
+           this.endPoint.set(endX, endY);
            return this;
          }
 
@@ -41,17 +58,11 @@
            return this.width;
          }
 
-         getStartPoints() {
-           return {
-             startX: this.startX,
-             startY: this.startY;
-           };
+         getStartPoint() {
+           return this.startPoint;
          }
 
-         getEndPoints() {
-           return {
-             endX: this.endX;
-             endY: this.endY;
-           };
+         getEndPoint() {
+           return this.endPoint;
          }
     }
