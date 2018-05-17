@@ -25,6 +25,7 @@
         <script src="../../Classes/Graphics/AbstractGraphics.js"></script>
         <script src="../../Classes/Graphics/AbstractShape.js"></script>
         <script src="../../Classes/Graphics/AbstractVisualisation.js"></script>
+        <script src="../../Classes/Graphics/AbstractNodeShape.js"></script>
         
         <!--2d graphics api-->
         <script src="../../Classes/Graphics/2d/Camera.js"></script>
@@ -123,7 +124,6 @@
                     constructor(gfx, node, scale){
                         super(gfx, node, function(){
                             this.scale = scale||1;
-                            this.targetLoc = new VIZ.XYZ(0); //default value for the root
                         });
                         this.setScale(this.scale);
                         
@@ -137,7 +137,7 @@
                         this.onClick(function(){
                             this.focus();
                         });
-                        this.onMouseEvent(function(type, data){
+                        this.onMousePress(function(type, data){
                             var button = data.data.button;
                             if(button==1){
                                 this.createParent();
@@ -148,13 +148,15 @@
                         });
                         
                         //hover event
-                        // this.text = new VIZ.HtmlShape(gfx, "Test");
-                        // this.text.setScale(2);
-                        // this.onHover(function(over){
-                        //     if(over)
-                        //         this.addShape(this.text);
-                        // });
-                        
+                        this.text = new VIZ.HtmlShape(gfx, "Test");
+                        this.text.setScale(2);
+                        this.onHover(function(over){
+                            if(over)
+                                this.addShape(this.text);
+                            else{
+                                this.removeShape(this.text);
+                            }
+                        });
                         
                         //update aabb
                         this.storeInSpatialTree = true;
@@ -174,42 +176,51 @@
                         if(this.circle)
                             this.circle.setColor(this.state.expanded?0x0000ff:0xff0000);
                     }
-                    
-                    __setupConnection(parent, child, first){
+                    __connectParent(parent){
                         if(parent){
-                            this.getLoc().set(parent.getLoc()).sub(0, 0, 1e-9); //initialy copy parent loc
-                        }else if(child){
-                            this.getLoc().set(child.getLoc()).sub(0, 0, 1e-9); //initialy copy parent loc
-                        }
-                        if(parent && first){
                             var w = (-parent.scale/2 + (this.getIndex()+0.5)*this.scale)*initWidth;
-                            this.targetLoc = new VIZ.Vec(parent.targetLoc).add(w, -130*parent.scale, this.getZ());
-                        }
-                        if(parent||child){
-                            var c = 2;
-                            var complete = function(){
-                                if(--c==0)
-                                    this.__deregisterUpdateListener();
-                            }
-                            this.setTargetLoc(this.targetLoc, 0.6, 10, complete)
-                                .setTargetScale(this.scale, 0.6, 7, complete)
-                                .__registerUpdateListener();
+                            this.targetLoc = new VIZ.XYZ(parent.targetLoc).add(w, -130*parent.scale, this.getZ());
+                        }else{
+                            this.targetLoc = new VIZ.XYZ();
                         }
                     }
-                    remove(){
+                    __show(){
+                        var connectedNode = this.getConnectedNodeShape();
+                        //set initial location
+                        if(connectedNode){  //copy connected node if available
+                            this.getLoc().set(connectedNode.getLoc()).sub(0, 0, 1e-9);
+                            this.setScale(connectedNode.getScale());
+                        }else{ 
+                            this.setLoc(this.targetLoc);
+                            this.setScale(0);
+                        }
+                        
+                        //set location to move to
+                        var c = 2;
+                        var complete = function(){
+                            if(--c==0)  //count wheteher both events are finished
+                                this.__deregisterUpdateListener();
+                        };
+                        this.setTargetLoc(this.targetLoc, 0.6, 10, complete)
+                            .setTargetScale(this.scale, 0.6, 7, complete)
+                            .__registerUpdateListener();
+                    }
+                    __hide(){
+                        //set target position and scale
+                        var target = this.getLoc();
+                        var targetScale = 0;
+                        
+                        //attempt to move to a connected shape instead
                         var connectedShape = this.getConnectedNodeShape();
-                        var target;
-                        var targetScale = this.getScale();
                         if(connectedShape){
                             target = connectedShape.getLoc();
                             targetScale = function(){
                                 return connectedShape.getScale()
                             };
-                            this.setZ(connectedShape.getZ()-1);
-                        }else{
-                            target = new VIZ.Vec(0, 500*camera.getScale()).addAngle(Math.random()-0.5).add(camera.getLoc());
+                            this.setZ(connectedShape.getZ()-1e-9);
                         }
                         
+                        //set location and scale to move to
                         var c = 2;
                         var complete = function(){
                             if(--c==0)
@@ -218,8 +229,6 @@
                         this.setTargetLoc(target, 0, 12, complete)
                             .setTargetScale(targetScale, 0, 8, complete)
                             .__registerUpdateListener();
-                            
-                        super.remove(true);
                     }
                     
                     __createNodeShape(node){
@@ -251,7 +260,7 @@
         var createTree = function(name, height){
             var children = [];
             if(height>0){
-                var childCount = Math.floor(Math.random()*4)+1;
+                var childCount = Math.floor(Math.random()*3)+1;
                 for(var i=0; i<childCount; i++){
                     children.push(createTree(name+"-"+i, height-1));
                 }

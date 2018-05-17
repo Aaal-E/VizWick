@@ -30,10 +30,13 @@ class AbstractShape{
         
         //interaction listeners
         this.listeners = {
-            hover: [],
-            click: [],
-            mouse: [],
-            update: []
+            update: [],
+            mouseClick: [],
+            mouseHover: [],
+            mousePress: [],
+            mouseScroll: [],
+            mouseMove: [],
+            keyPress: []
         };
         
         //target
@@ -99,7 +102,7 @@ class AbstractShape{
             
             
         //targetting methods
-        if(this.target.loc){
+        if(this.target.loc!=null){
             var delta = this.getVecTo((this.target.loc) instanceof Function?
                                             this.target.loc.call(this):
                                             this.target.loc);
@@ -109,7 +112,7 @@ class AbstractShape{
                 this.target.callback.loc = null;
             }
         }
-        if(this.target.rot){
+        if(this.target.rot!=null){
             var delta = this.getRot().getVecTo((this.target.rot) instanceof Function?
                                             this.target.rot.call(this):
                                             this.target.rot);
@@ -119,7 +122,7 @@ class AbstractShape{
                 this.target.callback.rot = null;
             }
         }
-        if(this.target.scale){
+        if(this.target.scale!=null){
             var delta = ((this.target.scale) instanceof Function?
                             this.target.scale.call(this):
                             this.target.scale)
@@ -292,79 +295,56 @@ class AbstractShape{
     }
     
     //event handlers
-    //hover
-    onHover(listener){
-        if(this.listeners.hover.indexOf(listener)==-1)
-            this.listeners.hover.push(listener);
+    __registerListener(type, listener){
+        if(this.listeners[type].indexOf(listener)==-1)
+            this.listeners[type].push(listener);
         this.__updateInteraction();
         return this;
     }
-    offHover(listener){
-        var index = this.listeners.hover.indexOf(listener);
-        if(index!=-1) this.listeners.hover.splice(index, 1);
+    __deregisterListener(type, listener){
+        var index = this.listeners[type].indexOf(listener);
+        if(index!=-1)
+            this.listeners[type].splice(index, 1);
         this.__updateInteraction();
         return this;
     }
-    __triggerHover(){
-        var ret = false;
-        for(var i=0; i<this.listeners.hover.length; i++)
-            if(this.listeners.hover[i].apply(this, arguments))
-                ret = true;
-        return ret;
+    __triggerListener(type){
+        var args = Array.from(arguments);
+        args.shift();
+        var ls = this.listeners[type];
+        for(var i=0; i<ls.length; i++)
+            if(ls[i].apply(this, args))
+                return true;
     }
     
-    //click
-    onClick(listener){
-        if(this.listeners.click.indexOf(listener)==-1)
-            this.listeners.click.push(listener);
-        this.__updateInteraction();
-        return this;
-    }
-    offClick(listener){
-        var index = this.listeners.click.indexOf(listener);
-        if(index!=-1) this.listeners.click.splice(index, 1);
-        this.__updateInteraction();
-        return this;
-    }
-    __triggerClick(){
-        var ret = false;
-        for(var i=0; i<this.listeners.click.length; i++)
-            if(this.listeners.click[i].apply(this, arguments))
-                ret = true;
-        return ret;
-    }
+    onClick(func){ return this.__registerListener("mouseClick", func); }
+    offClick(func){ return this.__deregisterListener("mouseClick", func); }
+    __triggerClick(event){ return this.__triggerListener("mouseClick", event); }
     
-    //mouse events
-    /*
-        Types:
-        -down
-        -up
-        -move
-    */
-    onMouseEvent(listener){
-        if(this.listeners.mouse.indexOf(listener)==-1)
-            this.listeners.mouse.push(listener);
-        this.__updateInteraction();
-        return this;
-    }
-    offMouseEvent(listener){
-        var index = this.listeners.mouse.indexOf(listener);
-        if(index!=-1) this.listeners.mouse.splice(index, 1);
-        this.__updateInteraction();
-        return this;
-    }
-    __triggerMouseEvent(){
-        var ret = false;
-        for(var i=0; i<this.listeners.mouse.length; i++)
-            if(this.listeners.mouse[i].apply(this, arguments))
-                ret = true;
-        return ret;
-    }
+    onHover(func){ return this.__registerListener("mouseHover", func); }
+    offHover(func){ return this.__deregisterListener("mouseHover", func); }
+    __triggerHover(hover, event){ return this.__triggerListener("mouseHover", hover, event); }
+    
+    onMousePress(func){ return this.__registerListener("mousePress", func); }
+    offMousePress(func){ return this.__deregisterListener("mousePress", func); }
+    __triggerMousePress(down, event){ return this.__triggerListener("mousePress", down, event); }
+    
+    onMouseScroll(func){ return this.__registerListener("mouseScroll", func); }
+    offMouseScroll(func){ return this.__deregisterListener("mouseScroll", func); }
+    __triggerMouseScroll(amount, event){ return this.__triggerListener("mouseScroll", amount, event); }
+    
+    onMouseMove(func){ return this.__registerListener("mouseMove", func); }
+    offMouseMove(func){ return this.__deregisterListener("mouseMove", func); }
+    __triggerMouseMove(pos, event){ return this.__triggerListener("mouseMove", pos, event); }
+    
+    onKeyPress(func){ return this.__registerListener("keyPress", func); }
+    offKeyPress(func){ return this.__deregisterListener("keyPress", func); }
+    __triggerKeyPress(down, key, event){ return this.__triggerListener("keyPress", down, key, event); }
     
     //enable/disable interaction
     __updateInteraction(internally){
         if(!this.interactionDisabled)
-            if(this.listeners.click.length==0 && this.listeners.hover.length==0 && this.listeners.mouse.length==0)
+            if(this.listeners.mouseClick.length==0 && this.listeners.mouseHover.length==0 && this.listeners.mousePress.length==0 && this.listeners.mouseScroll.length==0 && this.listeners.mouseMove.length==0 && this.listeners.keyPress.length==0)
                 this.disableInteraction(true);
             else
                 this.enableInteraction(true);

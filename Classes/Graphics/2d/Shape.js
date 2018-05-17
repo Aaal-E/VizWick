@@ -27,49 +27,56 @@ class Shape2d extends AbstractShape{
             This.gfx.rotation = this.getZ();
         });
         
-        //add hover handlers
-        this.gfx.on("mouseover", function(data){
-            if(This.__triggerHover(true, data))
-                data.stopPropagation();
-        });
-        this.gfx.on("mouseout", function(data){
-            if(This.__triggerHover(false, data))
-                data.stopPropagation();
-        });
-        
-        //add click handler
-        this.gfx.on("click", function(data){
-            if(This.__triggerClick(data))
-                data.stopPropagation();
-        });
-        
-        //add mouse events
-        var mouseDown = function(data){
-            var args = Array.from(arguments);
-            args.unshift("down");
-            if(This.__triggerMouseEvent.apply(This, args))
-                data.stopPropagation();
-        };
-        var mouseUp = function(data){
-            var args = Array.from(arguments);
-            args.unshift("up");
-            if(This.__triggerMouseEvent.apply(This, args))
-                data.stopPropagation();
-        };
-        var mouseMove = function(data){
-            var args = Array.from(arguments);
-            args.unshift("move");
-            if(This.__triggerMouseEvent.apply(This, args))
-                data.stopPropagation();
-        };
-        this.gfx.on('mousedown', mouseDown)
-                .on('touchstart', mouseDown)
-                .on('mouseup', mouseUp)
-                .on('mouseupoutside', mouseUp)
-                .on('touchend', mouseUp)
-                .on('touchendoutside', mouseUp)
-                .on('mousemove', mouseMove)
-                .on('touchmove', mouseMove);
+        //add interaction events
+        {
+            //add hover handlers
+            this.gfx.on("mouseover", function(data){
+                if(This.__triggerHover(true, data))
+                    data.stopPropagation();
+            });
+            this.gfx.on("mouseout", function(data){
+                if(This.__triggerHover(false, data))
+                    data.stopPropagation();
+            });
+            
+            //add click handler
+            this.gfx.on("click", function(data){
+                if(This.__triggerClick(data))
+                    data.stopPropagation();
+            });
+            
+            //add mouse events
+            var mouseDown = function(data){
+                if(This.__triggerMousePress(true, data))
+                    data.stopPropagation();
+            };
+            var mouseUp = function(data){
+                if(This.__triggerMousePress(false, data))
+                    data.stopPropagation();
+            };
+            var mouseMove = function(data){
+                if(This.__triggerMouseMove(new XYZ(data.data.global.x, data.data.global.y), data))
+                    data.stopPropagation();
+            };
+            var mouseScroll = function(data){
+                if(This.__triggerMouseScroll(data.data.originalEvent.originalEvent.wheelDeltaY, data))
+                    data.stopPropagation();
+            };
+            var keyPress = function(data){
+                if(This.__triggerKeyPress(data.data.originalEvent.type=="keydown", data.data.originalEvent.key, data))
+                    data.stopPropagation();
+            };
+            this.gfx.on('mousedown', mouseDown)
+                    .on('touchstart', mouseDown)
+                    .on('mouseup', mouseUp)
+                    .on('mouseupoutside', mouseUp)
+                    .on('touchend', mouseUp)
+                    .on('touchendoutside', mouseUp)
+                    .on('mousemove', mouseMove)
+                    .on('touchmove', mouseMove)
+                    .on('scroll', mouseScroll)
+                    .on('keypress', keyPress);
+        }
     }
     __redraw(){}
     __getGfx(){
@@ -151,8 +158,7 @@ class Shape2d extends AbstractShape{
         return this;
     }
     __delete(){
-        if(this.graphics)
-            this.graphics.__getStage().removeChild(this.gfx);
+        this.graphics.__getStage().removeChild(this.gfx);
         super.__delete();
     }
     

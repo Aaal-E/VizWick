@@ -14,6 +14,10 @@ class CompoundShape2d extends Shape2d{
             for(var i=0; i<This.shapes.length; i++)
                 This.shapes[i].getLoc().__fireEvent();
         });
+        this.getRot().onChange(function(){
+            for(var i=0; i<This.shapes.length; i++)
+                This.shapes[i].getLoc().__fireEvent();
+        });
     }
     __createGfx(){
         return new PIXI.Sprite();

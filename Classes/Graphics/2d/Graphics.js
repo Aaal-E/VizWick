@@ -15,25 +15,20 @@ class Graphics2d extends AbstractGraphics{
         $(this.app.view).addClass("pixi");
         this.container.append(this.app.view);
         this.container.on("finishResize", function(event, size){
-            var view = $(This.__getRenderer().view);
-            var ratio = view.width()/view.height();
+            var newSize = {
+                width:This.container.width(), 
+                height:This.container.height()
+            };
+            This.app.renderer.resize(newSize.width, newSize.height);
             
-            size.width += 1;    //prevent some background leakage by rounding errors
-            size.height += 1;
-            if(size.width/size.height <= ratio){
-                var w = size.height*ratio;
-                var h = size.height;
-            }else{
-                var w = size.width;
-                var h = size.width/ratio;
-            }
-            view.width(w).height(h);
-            
-            var scale = This.size.width/w;
-            This.camera.__setStretchScale(scale);
+            This.size = newSize;
             
             This.camera.__updateLoc();
         });
+        
+        //fix interaction bugs when hovering over an html shape
+        var m = this.app.renderer.plugins.interaction;
+        m.interactionDOMElement.removeEventListener("pointerleave", m.onPointerOut, true);
         
         //register update listener, set to 30fps
         this.updating = true;
@@ -60,32 +55,93 @@ class Graphics2d extends AbstractGraphics{
         this.stage.hitArea = new PIXI.Rectangle(-this.getWidth()/2, -this.getHeight()/2, this.getWidth(), this.getHeight()); //setup hitbox for mouse interaction
         this.app.stage.addChild(this.stage);
         
-        //add mouse listener
-        this.mouse = {x:0, y:0, pressed:false};
-        var mouseMove = function(data){
-            This.mouse.x = data.data.global.x;
-            This.mouse.y = data.data.global.y;
-        };
-        var mouseDown = function(){
-            This.mouse.pressed = true;
-        };
-        var mouseUp = function(){
-            This.mouse.pressed = false;
-        };
-        this.app.stage.interactive = true;
-        this.app.stage
-            .on('mousedown', mouseDown)
-            .on('touchstart', mouseDown)
-            .on('mouseup', mouseUp)
-            .on('mouseupoutside', mouseUp)
-            .on('touchend', mouseUp)
-            .on('touchendoutside', mouseUp)
-            .on('mousemove', mouseMove)
-            .on('touchmove', mouseMove);
-        
+        //add event handlers
+        {
+            this.mouse = {x:0, y:0, pressed:false};
+            var mouseMove = function(data){
+                This.mouse.x = data.data.global.x;
+                This.mouse.y = data.data.global.y;
+                This.mouse.clientX = data.data.originalEvent.clientX;
+                This.mouse.clientY = data.data.originalEvent.clientY;
+                This.__triggerMouseMove(new XYZ(data.data.global.x, data.data.global.y), data);
+            };
+            var mouseDown = function(data){
+                This.mouse.pressed = true;
+                This.__triggerMousePress(true, data);
+            };
+            var mouseUp = function(data){
+                This.mouse.pressed = false;
+                This.__triggerMousePress(false, data);
+                This.__triggerClick(data);
+            };
+            var mouseScroll = function(data){
+                This.__triggerMouseScroll(data.data.originalEvent.originalEvent.wheelDeltaY, data);
+            };
+            var keyPress = function(data){
+                This.__triggerKeyPress(data.data.originalEvent.type=="keydown", data.data.originalEvent.key, data);
+            };
+            this.app.stage.interactive = true;
+            this.app.stage
+                .on('mousedown', mouseDown)
+                .on('touchstart', mouseDown)
+                .on('mouseup', mouseUp)
+                .on('mouseupoutside', mouseUp)
+                .on('touchend', mouseUp)
+                .on('touchendoutside', mouseUp)
+                .on('mousemove', mouseMove)
+                .on('touchmove', mouseMove)
+                .on('scroll', mouseScroll)
+                .on('keypress', keyPress);
+        }
+            
+        //create scroll event and key events
+        {
+            this.DOMEventListeners.scroll = function(event){
+                var interactionData = m.getInteractionDataForPointerId(event);
+                
+                var interactionEvent = m.configureInteractionEventForDOMEvent(m.eventData, event, interactionData);
+                m.processInteractive(interactionEvent, m.renderer._lastObjectRendered, function(interactionEvent, displayObject, hit){
+                    if(hit){
+                        m.dispatchEvent(displayObject, 'scroll', interactionEvent);
+                    }
+                }, true);
+            };
+            this.DOMEventListeners.keypress = function(event){
+                var interactionData = m.getInteractionDataForPointerId(event);
+                
+                if(event.type=="keyup") //remove keys even if released outside of visualisation
+                    delete This.pressedKeys[event.key.toLowerCase()];
+                
+                //set target location
+                event.clientX = This.mouse.clientX;
+                event.clientY = This.mouse.clientY;
+                
+                var interactionEvent = m.configureInteractionEventForDOMEvent(m.eventData, event, interactionData);
+                m.processInteractive(interactionEvent, m.renderer._lastObjectRendered, function(interactionEvent, displayObject, hit){
+                    if(hit){
+                        m.dispatchEvent(displayObject, 'keypress', interactionEvent);
+                    }
+                }, true);
+            };
+            $(window).on('mousewheel', this.DOMEventListeners.scroll);
+            $(window).on('keydown', this.DOMEventListeners.keypress);
+            $(window).on('keyup', this.DOMEventListeners.keypress);
+        }
         
         //connect a camera
         this.camera = new Camera2d(this);
+    }
+    
+    //disposal
+    destroy(){
+        $(window).off('mousewheel', this.DOMEventListeners.scroll);
+        $(window).off('keydown', this.DOMEventListeners.keypress);
+        $(window).off('keyup', this.DOMEventListeners.keypress);
+        super.destroy();
+    }
+    
+    getCanvas(){
+        return this.getContainer().find("canvas.pixi");
     }
     
     //start/stop rendering

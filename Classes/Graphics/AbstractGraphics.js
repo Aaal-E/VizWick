@@ -24,6 +24,19 @@ class AbstractGraphics{
         if(!container) container=$("body");
         this.container = $(container);
         
+        //event listeners
+        this.listeners = {
+            mouseClick: [],
+            mousePress: [],
+            mouseScroll: [],
+            mouseMove: [],
+            keyPress: []
+        };
+        this.DOMEventListeners = {  //tracked for when destroying the graphics
+            
+        };
+        this.pressedKeys = {};
+        
         //shape data storage
         this.shapes = {
             visible: [],    //all shapes that are rendered
@@ -91,10 +104,14 @@ class AbstractGraphics{
     } 
     
     //just retrieve some container info
-    getWidth(){
+    getWidth(canvas){
+        if(canvas) //tthe actual width instead of resolution width (should be the same)
+            return this.getCanvas().width();
         return this.size.width;
     }
-    getHeight(){
+    getHeight(canvas){
+        if(canvas) //tthe actual height instead of resolution height (should be the same)
+            return this.getCanvas().height();
         return this.size.height;
     }
     getContainer(){
@@ -198,6 +215,9 @@ class AbstractGraphics{
     getMouseVec(x, y, z){}
     getMouseLoc(){}
     getMousePressed(){}
+    isKeyPressed(key){
+        return !!this.pressedKeys[key.toLowerCase()];
+    }
     
     //dynamic tree growing/shrinking methods
     __registerShapeRoot(shape){
@@ -327,5 +347,52 @@ class AbstractGraphics{
         for(var i=0; i<this.shapes.html.length; i++){
             this.shapes.html[i].__updateLoc();
         }
+    }
+    
+    //event listeners
+    __registerListener(type, listener){
+        if(this.listeners[type].indexOf(listener)==-1)
+            this.listeners[type].push(listener);
+        return this;
+    }
+    __deregisterListener(type, listener){
+        var index = this.listeners[type].indexOf(listener);
+        if(index!=-1)
+            this.listeners[type].splice(index, 1);
+        return this;
+    }
+    __triggerListener(type){
+        var args = Array.from(arguments);
+        args.shift();
+        var ls = this.listeners[type];
+        for(var i=0; i<ls.length; i++)
+            ls[i].apply(this, args);
+        return this;
+    }
+    
+    onClick(func){ return this.__registerListener("mouseClick", func); }
+    offClick(func){ return this.__deregisterListener("mouseClick", func); }
+    __triggerClick(event){ return this.__triggerListener("mouseClick", event); }
+    
+    onMousePress(func){ return this.__registerListener("mousePress", func); }
+    offMousePress(func){ return this.__deregisterListener("mousePress", func); }
+    __triggerMousePress(down, event){ return this.__triggerListener("mousePress", down, event); }
+    
+    onMouseScroll(func){ return this.__registerListener("mouseScroll", func); }
+    offMouseScroll(func){ return this.__deregisterListener("mouseScroll", func); }
+    __triggerMouseScroll(amount, event){ return this.__triggerListener("mouseScroll", amount, event); }
+    
+    onMouseMove(func){ return this.__registerListener("mouseMove", func); }
+    offMouseMove(func){ return this.__deregisterListener("mouseMove", func); }
+    __triggerMouseMove(pos, event){ return this.__triggerListener("mouseMove", pos, event); }
+    
+    onKeyPress(func){ return this.__registerListener("keyPress", func); }
+    offKeyPress(func){ return this.__deregisterListener("keyPress", func); }
+    __triggerKeyPress(down, key, event){ 
+        if(down)
+            this.pressedKeys[key.toLowerCase()] = true;
+        else
+            delete this.pressedKeys[key.toLowerCase()];
+        return this.__triggerListener("keyPress", down, key, event); 
     }
 }

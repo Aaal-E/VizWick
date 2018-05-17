@@ -12,6 +12,7 @@ Compiler.compile([
     "../AbstractCamera.js",
     "../AbstractGraphics.js",
     "../AbstractShape.js",
+    "../AbstractNodeShape.js",
     "../AbstractVisualisation.js",
     
     "Camera.js",

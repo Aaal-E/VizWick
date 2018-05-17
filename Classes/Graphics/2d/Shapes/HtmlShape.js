@@ -7,17 +7,31 @@ class HtmlShape2d extends Shape2d{
     constructor(graphics, html, preInit){
         super(graphics, null, preInit);
         this.element = $(
-            "<div style=display:inline-block;position:absolute;color:white;z-index:1000>"+
+            "<div class=HTMLshape style=display:inline-block;position:absolute;color:white;z-index:1000>"+
             "</div>"
         );
         this.setHtml(html);
-        this.setContainer($("body"));
+        this.setContainer(graphics.getContainer());
+        this.setInteractive(false);
         this.visCont = graphics.getCanvas();
         
         var This = this;
         this.getLoc().onChange(function(){
             This.__updateLoc();
         });
+    }
+    
+    //interactive means that it catches mouse events
+    setInteractive(interactive){
+        this.interactive = interactive;
+        if(interactive)
+            this.element.addClass("interactive").css("pointer-events", "all");
+        else
+            this.element.removeClass("interactive").css("pointer-events", "none");
+        return this;
+    }
+    getInteractive(){
+        return this.interactive;
     }
     
     //container methods
@@ -44,11 +58,11 @@ class HtmlShape2d extends Shape2d{
     //add/remove element from page
     __addToPage(){
         this.getContainer().append(this.element);
-        this.__updateLoc();
         
         var shapes = this.graphics.getShapesHtml();
         if(shapes.indexOf(this)==-1) shapes.push(this);
         
+        this.__updateLoc();
         return this;
     }
     __removeFromPage(){
@@ -70,11 +84,12 @@ class HtmlShape2d extends Shape2d{
         return super.remove();
     }
     __setParentShape(shape){
+        var ret = super.__setParentShape(shape);
         if(shape)
             this.__addToPage();
         else
             this.__removeFromPage();
-        super.__setParentShape(shape);
+        return ret;
     }
     
     //scale handeling
@@ -99,6 +114,8 @@ class HtmlShape2d extends Shape2d{
     
     //the radius to be used for the AABB
     __getRadius(){  
-        return 0;
+        var dx = this.element.width()/2;
+        var dy = this.element.height()/2;
+        return Math.sqrt(dx*dx + dy*dy);
     }
 }

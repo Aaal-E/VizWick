@@ -1,0 +1,108 @@
+<htmL>
+    <head>
+        <!--<script src="../Classes/Graphics/2d/.Compiled.js"></script>-->
+        
+        <!--libraries-->
+        <script src="../../../Libraries/jQuery.js"></script>
+        <script src="../../../Libraries/three.min.js"></script>
+        <script src="../../../Libraries/stats.js"></script>
+        <script src="../../../Libraries/RBush-3d.js"></script>
+        
+        <!--resize system-->
+        <script src="../../../Classes/GUI/resize.js"></script>
+        
+        <!--Alex's tree system-->
+        <script src="../../../Classes/Tree/Tree.js"></script>
+        <script src="../../../Classes/Tree/TreeNode.js"></script>
+        
+        <!--graphics interface-->
+        <script src="../../../Classes/Graphics/Utils/XYZ.js"></script>
+        <script src="../../../Classes/Graphics/Utils/Vec.js"></script>
+        <script src="../../../Classes/Graphics/Options.js"></script>
+        
+        <script src="../../../Classes/Graphics/AbstractCamera.js"></script>
+        <script src="../../../Classes/Graphics/AbstractGraphics.js"></script>
+        <script src="../../../Classes/Graphics/AbstractShape.js"></script>
+        <script src="../../../Classes/Graphics/AbstractVisualisation.js"></script>
+        
+        <!--3d graphics api-->
+        <script src="../../../Classes/Graphics/3d/Camera.js"></script>
+        <script src="../../../Classes/Graphics/3d/Graphics.js"></script>
+        <script src="../../../Classes/Graphics/3d/Shape.js"></script>
+        <script src="../../../Classes/Graphics/3d/Shapes/Cuboid.js"></script>
+        <script src="../../../Classes/Graphics/3d/Shapes/PointLight.js"></script>
+        <!--<script src="../../../Classes/Graphics/3d/Shapes/CompoundShape.js"></script>-->
+        <!--<script src="../../../Classes/Graphics/3d/Shapes/ShapeGroup.js"></script>-->
+        <!--<script src="../../../Classes/Graphics/3d/Shapes/NodeShape.js"></script>-->
+        <!--<script src="../../../Classes/Graphics/3d/Shapes/HtmlShape.js"></script>-->
+        <!--<script src="../../../Classes/Graphics/3d/Visualisation.js"></script>-->
+    </head>
+    <body>
+        <div class=container>
+            <div class=q1>
+                
+            </div>
+            <div class=q2>
+            </div>
+        </div>
+    </body>
+    <style>
+        html, body{
+            width: 100%;
+            height: 100%;
+            margin: 0px;
+        }
+        .container{
+            width: 100%;
+            height: 100%;
+            vertical-align: top;
+        }
+        .pixi{
+            position: relative;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .resizeHandleInnerDisplay{
+            background-color: white !important;
+        }
+        .q1,.q2{
+            background-color: black;
+            position: relative;
+        }
+    </style>
+    <script>
+        this.debug = true;
+        
+        //call the initialisation  code for my system
+        $(".container").resizeContainer({vertical:false});
+        
+        //3d test setup
+        var graphics = new Graphics3d($(".q1"));
+        var cube = new Cuboid3d(graphics, 0xff0000, 2, 1, 1).add();
+        var light = new PointLight3d(graphics, 0xffffff).setLoc(0, 1, 1).add();
+        
+        graphics.onUpdate(function(){
+        // 	cube.getRot().add(0.02,0.01,0);
+        });
+        
+        //visualisation setup
+        var createTree = function(name, height){
+            var children = [];
+            if(height>0){
+                var childCount = Math.floor(Math.random()*3)+1;
+                for(var i=0; i<childCount; i++){
+                    children.push(createTree(name+"-"+i, height-1));
+                }
+            }
+            return {
+                name: name,
+                children: children
+            };
+        }
+        var tree = new Tree(createTree("Stuff", 13));
+        var options = new Options();
+        // var visualisation1 = new Visualisation($(".q1"), tree, options);
+        
+    </script>
+</html>

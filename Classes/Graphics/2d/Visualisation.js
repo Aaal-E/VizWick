@@ -4,35 +4,19 @@
     Starting Date: 08/05/2018
 */
 class Visualisation2d extends Graphics2d{
-    constructor(container, tree, options, extraFields){
+    constructor(container, tree, options, preInit){
+        if(preInit) preInit.call(this);
         super(container);
-        
-        this.tree = tree;
-        this.options = options;
-        
-        this.focusedShape = null;   //the shape in the center
-        this.selectedShape = null;  //the highlighted shape
-        this.draggingShape = null;  //the shape that is being dragged around
-        
-        this.__setupRoot();
-        this.__setupOptions(options);
-        
-        this.mouseUp = (function(){
-            if(this.draggingShape)
-                this.draggingShape.__changeState("dragged", false);
-            this.draggingShape = null;
-        }).bind(this);
-        $(window).on("mouseup", this.mouseUp);
+        this.__setupVisualisation(tree, options);
     }
     
     //disposal
     destroy(){
-        $(window).off("mouseup", this.mouseUp);
+        $(window).off("mouseup", this.DOMEventListeners.mouseUp);
         super.destroy();
     }
     
     //setup
-    __setupOptions(options){}
     __setupRoot(){
         var node = this.tree.getRoot();
         var clas = this.__getNodeShapeClass(Visualisation2d.classes, node);
@@ -40,55 +24,29 @@ class Visualisation2d extends Graphics2d{
         return shape.add();
     }
     
-    selectShape(shape){
-        if(this.selectedShape)
-            this.selectedShape.__changeState("selected", false);
-        this.selectedShape = shape;
-        if(shape)
-            shape.__changeState("selected", true);
-        return this;
-    }
-    focusShape(shape){
-        if(this.focusedShape)
-            this.focusedShape.__changeState("focused", false);
-        this.focusedShape = shape;
-        if(shape)
-            shape.__changeState("focused", true);
-        return this;
-    }
-    dragShape(shape){
-        if(this.draggingShape)
-            this.draggingShape.__changeState("dragged", false);
-        this.draggingShape = shape;
-        if(shape)
-            shape.__changeState("dragged", true);
-        return this;
-    }
-    
-    //shape dragging
-    __onUpdate(deltaTime){
-        if(this.draggingShape)
-            this.draggingShape.__onDrag(this.getMouseLoc());
-        super.__onUpdate(deltaTime);
-    }
-    
-    //classes
-    __getNodeShapeClass(VIZ, node){}
 }
+
+//copy methods of abstractVisualisation
+var keys = Object.getOwnPropertyNames(AbstractVisualisation.prototype);
+for(var i=0; i<keys.length; i++)
+    Visualisation2d.prototype[keys[i]] = AbstractVisualisation.prototype[keys[i]];
+
+//make the visualisation system public
 window.Visualisation2d = Visualisation2d;
 Visualisation2d.classes = window.VIZ2D = {
-    Visualisation2d: Visualisation2d,
+    Visualisation: Visualisation2d,
     
     //general classes
     XYZ: XYZ,
     Vec: Vec,
     
-    //shapes
+    //special shapes
     Shape: Shape2d,
     CompoundShape: CompoundShape2d,
     ShapeGroup: ShapeGroup2d,
     NodeShape: NodeShape2d,
     HtmlShape: HtmlShape2d,
     
+    //normal shapes
     Circle: Circle2d
 };
