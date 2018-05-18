@@ -16,33 +16,18 @@
         this.debug = true; //shows the fps coounter
         
         //the visualisation class that you create
-        var initWidth = 100;
+        var initWidth = 400;
         class NodeShape extends VIZ2D.NodeShape{
             constructor(gfx, node, scale){
                 super(gfx, node, function(){
                     this.scale = scale||1;
-                    this.angle = 0.75;
                 });
-                this.setScale(this.scale);  //update the actual shape scale
+                this.setScale(this.scale); //update the actual shape scale
                 
-				
                 //create primary circle shape
-				this.lit = new VIZ2D.Circle(gfx, 32, 0xffff00);
                 this.circle = new VIZ2D.Circle(gfx, 30, 0xff0000);
                 this.addShape(this.circle);
-				this.label = new VIZ2D.Circle(gfx, 10, 0x70ff00ff);
-                this.label.setLoc(20, 20,0);
-
-				
-				this.onHover(
-					function(enter){
-						if(enter)
-						    this.addShape(this.label);
-						else
-						    this.removeShape(this.label);
-					}
-				);
-				
+                
                 //create return button cicle shape
                 this.ret = new VIZ2D.Circle(gfx, 10, 0x00ff00);
                 this.ret.setLoc(-20, 0);
@@ -51,20 +36,12 @@
                 this.ret.onClick(function(){ //select parent when this is clicked
                     This.createParent();
                     var p = This.getParent();
-                    if(p){
-						this.getGraphics().setFocussed(p);
-						this.getGraphics().highlight(this);
-						
-					}
+                    if(p) p.focus();
                     return true;
                 });
                 
-            //    this.onUpdate(function(){
-            //        this.getLoc().add((Math.random()-0.5)*this.scale, (Math.random()-0.5)*this.scale);
-            //    });
                 this.onClick(function(){
-					this.getGraphics().setFocussed(this);
-					this.getGraphics().highlight(this.children[0]);
+                    this.focus();
                 });
                 
                 //update expanded (if there are no children to start with)
@@ -86,24 +63,16 @@
                     this.circle.setColor(this.state.expanded?0x0000ff:0xff0000)
             }
             __setupConnection(parent, children, first){
+                var parent = this.getParent();
                 if(parent && first){
 					var offset = 0;
-					for (var i=0;i<this.getIndex(); i++){
+					for (var i=0;i<this.getIndex(); i++)
 						offset = offset + parent.getChildren()[i].scale;
-					}
-					this.angle = 0
-					this.angle = parent.angle - (0.3) + 0.6*((offset + 0.5*this.scale)/parent.scale)
-					this.setAngle((this.angle*2+0.5)*Math.PI)
-					var w = initWidth * parent.scale
-                    this.setLoc(new VIZ2D.Vec(parent.getLoc()).add(w*Math.cos(this.angle*2*Math.PI), w*Math.sin(this.angle*2*Math.PI), 0));
-                    
-                    //could have been: (though your sin and cos are swapped...)
-                    // this.setLoc(new VIZ.Vec(w, 0).setAngle(this.angle*2*Math.PI).add(parent.getLoc()));
-                    //so:
-                    // this.setLoc(new VIZ.Vec(w, 0).setAngle((-this.angle*2+0.5)*Math.PI).add(parent.getLoc()));
+						
+                    var w = (-parent.scale/2 + offset + 0.5*this.scale)*initWidth;
+                    this.setLoc(new VIZ2D.Vec(parent.getLoc()).add(w, -130*parent.scale, 0));
                 }
             }
-            
             __createNodeShape(node){
                 //Calculate the scale we want the node shape to have:
                 var scale = 1;  //just as a placeholder
@@ -123,58 +92,14 @@
                 
                 return new (this.__getClass())(this.getGraphics(), node, scale);
             }
-			
-			highlight(){
-				this.addShape(this.lit);
-			}
-			
-			unhighlight(){
-				this.removeShape(this.lit);
-			}
         }
         class Visualisation extends Visualisation2d{
             constructor(container, tree, options){
                 super(container, tree, options);
-				this.focussed = this.getShapesRoot();
-				this.highlighted = this.getShapesRoot();
-				
-				this.onKeyPress(function(down, key, event){
-					if(key="left"){
-						var i = this.highlighted.getIndex() - 1;
-						if(i < 0) i = i + this.highlighted.getParent().getChildren().length;
-						this.highlight(highlighted.getParent().getChildren()[i]);
-					} else if(key="right"){
-						var i = this.highlighted.getIndex() + 1;
-						if(i = this.highlighted.getParent().getChildren().length) i = 0;
-						this.highlight(highlighted.getParent().getChildren()[i]);
-					} else if(key="up"){
-						this.setFocussed(this.highlighted);
-						if(this.focussed.getChildren().length > 0)
-						this.highlight(this.focussed.getChildren()[0]);
-					} else if (key="down"){
-						this.highlight(this.focussed);
-						this.setFocussed(this.focussed.getParent());
-						
-					}
-					
-				});
             }
             __getNodeShapeClass(VIZ){
                 return NodeShape;
             }
-			
-			setFocussed(a){
-				this.focussed = a;
-				a.focus();
-			}
-			
-			highlight(b){
-				console.log(this.highlighted);
-				this.highlighted.unhighlight();
-				this.highlighted = b;
-				this.highlighted.highlight();
-			}
-			
         }
         
         //visualisation setup code that will be somewhere else eventually and that you can ignore
