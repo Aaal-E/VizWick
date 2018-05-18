@@ -43,7 +43,7 @@
 					}
 				);
 				
-                //create return button cicle shape
+                //create return button circle shape
                 this.ret = new VIZ2D.Circle(gfx, 10, 0x00ff00);
                 this.ret.setLoc(-20, 0);
                 this.addShape(this.ret);
@@ -53,7 +53,7 @@
                     var p = This.getParent();
                     if(p){
 						this.getGraphics().setFocussed(p);
-						this.getGraphics().highlight(this);
+						this.getGraphics().highlight(This);
 						
 					}
                     return true;
@@ -143,15 +143,15 @@
 					if(down){
 						console.log(key);
 						if(key=="arrowleft"){
-							if(this.focussed.getParent()){
-								var i = this.highlighted.getIndex() - 1;
+							if(this.highlighted.getParent()){
+								var i = this.highlighted.getParent().getChildren().indexOf(this.highlighted) - 1;
 								if(i < 0) i = i + this.highlighted.getParent().getChildren().length;
 								this.highlight(this.highlighted.getParent().getChildren()[i]);
 							}
 						} else if(key=="arrowright"){
-							if(this.focussed.getParent()){
-								var i = this.highlighted.getIndex() + 1;
-								if(i == this.highlighted.getParent().getChildren().length) i = 0;
+							if(this.highlighted.getParent()){
+								var i = this.highlighted.getParent().getChildren().indexOf(this.highlighted) + 1;
+								if(i >= this.highlighted.getParent().getChildren().length) i = 0;
 								this.highlight(this.highlighted.getParent().getChildren()[i]);
 								}
 						} else if(key=="arrowup"){
@@ -188,7 +188,7 @@
         var createTree = function(name, height){
             var children = [];
             if(height>0){
-                var childCount = Math.floor(Math.random()*3)+1;
+                var childCount = Math.floor(Math.random()*4)+1;
                 for(var i=0; i<childCount; i++){
                     children.push(createTree(name+"-"+i, height-1));
                 }
