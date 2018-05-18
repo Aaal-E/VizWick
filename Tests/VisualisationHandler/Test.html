@@ -1,0 +1,65 @@
+<html>
+	<head>
+        <script src="../../Classes/VisualisationHandler/VisualisationArea.js"></script>
+        <script src="../../Classes/VisualisationHandler/VisualisationHandler.js"></script>
+
+        <script src="../Visualisations/Test environment/tree.js"></script>
+        <script src="../Visualisations/Test environment/visualisation.js"></script>
+        <script src=TestVisualisation.js></script>
+
+
+
+	</head>
+	<body>
+        <div class=q1></div>
+        <div class=q2></div>
+        <style>
+            .q1{
+                float: left;
+                width: 50%;
+                height: 100%;
+                background-color: orange;
+            }
+            .q2{
+                float: left;
+                width: 50%;
+                height: 100%;
+                background-color: purple;
+            }
+        </style>
+	</body>
+	<script>
+        //create tree
+        var createTree = function(name, height){
+            var children = [];
+            if(height>0){
+                var childCount = Math.floor(Math.random()*3)+1;
+                for(var i=0; i<childCount; i++){
+                    children.push(createTree(name+"-"+i, height-1));
+                }
+            }
+            return {
+                name: name,
+                children: children
+            };
+        }
+        var tree = new Tree(createTree("Stuff", 10));
+
+        //setup areas
+        VisualisationHandler.createVisArea("q1", $(".q1"), function(options){
+            options.onOptionsChange(function(type, option){
+                if(type=="create"){
+                    $("body").append(option.name);
+                }
+                console.log(arguments);
+            });
+        });
+        VisualisationHandler.createVisArea("q2", $(".q2"), function(options){
+
+        });
+
+        //start visualising
+        VisualisationHandler.setTree(tree);
+        VisualisationHandler.setVisualisationForArea("q1", "a_Visualisation");
+	</script>
+</html>
