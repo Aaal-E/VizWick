@@ -75,8 +75,8 @@
                 if(field=="focused" && val==true){
                     this.getGraphics().getCamera().setTarget(this, this, this);
                     
-                    this.createDescendants(2);      //creates 2 layers of descendants
-                    this.destroyDescendants(2);     //destroys any descendants above those 2 layers
+                    this.createDescendants(3);      //creates 2 layers of descendants
+                    this.destroyDescendants(3);     //destroys any descendants above those 2 layers
                     
                     this.createAncestors(2);        //creates 2 layers of ancestors
                     this.destroyAncestors(2, true); //destroys any ancestors below those 2 layers
@@ -85,8 +85,8 @@
                 if(field=="expanded")
                     this.circle.setColor(this.state.expanded?0x0000ff:0xff0000)
             }
-            __setupConnection(parent, children, first){
-                if(parent && first){
+            __connectParent(parent){
+                if(parent){
 					var offset = 0;
 					for (var i=0;i<this.getIndex(); i++){
 						offset = offset + parent.getChildren()[i].scale;
@@ -126,7 +126,7 @@
 			
 			highlight(){
 				this.addShape(this.lit);
-				this.lit.setZ(2);
+				this.lit.setLoc(0,0,-1);
 			}
 			
 			unhighlight(){
@@ -140,24 +140,31 @@
 				this.highlighted = this.getShapesRoot()[0];
 				
 				this.onKeyPress(function(down, key, event){
-					if(key="left"){
-						var i = this.highlighted.getIndex() - 1;
-						if(i < 0) i = i + this.highlighted.getParent().getChildren().length;
-						this.highlight(highlighted.getParent().getChildren()[i]);
-					} else if(key="right"){
-						var i = this.highlighted.getIndex() + 1;
-						if(i = this.highlighted.getParent().getChildren().length) i = 0;
-						this.highlight(highlighted.getParent().getChildren()[i]);
-					} else if(key="up"){
-						this.setFocussed(this.highlighted);
-						if(this.focussed.getChildren().length > 0)
-						this.highlight(this.focussed.getChildren()[0]);
-					} else if (key="down"){
-						this.highlight(this.focussed);
-						this.setFocussed(this.focussed.getParent());
+					if(down){
+						console.log(key);
+						if(key=="arrowleft"){
+							if(this.focussed.getParent()){
+								var i = this.highlighted.getIndex() - 1;
+								if(i < 0) i = i + this.highlighted.getParent().getChildren().length;
+								this.highlight(this.highlighted.getParent().getChildren()[i]);
+							}
+						} else if(key=="arrowright"){
+							if(this.focussed.getParent()){
+								var i = this.highlighted.getIndex() + 1;
+								if(i == this.highlighted.getParent().getChildren().length) i = 0;
+								this.highlight(this.highlighted.getParent().getChildren()[i]);
+								}
+						} else if(key=="arrowup"){
+							this.setFocussed(this.highlighted);
+							if(this.focussed.getChildren().length > 0)
+							this.highlight(this.focussed.getChildren()[0]);
+						} else if (key=="arrowdown"){
+							this.highlight(this.focussed);
+							if(this.focussed.getParent())
+							this.setFocussed(this.focussed.getParent());
 						
+						}
 					}
-					
 				});
             }
             __getNodeShapeClass(VIZ){
@@ -170,7 +177,6 @@
 			}
 			
 			highlight(b){
-				console.log(this.highlighted);
 				this.highlighted.unhighlight();
 				this.highlighted = b;
 				this.highlighted.highlight();
