@@ -126,17 +126,18 @@
 			
 			highlight(){
 				this.addShape(this.lit);
+				this.lit.setZ(2);
 			}
 			
 			unhighlight(){
 				this.removeShape(this.lit);
 			}
-        }
+		}
         class Visualisation extends Visualisation2d{
             constructor(container, tree, options){
                 super(container, tree, options);
-				this.focussed = this.getShapesRoot();
-				this.highlighted = this.getShapesRoot();
+				this.focussed = this.getShapesRoot()[0];
+				this.highlighted = this.getShapesRoot()[0];
 				
 				this.onKeyPress(function(down, key, event){
 					if(key="left"){
