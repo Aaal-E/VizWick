@@ -62,8 +62,8 @@
                 return new (this.__getClass())(this.getGraphics(), node, scale);
             }
             
-            __setupConnection(parent, children, first){
-                if(parent && first){
+            __connectParent(parent){
+                if(parent){ //doesn't have a parent if root
                     //Set up the correct location for your node
                     //I will simply devide the space equally
                     var spaceWidth = 600;   //with scale 1, the children have 600 pixels of space
