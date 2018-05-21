@@ -15,7 +15,7 @@
               this.gfx.drawPolygon(this.points);
               this.gfx.endFill();
 
-              this.gfx.hitArea = new PIXI.Polygon(points);
+              this.gfx.hitArea = new PIXI.Polygon(this.points);
           }
 
 
@@ -35,5 +35,14 @@
           }
 
           __getRadius() {
+              var radius = 0;
+              for(var i = 0; i < this.points.length - 1; i += 2) {
+                  var corner = new Vec(this.points[i], this.points[i+1], 0);
+                  var dist = Math.abs(corner.getLength() - this.getWorldLoc().getLength());
+                  if (dist > radius) {
+                      radius = dist;
+                  }
+              }
+              return radius;
           }
     }
