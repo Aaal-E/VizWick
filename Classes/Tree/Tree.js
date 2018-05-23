@@ -13,7 +13,7 @@ class Tree{
 	constructor(input){
 		console.log("Constructing tree");
 		this.root = new TreeNode(input);
-		this.root.setTree(this);
+		this.root.__setTree(this);
 		console.log("Calculating values");
 		this.root.__calculateHeight();
 		this.root.__calculateDepth();
