@@ -16,7 +16,7 @@
         this.debug = true; //shows the fps coounter
         
         //the visualisation class that you create
-        var initWidth = 400;
+        var initWidth = 30;
         class NodeShape extends VIZ2D.NodeShape{
             constructor(gfx, node, scale){
                 super(gfx, node, function(){
@@ -25,27 +25,15 @@
                 this.setScale(this.scale); //update the actual shape scale
                 
                 //create primary circle shape
+				this.color = node.getDepth()/node.getTree().getHeight()
                 this.circle = new VIZ2D.Circle(gfx, 30, 0xff0000);
                 this.addShape(this.circle);
-                
-                //create return button cicle shape
-                this.ret = new VIZ2D.Circle(gfx, 10, 0x00ff00);
-                this.ret.setLoc(-20, 0);
-                this.addShape(this.ret);
-                var This = this;
-                this.ret.onClick(function(){ //select parent when this is clicked
-                    This.createParent();
-                    var p = This.getParent();
-                    if(p) p.focus();
-                    return true;
-                });
-                
-                this.onClick(function(){
+				
+				this.onClick(function(){
                     this.focus();
                 });
+				
                 
-                //update expanded (if there are no children to start with)
-                this.__stateChanged("expanded");
             }
             
             __stateChanged(field, val, oldState){
@@ -62,15 +50,22 @@
                 if(field=="expanded")
                     this.circle.setColor(this.state.expanded?0x0000ff:0xff0000)
             }
-            __setupConnection(parent, children, first){
-                var parent = this.getParent();
-                if(parent && first){
+            __connectParent(parent){
+                if(parent){
 					var offset = 0;
-					for (var i=0;i<this.getIndex(); i++)
+					for (var i=0;i<this.getIndex(); i++){
 						offset = offset + parent.getChildren()[i].scale;
-						
-                    var w = (-parent.scale/2 + offset + 0.5*this.scale)*initWidth;
-                    this.setLoc(new VIZ2D.Vec(parent.getLoc()).add(w, -130*parent.scale, 0));
+					}
+					this.angle = 0
+					this.angle =((offset + 0.5*this.scale)/parent.scale)
+					this.setAngle((this.angle*2+0.5)*Math.PI)
+					var w = initWidth * parent.scale
+                    this.setLoc(new VIZ2D.Vec(parent.getLoc()).add(w*Math.cos(this.angle*2*Math.PI), w*Math.sin(this.angle*2*Math.PI), 0));
+                    
+                    //could have been: (though your sin and cos are swapped...)
+                    // this.setLoc(new VIZ.Vec(w, 0).setAngle(this.angle*2*Math.PI).add(parent.getLoc()));
+                    //so:
+                    // this.setLoc(new VIZ.Vec(w, 0).setAngle((-this.angle*2+0.5)*Math.PI).add(parent.getLoc()));
                 }
             }
             __createNodeShape(node){
@@ -96,10 +91,16 @@
         class Visualisation extends Visualisation2d{
             constructor(container, tree, options){
                 super(container, tree, options);
+				this.updateScreen();
             }
             __getNodeShapeClass(VIZ){
                 return NodeShape;
             }
+			
+			//update the current state of the screen
+			updateScreen(){
+				
+			}
         }
         
         //visualisation setup code that will be somewhere else eventually and that you can ignore
