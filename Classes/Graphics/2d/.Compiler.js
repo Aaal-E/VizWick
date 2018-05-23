@@ -19,11 +19,13 @@ Compiler.compile([
     "Graphics.js",
     "Shape.js",
     
-    "Shapes/Circle.js",
     "Shapes/CompoundShape.js",
     "Shapes/ShapeGroup.js",
     "Shapes/NodeShape.js",
     "Shapes/HtmlShape.js",
+    
+    "Shapes/Circle.js",
+    "Shapes/Line.js",
     
     "Visualisation.js",
 ], [".Compiled.js", "../../../Tests/Visualisations/Test environment/visualisation.js"]);

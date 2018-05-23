@@ -33,6 +33,10 @@ class Cuboid3d extends Shape3d{
         this.setSize(this.getSize());
         return this;
     }
+    getWorldScale(){
+        cube.mesh.getWorldScale(vec3);
+        return vec3.x/this.size.getX();
+    }
     
     //change size
     setSize(width, height, depth){
@@ -41,5 +45,13 @@ class Cuboid3d extends Shape3d{
     }
     getSize(){
         return this.size;
+    }
+    
+    //the radius to be used for the AABB
+    __getRadius(){  
+        var x = this.size.getX()/2;
+        var y = this.size.getY()/2;
+        var z = this.size.getZ()/2;
+        return Math.sqrt(x*x + y*y + z*z)*this.getScale();
     }
 }

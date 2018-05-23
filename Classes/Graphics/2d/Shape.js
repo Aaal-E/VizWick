@@ -63,7 +63,8 @@ class Shape2d extends AbstractShape{
                     data.stopPropagation();
             };
             var keyPress = function(data){
-                if(This.__triggerKeyPress(data.data.originalEvent.type=="keydown", data.data.originalEvent.key, data))
+                var key = data.data.originalEvent.key;
+                if(This.__triggerKeyPress(data.data.originalEvent.type=="keydown", key?key.toLowerCase():key, data))
                     data.stopPropagation();
             };
             this.gfx.on('mousedown', mouseDown)
@@ -116,6 +117,16 @@ class Shape2d extends AbstractShape{
         }
         return this.getLoc();
     }
+    getWorldScale(){
+        if(this.parentShape)
+            return this.getScale()*this.getWorldScale();
+        return super.getWorldScale();
+    }
+    getWorldAngle(){
+        if(this.parentShape)
+            return this.getAngle()+this.getWorldAngle();
+        return super.getWorldAngle();
+    }
     
     //method alias
     setAngle(angle){
@@ -128,16 +139,12 @@ class Shape2d extends AbstractShape{
     //update color
     setColor(color){
         super.setColor(color);
-        this.setAlpha(1-(Math.floor(color/0xffffff)-1)/255);
         this.__redraw();
         return this;
     }
     setAlpha(alpha){
         this.gfx.alpha = alpha;
-        return this;
-    }
-    getAlpha(){
-        return this.gfx.alpha;
+        return super.setAlpha(alpha);
     }
     
     //enable/disabling interactions
