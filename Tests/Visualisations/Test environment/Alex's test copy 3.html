@@ -44,6 +44,7 @@
             constructor(gfx, node, scale){
                 super(gfx, node, function(){
                     this.scale = scale||1;
+					this.angle = 0.5;
                 });
                 this.setScale(this.scale); //update the actual shape scale
                 
@@ -51,6 +52,8 @@
 				this.color = HSVtoInt(this.getDepth()/6, 1, 1);
                 this.circle = new VIZ2D.Circle(gfx, 30, this.color);
                 this.addShape(this.circle);
+				this.text = new VIZ2D.HtmlShape(gfx, node.getName(), 0x000000);
+				this.text.setScale(2);
 				
 				//this.onClick(function(){
                 //    this.focus();
@@ -112,15 +115,37 @@
         class Visualisation extends Visualisation2d{
             constructor(container, tree, options){
                 super(container, tree, options);
-				this.renderDepth = 3
+				this.renderdepth = 2
+				this.mouseloc = null
 				this.onMouseScroll(function(amount, event) {
 						this.camera.setScale(this.camera.getScale()*Math.pow(1.1,amount/100));
-						if(this.camera.getScale() < 1) this.camera.setScale(1);
-						this.updateScreen();
-						console.log(this.getMouseLoc());
-						this.camera.setLoc(this.camera.getLoc().add(this.getMouseLoc().mul(amount/(this.camera.getScale()*250))));
-						
-						//this.renderdepth = Math.sqrt(camera.getScale())/4;
+						if(this.camera.getScale() < 1) this.camera.setScale(1);{
+							this.updateScreen();
+						}
+						if(amount>0){
+							this.camera.setLoc(this.camera.getLoc().add(new VIZ2D.Vec(this.getMouseLoc()).sub(this.camera.getLoc()).mul(0.2)));
+						}
+						if(amount<0){
+							this.camera.setLoc(this.camera.getLoc().add(new VIZ2D.Vec(this.camera.getLoc()).sub(this.getMouseLoc()).mul(0.2)));
+						}
+						this.renderdepth = 1/this.camera.getScale();
+
+				});
+				this.onMouseMove(function(loc, event){
+					if(this.pressed){
+						if(this.mouseloc){
+							var delta = this.camera.translateScreenToWorldLoc(loc).sub(this.mouseloc);
+							this.camera.setLoc(this.camera.getLoc().add(new VIZ2D.Vec(delta).mul(-1)));;
+						}
+					}
+					this.mouseloc = this.camera.translateScreenToWorldLoc(loc);
+				});
+				this.onMousePress(function(down,event){
+					if(down){
+						this.pressed = true;
+					} else {
+						this.pressed = false;
+					}
 				});
 				
 				this.updateScreen();
@@ -131,16 +156,14 @@
 			
 			//update the current state of the screen
 			updateScreen(){
+				this.shapes.root[0].destroyDescendants(1);
 				this.loadShape(this.shapes.root[0])
 			}
 			
 			loadShape(shape){
-				console.log(shape);
-				if(-100<this.camera.translateWorldToScreenLoc(shape.getWorldLoc()).x < this.getCanvas().width+100 &&
-				   -100<this.camera.translateWorldToScreenLoc(shape.getWorldLoc()).y < this.getCanvas().heigth+100 &&
-				   shape.getDepth() < this.renderDepth){
+				if(shape.getScale() > this.renderdepth /*&& shape.onScreen()*/){
 					shape.createDescendants(2);
-					for(i=0;i<shape.getChildren().length;i++){
+					for(var i=0;i<shape.getChildren().length;i++){
 						this.loadShape(shape.getChildren()[i]);
 					}
 				}
@@ -151,7 +174,7 @@
         var createTree = function(name, height){
             var children = [];
             if(height>0){
-                var childCount = Math.floor(Math.random()*3)+1;
+                var childCount = Math.floor(Math.random()*4)+1;
                 for(var i=0; i<childCount; i++){
                     children.push(createTree(name+"-"+i, height-1));
                 }
