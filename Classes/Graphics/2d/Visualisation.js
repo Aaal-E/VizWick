@@ -5,14 +5,13 @@
 */
 class Visualisation2d extends Graphics2d{
     constructor(container, tree, options, preInit){
-        if(preInit) preInit.call(this);
-        super(container);
+        super(null, null, container, preInit);
         this.__setupVisualisation(tree, options);
     }
     
-    //disposal
-    destroy(){
-        $(window).off("mouseup", this.DOMEventListeners.mouseUp);
+    //disposal, starts the removing of shapes, and removes the entire vis when done
+    destroy(callback){
+        this.__destroy(callback);
         super.destroy();
     }
     
@@ -23,7 +22,6 @@ class Visualisation2d extends Graphics2d{
         var shape = new clas(this, node);
         return shape.add();
     }
-    
 }
 
 //copy methods of abstractVisualisation
@@ -48,5 +46,6 @@ Visualisation2d.classes = window.VIZ2D = {
     HtmlShape: HtmlShape2d,
     
     //normal shapes
-    Circle: Circle2d
+    Circle: Circle2d,
+    Line: Line2d
 };

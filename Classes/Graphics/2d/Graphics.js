@@ -4,8 +4,8 @@
     Starting Date: 28/04/2018
 */
 class Graphics2d extends AbstractGraphics{
-    constructor(width, height, container){
-        super(width, height, container);
+    constructor(width, height, container, preInit){
+        super(width, height, container, preInit);
         
         //create the graphics environment
         this.app = new PIXI.Application(this.getWidth(), this.getHeight(), {transparent: true, antialias:true});
@@ -22,6 +22,7 @@ class Graphics2d extends AbstractGraphics{
             This.app.renderer.resize(newSize.width, newSize.height);
             
             This.size = newSize;
+            This.stage.hitArea = new PIXI.Rectangle(-This.getWidth()/2, -This.getHeight()/2, This.getWidth(), This.getHeight()); //update hitbox for mouse interaction
             
             This.camera.__updateLoc();
         });
@@ -78,7 +79,8 @@ class Graphics2d extends AbstractGraphics{
                 This.__triggerMouseScroll(data.data.originalEvent.originalEvent.wheelDeltaY, data);
             };
             var keyPress = function(data){
-                This.__triggerKeyPress(data.data.originalEvent.type=="keydown", data.data.originalEvent.key, data);
+                var key = data.data.originalEvent.key;
+                This.__triggerKeyPress(data.data.originalEvent.type=="keydown", key?key.toLowerCase():key, data);
             };
             this.app.stage.interactive = true;
             this.app.stage
@@ -132,16 +134,16 @@ class Graphics2d extends AbstractGraphics{
         this.camera = new Camera2d(this);
     }
     
+    getCanvas(){
+        return this.getContainer().find("canvas.pixi");
+    }
+    
     //disposal
     destroy(){
         $(window).off('mousewheel', this.DOMEventListeners.scroll);
         $(window).off('keydown', this.DOMEventListeners.keypress);
         $(window).off('keyup', this.DOMEventListeners.keypress);
         super.destroy();
-    }
-    
-    getCanvas(){
-        return this.getContainer().find("canvas.pixi");
     }
     
     //start/stop rendering

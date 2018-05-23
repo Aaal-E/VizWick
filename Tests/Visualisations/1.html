@@ -32,6 +32,7 @@
         <script src="../../Classes/Graphics/2d/Graphics.js"></script>
         <script src="../../Classes/Graphics/2d/Shape.js"></script>
         <script src="../../Classes/Graphics/2d/Shapes/Circle.js"></script>
+        <script src="../../Classes/Graphics/2d/Shapes/Line.js"></script>
         <script src="../../Classes/Graphics/2d/Shapes/CompoundShape.js"></script>
         <script src="../../Classes/Graphics/2d/Shapes/ShapeGroup.js"></script>
         <script src="../../Classes/Graphics/2d/Shapes/NodeShape.js"></script>
@@ -82,6 +83,11 @@
         class Visualisation extends Visualisation2d{
             constructor(container, tree, options){
                 super(container, tree, options);
+                var func = this.func || function(){};
+                
+                func();
+                
+                
                 this.mouseSelected = null;
             }
             __onUpdate(deltaTime){
@@ -128,10 +134,12 @@
                         this.setScale(this.scale);
                         
                         //create primary circle shape
+                        this.line = new VIZ.Line(gfx, new VIZ.XYZ(0, 0), new VIZ.XYZ(0, 0), 10, 0xffffff);
+                        // this.addShape(this.line);
                         this.circle = new VIZ.Circle(gfx, 30, 0xff0000);
                         this.addShape(this.circle);
                         
-                        this.setAngle(Math.random()-0.5);
+                        this.setAngle(Math.random()-0.1);
                         
                         //mouse events
                         this.onClick(function(){
@@ -174,12 +182,16 @@
                         }
                         
                         if(this.circle)
-                            this.circle.setColor(this.state.expanded?0x0000ff:0xff0000);
+                            this.circle.setColor(this.state.expanded?0x900000ff:0xff0000);
                     }
                     __connectParent(parent){
                         if(parent){
                             var w = (-parent.scale/2 + (this.getIndex()+0.5)*this.scale)*initWidth;
                             this.targetLoc = new VIZ.XYZ(parent.targetLoc).add(w, -130*parent.scale, this.getZ());
+                            var This = this;
+                            parent.getLoc().onChange(function(){
+                                This.line.getEndPoint().set(this).setZ(-1);
+                            });
                         }else{
                             this.targetLoc = new VIZ.XYZ();
                         }

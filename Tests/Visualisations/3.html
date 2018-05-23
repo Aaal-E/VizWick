@@ -1,43 +1,45 @@
 <htmL>
     <head>
-        <!--<script src="../../Classes/Tree/.Compiled.js"></script>-->
-        <!--<script src="../../Classes/Graphics/2d/.Compiled.js"></script>-->
-        <!--<script src="../../Classes/GUI/resize.js"></script>-->
-        
-        
-        <!--libraries-->
-        <script src="../../Libraries/jQuery.js"></script>
-        <script src="../../Libraries/pixi.min.js"></script>
-        <script src="../../Libraries/pixiLayers.js"></script>
-        <script src="../../Libraries/stats.js"></script>
-        <script src="../../Libraries/RBush-3d.js"></script>
-        
-        <!--resize system-->
+        <script src="../../Classes/Tree/.Compiled.js"></script>
+        <script src="../../Classes/Graphics/2d/.Compiled.js"></script>
         <script src="../../Classes/GUI/resize.js"></script>
         
+        <!--libraries-->
+        <!--<script src="../../Libraries/jQuery.js"></script>-->
+        <!--<script src="../../Libraries/pixi.min.js"></script>-->
+        <!--<script src="../../Libraries/pixiLayers.js"></script>-->
+        <!--<script src="../../Libraries/stats.js"></script>-->
+        <!--<script src="../../Libraries/RBush-3d.js"></script>-->
+        
+        <!--resize system-->
+        <!--<script src="../../Classes/GUI/resize.js"></script>-->
+        
         <!--Alex's tree system-->
-        <script src="../../Classes/Tree/Tree.js"></script>
-        <script src="../../Classes/Tree/TreeNode.js"></script>
+        <!--<script src="../../Classes/Tree/Tree.js"></script>-->
+        <!--<script src="../../Classes/Tree/TreeNode.js"></script>-->
         
         <!--graphics interface-->
-        <script src="../../Classes/Graphics/Utils/XYZ.js"></script>
-        <script src="../../Classes/Graphics/Utils/Vec.js"></script>
-        <script src="../../Classes/Graphics/Options.js"></script>
+        <!--<script src="../../Classes/Graphics/Utils/XYZ.js"></script>-->
+        <!--<script src="../../Classes/Graphics/Utils/Vec.js"></script>-->
+        <!--<script src="../../Classes/Graphics/Options.js"></script>-->
         
-        <script src="../../Classes/Graphics/AbstractCamera.js"></script>
-        <script src="../../Classes/Graphics/AbstractGraphics.js"></script>
-        <script src="../../Classes/Graphics/AbstractShape.js"></script>
+        <!--<script src="../../Classes/Graphics/AbstractCamera.js"></script>-->
+        <!--<script src="../../Classes/Graphics/AbstractGraphics.js"></script>-->
+        <!--<script src="../../Classes/Graphics/AbstractShape.js"></script>-->
+        <!--<script src="../../Classes/Graphics/AbstractVisualisation.js"></script>-->
+        <!--<script src="../../Classes/Graphics/AbstractNodeShape.js"></script>-->
         
         <!--2d graphics api-->
-        <script src="../../Classes/Graphics/2d/Camera.js"></script>
-        <script src="../../Classes/Graphics/2d/Graphics.js"></script>
-        <script src="../../Classes/Graphics/2d/Shape.js"></script>
-        <script src="../../Classes/Graphics/2d/Shapes/Circle.js"></script>
-        <script src="../../Classes/Graphics/2d/Shapes/CompoundShape.js"></script>
-        <script src="../../Classes/Graphics/2d/Shapes/ShapeGroup.js"></script>
-        <script src="../../Classes/Graphics/2d/Shapes/NodeShape.js"></script>
-        <script src="../../Classes/Graphics/2d/Shapes/HtmlShape.js"></script>
-        <script src="../../Classes/Graphics/2d/Visualisation.js"></script>
+        <!--<script src="../../Classes/Graphics/2d/Camera.js"></script>-->
+        <!--<script src="../../Classes/Graphics/2d/Graphics.js"></script>-->
+        <!--<script src="../../Classes/Graphics/2d/Shape.js"></script>-->
+        <!--<script src="../../Classes/Graphics/2d/Shapes/Circle.js"></script>-->
+        <!--<script src="../../Classes/Graphics/2d/Shapes/Line.js"></script>-->
+        <!--<script src="../../Classes/Graphics/2d/Shapes/CompoundShape.js"></script>-->
+        <!--<script src="../../Classes/Graphics/2d/Shapes/ShapeGroup.js"></script>-->
+        <!--<script src="../../Classes/Graphics/2d/Shapes/NodeShape.js"></script>-->
+        <!--<script src="../../Classes/Graphics/2d/Shapes/HtmlShape.js"></script>-->
+        <!--<script src="../../Classes/Graphics/2d/Visualisation.js"></script>-->
     </head>
     <body>
         <div class=container>
@@ -123,8 +125,8 @@
                         this.__updateAABB();
                         
                         //dragging
-                        this.onMouseEvent(function(type){
-                            if(type=="down"){
+                        this.onMousePress(function(down, event){
+                            if(down){
                                 gfx.dragShape(this);
                             }
                         });
@@ -185,12 +187,10 @@
                         }
                     }
                     
-                    __setupConnection(first){
-                        if(first){
-                            // this.setLoc((Math.random()-0.5)*gfx.getWidth(), (Math.random()-0.5)*gfx.getHeight());
-                            
+                    __connectParent(parent){
+                        // this.setLoc((Math.random()-0.5)*gfx.getWidth(), (Math.random()-0.5)*gfx.getHeight());
+                        if(parent) //not the root
                             this.setLoc(new VIZ.Vec(0, this.getDepth()*500).setAngle(Math.random()*Math.PI*2));
-                        }
                     }
                     
                     __createNodeShape(node){

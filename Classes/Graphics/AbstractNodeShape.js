@@ -4,7 +4,7 @@
     Starting Date: 16/5/2018, but the content was initially part of 2d/Shapes/NodeShape.js
 */
 class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete shape
-    constructor(){} //constructor will never be used
+    constructor(){ super(); } //constructor will never be used
     __setupNodeShape(node){  //acts as the constructor
         this.node = node;
         
@@ -32,11 +32,23 @@ class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete sha
     getNode(){
         return this.node;
     }
+    destroy(callback){
+        this.getNode().removeShape(this.graphics.getUID(), this);
+        this.destroyCallback = callback;
+        this.remove();
+        this.graphics.__deregisterShapeNode(this);
+        return this;
+    }
+    
+    getVisualisation(){
+        return this.getGraphics();
+    }
     
     //rendering related methods
     __show(){}                                  //method to be extended to animate the appearance of the node
     __hide(){return true}                       //method to be extended to animate the dissapearance of the node
     __stateChanged(field, val, oldState){}      //method to be extended to update the visuals to represent the state
+    __connectParent(parent){}                   //method to be extended to connect the parent shape
     
     __changeState(field, value){
         var oldState = Object.assign({}, this.state);
@@ -59,6 +71,7 @@ class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete sha
     __init(){  //initialise node connection
         var UID = this.graphics.getUID();
         var prevShape = this.node.getShape(UID);
+        this.graphics.__registerShapeNode(this);
         
         if(prevShape==this) return; //this shape has already been set up
         
@@ -67,7 +80,64 @@ class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete sha
             prevShape.remove();
         }
         
+        
         this.node.addShape(UID, this);
+    }
+    
+    //adding/removing
+    __addNode(){
+        //register shape as root and leave, as no parent or children are set up yet
+        this.graphics.__registerShapeLeave(this);
+        this.graphics.__registerShapeRoot(this);
+        if(this.__getChildNodes().length!=this.children.length)
+            this.graphics.__registerShapeCollapsed(this);
+        
+        //connect the parent and child nodes
+        var parent = this.__getParentFromNode(true);
+        if(parent) this.__setParent(parent);
+        
+        var children = this.__getChildrenFromNode(true);
+        for(var i=0; i<children.length; i++)
+            this.__addChild(children[i]);
+            
+        //update visuals for the state
+        this.__stateChanged(null, null, this.state);
+        this.__show();
+        return this;
+    }
+    __removeNode(){
+        var notFully = !this.__hide();
+        
+        //collapse the parent as not all its child nodes are shown anymore
+        parent = this.getParent();
+        if(parent) parent.__removeChild(this);
+        
+        //remove fron children
+        for(var i=0; i<this.children.length; i++)
+            this.children[i].__setParent(null);
+            
+        //clean up own relations
+        this.__setParent(null);
+        this.children = [];
+        
+        return notFully;
+    }
+    __deleteNode(){
+        //test: keep the node around, but don't render it
+        // //if the shape is deleted from the visualisation, disconnect it from the tree
+        // if(this.graphics && this.node)
+        //     this.node.removeShape(this.graphics.getUID());
+            
+        //indicate that this shape is no longer anything in tree
+        this.graphics.__deregisterShapeRoot(this);  
+        this.graphics.__deregisterShapeCollapsed(this);
+        this.graphics.__deregisterShapeLeave(this);
+        
+        if(this.destroyCallback){ //a method that listens for the destroy method to finish
+            this.destroyCallback();
+            delete this.destroyCallback;
+        }
+        return this;
     }
     
     //relation methods

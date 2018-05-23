@@ -128,7 +128,9 @@ class AbstractShape{
                             this.target.scale)
                         -this.getScale();
             this.setScaleVelo(this.getScaleVelo()*this.target.friction.scale + delta*this.target.speed.scale);
-            if(delta<0.01*this.getScale() && Math.abs(this.getScaleVelo())<0.05*this.getScale() && this.target.callback.scale){
+            if(delta<0.01*Math.max(1e-2,this.getScale()) && 
+                    Math.abs(this.getScaleVelo())<0.05*Math.max(1e-2,this.getScale()) && 
+                    this.target.callback.scale){
                 this.target.callback.scale.call(this);
                 this.target.callback.scale = null;
             }
@@ -288,10 +290,18 @@ class AbstractShape{
     //color
     setColor(color){
         this.color = color;
+        this.setAlpha(1-(Math.floor(color/0xffffff))/255);
         return this;
     }
     getColor(){
         return this.color;
+    }
+    setAlpha(alpha){
+        this.alpha = alpha;
+        return this;
+    }
+    getAlpha(){
+        return this.alpha;
     }
     
     //event handlers
@@ -406,6 +416,12 @@ class AbstractShape{
     }
     getWorldLoc(){
         return this.getLoc();
+    }
+    getWorldScale(){
+        return this.getScale();
+    }
+    getWorldAngle(){
+        return this.getAngle();
     }
     
     //add or remove from graphics
