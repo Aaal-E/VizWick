@@ -10,6 +10,7 @@
             width: 100%;
             height: 100%;
             margin: 0px;
+			background-color: black;
         }
     </style>
     <script>
@@ -32,6 +33,8 @@
                 this.addShape(this.circle);
 				this.label = new VIZ2D.Circle(gfx, 10, 0x70ff00ff);
                 this.label.setLoc(20, 20,0);
+				this.text = new VIZ2D.HtmlShape(gfx, node.getName(), 0x000000);
+				this.text.setScale(2);
 
 				
 				this.onHover(
@@ -40,10 +43,14 @@
 						    this.addShape(this.label);
 						else
 						    this.removeShape(this.label);
-					}
-				);
+						if(enter)
+							this.addShape(this.text);
+						else{
+							this.removeShape(this.text);
+						}
+				});
 				
-                //create return button cicle shape
+                //create return button circle shape
                 this.ret = new VIZ2D.Circle(gfx, 10, 0x00ff00);
                 this.ret.setLoc(-20, 0);
                 this.addShape(this.ret);
@@ -53,7 +60,7 @@
                     var p = This.getParent();
                     if(p){
 						this.getGraphics().setFocussed(p);
-						this.getGraphics().highlight(this);
+						this.getGraphics().highlight(This);
 						
 					}
                     return true;
@@ -126,11 +133,15 @@
 			
 			highlight(){
 				this.addShape(this.lit);
-				this.lit.setLoc(0,0,-1);
+				console.log(this.lit);
+				console.log(this.circle);
+				this.lit.setLoc(0,0,100);
+				this.addShape(this.text);
 			}
 			
 			unhighlight(){
 				this.removeShape(this.lit);
+				this.removeShape(this.text);
 			}
 		}
         class Visualisation extends Visualisation2d{
@@ -143,15 +154,15 @@
 					if(down){
 						console.log(key);
 						if(key=="arrowleft"){
-							if(this.focussed.getParent()){
-								var i = this.highlighted.getIndex() - 1;
+							if(this.highlighted.getParent()){
+								var i = this.highlighted.getParent().getChildren().indexOf(this.highlighted) - 1;
 								if(i < 0) i = i + this.highlighted.getParent().getChildren().length;
 								this.highlight(this.highlighted.getParent().getChildren()[i]);
 							}
 						} else if(key=="arrowright"){
-							if(this.focussed.getParent()){
-								var i = this.highlighted.getIndex() + 1;
-								if(i == this.highlighted.getParent().getChildren().length) i = 0;
+							if(this.highlighted.getParent()){
+								var i = this.highlighted.getParent().getChildren().indexOf(this.highlighted) + 1;
+								if(i >= this.highlighted.getParent().getChildren().length) i = 0;
 								this.highlight(this.highlighted.getParent().getChildren()[i]);
 								}
 						} else if(key=="arrowup"){
@@ -188,7 +199,7 @@
         var createTree = function(name, height){
             var children = [];
             if(height>0){
-                var childCount = Math.floor(Math.random()*3)+1;
+                var childCount = Math.floor(Math.random()*4)+1;
                 for(var i=0; i<childCount; i++){
                     children.push(createTree(name+"-"+i, height-1));
                 }

@@ -3,6 +3,9 @@
     Author: Tar van Krieken
     Starting Date: 16/05/2018
 */
+var vec3 = new THREE.Vector3(); //vector to temporarely store data
+var quaternion = new THREE.Quaternion(); //also temporary
+var euler = new THREE.Euler(); //also temporary
 class Shape3d extends AbstractShape{
     constructor(graphics, color, preInit){
         super(graphics, preInit);
@@ -32,6 +35,9 @@ class Shape3d extends AbstractShape{
                 "YZX",
             );
         });
+        
+        //data used by the hover system to support multiple pointers
+        this.__hoverCodes = [];
     }
     
     //shape creation
@@ -41,8 +47,40 @@ class Shape3d extends AbstractShape{
         return this;
     }
     __createMesh(){
-        if(this.geometry)
+        if(this.geometry){
             this.mesh = new THREE.Mesh(this.geometry, this.material);
+            this.mesh.userData = {shape: this};
+        }
+    }
+    
+    
+    //absolute coordinates, relative to the screen
+    getAbsoluteX(){
+        var camera = this.getGraphics().getCamera();
+        return camera.translateWorldToScreenLoc(this.getWorldLoc()).getX();
+    }
+    getAbsoluteY(){
+        var camera = this.getGraphics().getCamera();
+        return camera.translateWorldToScreenLoc(this.getWorldLoc()).getY();
+    }
+    
+    //world location (when in other shape)
+    getWorldLoc(){
+        this.mesh.getWorldPosition(vec3);
+        return new XYZ(vec3);
+    }
+    getWorldScale(){
+        cube.mesh.getWorldScale(vec3);
+        return vec3.x;
+    }
+    getWorldRot(){
+        this.mesh.getWorldQuaternion(quaternion);
+        euler.setFromQuaternion(quaternion);
+        vec3.applyQuaternion(quaternion);
+        return new XYZ(euler);
+    }
+    getWorldAngle(){
+        return this.getWorldRotation();
     }
     
     //properties
@@ -50,7 +88,17 @@ class Shape3d extends AbstractShape{
         this.material.color.setHex(color);
         return super.setColor(color);
     }
-    
+    setAlpha(alpha){
+        this.material.opacity = alpha;
+        this.material.transparent = alpha!=1;
+        return super.setAlpha(alpha);
+    }
+    setScale(scale){
+        super.setScale(scale);
+        if(this.mesh)
+            this.mesh.scale.set(scale, scale, scale);
+        return this;
+    }
     
     //add to/remove from graphics
     add(){

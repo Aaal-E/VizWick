@@ -24,12 +24,15 @@
         <script src="../../Classes/Graphics/AbstractCamera.js"></script>
         <script src="../../Classes/Graphics/AbstractGraphics.js"></script>
         <script src="../../Classes/Graphics/AbstractShape.js"></script>
+        <script src="../../Classes/Graphics/AbstractVisualisation.js"></script>
+        <script src="../../Classes/Graphics/AbstractNodeShape.js"></script>
         
         <!--2d graphics api-->
         <script src="../../Classes/Graphics/2d/Camera.js"></script>
         <script src="../../Classes/Graphics/2d/Graphics.js"></script>
         <script src="../../Classes/Graphics/2d/Shape.js"></script>
         <script src="../../Classes/Graphics/2d/Shapes/Circle.js"></script>
+        <script src="../../Classes/Graphics/2d/Shapes/Line.js"></script>
         <script src="../../Classes/Graphics/2d/Shapes/CompoundShape.js"></script>
         <script src="../../Classes/Graphics/2d/Shapes/ShapeGroup.js"></script>
         <script src="../../Classes/Graphics/2d/Shapes/NodeShape.js"></script>
@@ -150,8 +153,8 @@
                         
                         return super.__onUpdate(time);
                     }
-                    __setupConnection(parent, child, first){
-                        if(first && parent){
+                    __connectParent(parent){
+                        if(parent){
                             this.setLoc((Math.random()-0.5)*gfx.getWidth(), (Math.random()-0.5)*gfx.getHeight());
                         }
                     }
