@@ -10,11 +10,34 @@
             width: 100%;
             height: 100%;
             margin: 0px;
+			background-color: black;
         }
     </style>
     <script>
         this.debug = true; //shows the fps coounter
         
+		//from: https://stackoverflow.com/a/17243070
+        function HSVtoInt(h, s, v){
+            var r, g, b, i, f, p, q, t;
+            if (arguments.length === 1) {
+                s = h.s, v = h.v, h = h.h;
+            }
+            i = Math.floor(h * 6);
+            f = h * 6 - i;
+            p = v * (1 - s);
+            q = v * (1 - f * s);
+            t = v * (1 - (1 - f) * s);
+            switch (i % 6) {
+                case 0: r = v, g = t, b = p; break;
+                case 1: r = q, g = v, b = p; break;
+                case 2: r = p, g = v, b = t; break;
+                case 3: r = p, g = q, b = v; break;
+                case 4: r = t, g = p, b = v; break;
+                case 5: r = v, g = p, b = q; break;
+            }
+            return (Math.round(r * 255)<<16) + (Math.round(g * 255)<<8) + Math.round(b * 255);
+        }
+		
         //the visualisation class that you create
         var initWidth = 30;
         class NodeShape extends VIZ2D.NodeShape{
@@ -25,13 +48,13 @@
                 this.setScale(this.scale); //update the actual shape scale
                 
                 //create primary circle shape
-				this.color = node.getDepth()/node.getTree().getHeight()
-                this.circle = new VIZ2D.Circle(gfx, 30, 0xff0000);
+				this.color = HSVtoInt(this.getDepth()/6, 1, 1);
+                this.circle = new VIZ2D.Circle(gfx, 30, this.color);
                 this.addShape(this.circle);
 				
-				this.onClick(function(){
-                    this.focus();
-                });
+				//this.onClick(function(){
+                //    this.focus();
+                //});
 				
                 
             }
@@ -47,8 +70,6 @@
                     this.destroyAncestors(2, true); //destroys any ancestors below those 2 layers
                 }
                 
-                if(field=="expanded")
-                    this.circle.setColor(this.state.expanded?0x0000ff:0xff0000)
             }
             __connectParent(parent){
                 if(parent){
@@ -59,7 +80,7 @@
 					this.angle = 0
 					this.angle =((offset + 0.5*this.scale)/parent.scale)
 					this.setAngle((this.angle*2+0.5)*Math.PI)
-					var w = initWidth * parent.scale
+					var w = initWidth * (parent.scale*0.9 - this.scale)
                     this.setLoc(new VIZ2D.Vec(parent.getLoc()).add(w*Math.cos(this.angle*2*Math.PI), w*Math.sin(this.angle*2*Math.PI), 0));
                     
                     //could have been: (though your sin and cos are swapped...)
@@ -82,7 +103,7 @@
                     if(parentShape)             //if such a shape exists
                         parentScale = parentShape.scale; //copy its scale
                         
-                    scale = parentScale * node.getSubtreeNodeCount()/node.getParent().getSubtreeNodeCount();
+                    scale = parentScale*0.9 / parent.getChildren().length;
                 }
                 
                 return new (this.__getClass())(this.getGraphics(), node, scale);
@@ -91,6 +112,17 @@
         class Visualisation extends Visualisation2d{
             constructor(container, tree, options){
                 super(container, tree, options);
+				this.renderDepth = 3
+				this.onMouseScroll(function(amount, event) {
+						this.camera.setScale(this.camera.getScale()*Math.pow(1.1,amount/100));
+						if(this.camera.getScale() < 1) this.camera.setScale(1);
+						this.updateScreen();
+						console.log(this.getMouseLoc());
+						this.camera.setLoc(this.camera.getLoc().add(this.getMouseLoc().mul(amount/(this.camera.getScale()*250))));
+						
+						//this.renderdepth = Math.sqrt(camera.getScale())/4;
+				});
+				
 				this.updateScreen();
             }
             __getNodeShapeClass(VIZ){
@@ -99,7 +131,19 @@
 			
 			//update the current state of the screen
 			updateScreen(){
-				
+				this.loadShape(this.shapes.root[0])
+			}
+			
+			loadShape(shape){
+				console.log(shape);
+				if(-100<this.camera.translateWorldToScreenLoc(shape.getWorldLoc()).x < this.getCanvas().width+100 &&
+				   -100<this.camera.translateWorldToScreenLoc(shape.getWorldLoc()).y < this.getCanvas().heigth+100 &&
+				   shape.getDepth() < this.renderDepth){
+					shape.createDescendants(2);
+					for(i=0;i<shape.getChildren().length;i++){
+						this.loadShape(shape.getChildren()[i]);
+					}
+				}
 			}
         }
         
