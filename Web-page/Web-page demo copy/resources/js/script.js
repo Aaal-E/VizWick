@@ -33,10 +33,10 @@ $(document).ready(function () {
         $(imgtab).animate((count==1)?large:small);
         count = 1-count;
     });
-    
+
     showSlides(slideIndex);
-    
-    
+
+
     $(".nav").children("a").click(function () {
         $(".active").removeClass("active");
         $(this).addClass("active");
@@ -45,13 +45,9 @@ $(document).ready(function () {
         });
         $("#p" + this.id).fadeIn(200, function () {
             $(this).addClass("pactive");
-            
-            //init visualisation
-            if($(this).is("#p2"))
-                setupVisualisations();
         });
     });
-    
+
     //setup resize
     $(".resizeDiv").resizeContainer();
     $(".column1").resizeContainer({vertical:true});
@@ -111,19 +107,19 @@ class VisualisationPhysics extends Visualisation2d{
                 super(gfx, node, function(){
                     this.size = size||30;
                 });
-                
+
                 //create primary circle shape
                 this.color = HSVtoInt(this.getDepth()/12, 1, 1);
                 this.circle = new VIZ.Circle(gfx, this.size, this.color);
                 this.addShape(this.circle);
                 this.speedFactor = 2;
-                
+
                 this.__registerUpdateListener();
-                
+
                 //update aabb
                 this.storeInSpatialTree = true;
                 this.__updateAABB();
-                
+
                 //dragging
                 this.onMouseEvent(function(type){
                     if(type=="down"){
@@ -138,7 +134,7 @@ class VisualisationPhysics extends Visualisation2d{
             __onUpdate(time){
                 if(!this.state.dragged){
                     var force = new VIZ.Vec();
-                
+
                     //compute force from parent
                     var parent = this.getParent();
                     if(parent){
@@ -149,8 +145,8 @@ class VisualisationPhysics extends Visualisation2d{
                         var delta = this.getVecTo(target);
                         force.add(delta.mul(0.9));
                     }
-                    
-                    
+
+
                     // compute force from collisions
                     var closeCircles = this.search(this.size);
                     for(var i=0; i<closeCircles.length; i++){
@@ -162,57 +158,57 @@ class VisualisationPhysics extends Visualisation2d{
                             force.sub(delta.setLength(strength*20).div(Math.pow(1.5, cc.getDepth?cc.getDepth():1)));
                         }
                     }
-                    
+
                     if(this.__getParentNode()!=null){ //don't do for root
                         this.getVelo().mul(0.7).add(force);
-                        
+
                         //set the correct angle
                         var p = this.getParent();
                         this.setAngle(this.getVecTo(p).getAngle());
                     }
                 }
-                
+
                 // if(this.__getParentNode()!=null){ //don't do for root
                 //     var p = this.getParent();
                 //     this.setAngle(this.getVecTo(p).getAngle());
                 // }
-                
+
                 return super.__onUpdate(time);
             }
-            
-            
+
+
             __stateChanged(field, val, oldState){
                 if(field=="dragged"){
                     this.circle.setColor(this.state.dragged?0xff0000:this.color);
                 }
             }
-            
+
             __setupConnection(first){
                 if(first){
                     // this.setLoc((Math.random()-0.5)*gfx.getWidth(), (Math.random()-0.5)*gfx.getHeight());
-                    
+
                     this.setLoc(new VIZ.Vec(0, this.getDepth()*500).setAngle(Math.random()*Math.PI*2));
                 }
             }
-            
+
             __createNodeShape(node){
                 //Calculate the scale we want the node shape to have:
                 var size = 1;  //just as a placeholder
-                
+
                 //First retrieve the scale of the parent
                 var ID = this.graphics.getUID();
                 var parent = node.getParent();  //this will be a node
                 if(parent){                     //check if it isn't the root
                     var parentSize = 1;        //default scale
-                    
+
                     var parentShape = parent.getShape(ID); //get the nodeShape attached to parent
                     if(parentShape)             //if such a shape exists
                         parentSize = parentShape.size; //copy its scale
-                    
+
                     //Sets the scale n times as small as its parent, with n being the childcount
-                    size = parentSize/Math.pow(parent.getChildren().length, 1/2.4);    
+                    size = parentSize/Math.pow(parent.getChildren().length, 1/2.4);
                 }
-                
+
                 //Create a new instance of your NodeShape and pass the scale
                 return new (this.__getClass())(this.getGraphics(), node, size);
             }
@@ -228,13 +224,13 @@ class VisualisationAnimated extends Visualisation2d{
     __onUpdate(deltaTime){
         super.__onUpdate(deltaTime);
         var range = 15;
-        
+
         var camera = this.getCamera();
         var scale = camera.getScale();
         var mouseLoc = this.getMouseLoc();
-        
+
         var nodeShapes = this.search(mouseLoc, range/scale);
-        
+
         var closest = {shape:null, dist:Infinity};
         for(var i=0; i<nodeShapes.length; i++){
             var nodeShape = nodeShapes[i];
@@ -242,15 +238,15 @@ class VisualisationAnimated extends Visualisation2d{
             if(dist<closest.dist && dist<=range/scale)
                 closest = {shape:nodeShape, dist:dist};
         }
-        
+
         if(this.mouseSelected != closest.shape){
             if(this.mouseSelected)
                 this.mouseSelected.setTargetLoc(this.mouseSelected.targetLoc, 0.6, 10, function(){
                     this.__deregisterUpdateListener();
                 }).__registerUpdateListener();
-            
+
             this.mouseSelected = closest.shape;
-            
+
             if(this.mouseSelected)
                 this.mouseSelected.setTargetLoc(function(){
                     return this.getGraphics().getMouseLoc();
@@ -268,13 +264,13 @@ class VisualisationAnimated extends Visualisation2d{
                     this.targetLoc = new VIZ.XYZ(0); //default value for the root
                 });
                 this.setScale(this.scale);
-                
+
                 //create primary circle shape
                 this.circle = new VIZ.Circle(gfx, 20, 0xff0000);
                 this.addShape(this.circle);
-                
+
                 this.setAngle(Math.random()-0.5);
-                
+
                 //mouse events
                 this.onClick(function(){
                     this.focus();
@@ -288,7 +284,7 @@ class VisualisationAnimated extends Visualisation2d{
                         return true;
                     }
                 });
-                
+
                 //hover event
                 // this.text = new VIZ.HtmlShape(gfx, "Test");
                 // this.text.setScale(2);
@@ -296,8 +292,8 @@ class VisualisationAnimated extends Visualisation2d{
                 //     if(over)
                 //         this.addShape(this.text);
                 // });
-                
-                
+
+
                 //update aabb
                 this.storeInSpatialTree = true;
                 this.__updateAABB();
@@ -305,18 +301,18 @@ class VisualisationAnimated extends Visualisation2d{
             __stateChanged(field, val, oldState){
                 if(field=="focused" && val==true){
                     camera.setTarget(this.targetLoc, this, this);
-                
+
                     this.createDescendants(4);      //creates 2 layers of descendants
                     this.destroyDescendants(4);     //destroys any descendants above those 2 layers
-                    
+
                     this.createAncestors(2);        //creates 2 layers of ancestors
                     this.destroyAncestors(2, true); //destroys any ancestors below those 2 layers
                 }
-                
+
                 if(this.circle)
                     this.circle.setColor(this.state.expanded?0x0000ff:0xff0000);
             }
-            
+
             __setupConnection(parent, child, first){
                 if(parent){
                     this.getLoc().set(parent.getLoc()).sub(0, 0, 1e-9); //initialy copy parent loc
@@ -351,7 +347,7 @@ class VisualisationAnimated extends Visualisation2d{
                 }else{
                     target = new VIZ.Vec(0, 500*camera.getScale()).addAngle(Math.random()-0.5).add(camera.getLoc());
                 }
-                
+
                 var c = 2;
                 var complete = function(){
                     if(--c==0)
@@ -360,28 +356,28 @@ class VisualisationAnimated extends Visualisation2d{
                 this.setTargetLoc(target, 0, 12, complete)
                     .setTargetScale(targetScale, 0, 8, complete)
                     .__registerUpdateListener();
-                    
+
                 super.remove(true);
             }
-            
+
             __createNodeShape(node){
                 //Calculate the scale we want the node shape to have:
                 var scale = 1;  //just as a placeholder
-                
+
                 //First retrieve the scale of the parent
                 var ID = this.graphics.getUID();
                 var parent = node.getParent();  //this will be a node
                 if(parent){                     //check if it isn't the root
                     var parentScale = 1;        //default scale
-                    
+
                     var parentShape = parent.getShape(ID); //get the nodeShape attached to parent
                     if(parentShape)             //if such a shape exists
                         parentScale = parentShape.scale; //copy its scale
-                    
+
                     //Sets the scale n times as small as its parent, with n being the childcount
-                    scale = parentScale/parent.getChildren().length;    
+                    scale = parentScale/parent.getChildren().length;
                 }
-                
+
                 //Create a new instance of your NodeShape and pass the scale
                 return new (this.__getClass())(this.getGraphics(), node, scale);
             }
@@ -397,14 +393,14 @@ class NodeShapeAngle extends VIZ2D.NodeShape{
             this.angle = 0.5;
         });
         this.setScale(this.scale);  //update the actual shape scale
-        
-		
+
+
         //create primary circle shape
         this.circle = new VIZ2D.Circle(gfx, 20, 0xff0000);
         this.addShape(this.circle);
 		this.label = new VIZ2D.Circle(gfx, 8, 0x70ff00ff);
         this.label.setLoc(12, 12,0);
-		
+
 		this.onHover(
 			function(enter){
 				if(enter)
@@ -413,7 +409,7 @@ class NodeShapeAngle extends VIZ2D.NodeShape{
 				    this.removeShape(this.label);
 			}
 		);
-		
+
         //create return button cicle shape
         this.ret = new VIZ2D.Circle(gfx, 8, 0x00ff00);
         this.ret.setLoc(-12, 0);
@@ -425,29 +421,29 @@ class NodeShapeAngle extends VIZ2D.NodeShape{
             if(p) p.focus();
             return true;
         });
-        
+
     //    this.onUpdate(function(){
     //        this.getLoc().add((Math.random()-0.5)*this.scale, (Math.random()-0.5)*this.scale);
     //    });
         this.onClick(function(){
             this.focus();
         });
-        
+
         //update expanded (if there are no children to start with)
         this.__stateChanged("expanded");
     }
-    
+
     __stateChanged(field, val, oldState){
         if(field=="focused" && val==true){
             this.getGraphics().getCamera().setTarget(this, this, this);
-            
+
             this.createDescendants(4);      //creates 2 layers of descendants
             this.destroyDescendants(4);     //destroys any descendants above those 2 layers
-            
+
             this.createAncestors(2);        //creates 2 layers of ancestors
             this.destroyAncestors(2, true); //destroys any ancestors below those 2 layers
         }
-        
+
         if(field=="expanded")
             this.circle.setColor(this.state.expanded?0x0000ff:0xff0000)
     }
@@ -462,31 +458,31 @@ class NodeShapeAngle extends VIZ2D.NodeShape{
 			this.setAngle((-this.angle*2+1)*Math.PI)
 			var w = initWidth * parent.scale
             this.setLoc(new VIZ2D.Vec(parent.getLoc()).add(w*Math.sin(this.angle*2*Math.PI), w*Math.cos(this.angle*2*Math.PI), 0));
-            
+
             //could have been: (though your sin and cos are swapped...)
             // this.setLoc(new VIZ.Vec(w, 0).setAngle(this.angle*2*Math.PI).add(parent.getLoc()));
             //so:
             // this.setLoc(new VIZ.Vec(w, 0).setAngle((-this.angle*2+0.5)*Math.PI).add(parent.getLoc()));
         }
     }
-    
+
     __createNodeShape(node){
         //Calculate the scale we want the node shape to have:
         var scale = 1;  //just as a placeholder
-        
+
         //First retrieve the scale of the parent
         var ID = this.graphics.getUID();
         var parent = node.getParent();  //this will be a node
         if(parent){                     //check if it isn't the root
             var parentScale = 1;        //default scale
-            
+
             var parentShape = parent.getShape(ID); //get the nodeShape attached to parent
             if(parentShape)             //if such a shape exists
                 parentScale = parentShape.scale; //copy its scale
-                
+
             scale = parentScale * node.getSubtreeNodeCount()/node.getParent().getSubtreeNodeCount();
         }
-        
+
         return new (this.__getClass())(this.getGraphics(), node, scale);
     }
 }
@@ -505,15 +501,15 @@ function setupVisualisations(){
         var visualisationPhysics = new VisualisationPhysics($(".resizeDiv #top_left .visContent"), tree, optionsPhysics);
         visualisationPhysics.getCamera().setScale(0.5);
         visualisationPhysics.getShapes()[0].createDescendants(10);
-        
+
         var optionsAnimated = new Options();
         var visualisationAnimated = new VisualisationAnimated($(".resizeDiv #down_left .visContent"), tree, optionsAnimated);
-        
-        
+
+
         var optionsAngle = new Options();
         var visualisationAngle = new VisualisationAngle($(".resizeDiv #down_right .visContent"), tree, optionsAngle);
-        
-        
+
+
         window.isSetUp = true;
     }
 }

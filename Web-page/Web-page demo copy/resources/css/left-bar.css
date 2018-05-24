@@ -1,11 +1,29 @@
-.statistics {
+.left-bar {
   float: left;
   width: 30%;
   padding: 5px;
   overflow:auto;
   height:70%;
+  margin-top: 5%;
 }
-span{
-  border-bottom:1px solid #000;
-  margin-left: 3%
+.upload-button{
+  width: auto;
+  padding: 5px;
+  overflow:auto;
+  background-color: #4dadf7;
+  border-radius: 10px;
+  text-align: center;
+  color: #f8f9fa;
+}
+.header{
+  text-align: center;
+  padding: 7px;
+  margin-top: auto;
+  text-decoration: underline;
+}
+.header, .upload-button{
+  display: block;
+}
+.fa-download{
+  padding: 10px;
 }

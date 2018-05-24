@@ -4,15 +4,7 @@
   padding: 5px;
   overflow:auto;
   height:calc(100% - 160px);
-}
-.header{
-  border-radius: 20px;
-  width: 30%;
-  margin-top: 100px;
-  overflow:auto;
-  height:5%;
-  overflow: hidden;
-  text-align: center;
+  margin-top: 5%;
 }
 #top_left
  {
@@ -30,6 +22,7 @@
    height:50%;
    width:50%;
    margin:auto;
+   background-color:#000000;
    overflow: auto;
  }
  #down_left
@@ -54,7 +47,7 @@
    display: run-in;
  }
 
-  #p2, #p3, #p4 ,#p5, #p6{
+#p2, #p3{
     display:none;
 }
 
