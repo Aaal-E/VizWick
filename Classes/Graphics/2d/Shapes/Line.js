@@ -15,6 +15,10 @@
                  This.__redraw();
                });
 
+               this.getRot().onChange(function() {
+                 This.__redraw();
+               })
+
                this.setStartPoint(startPoint);
 
                this.endPoint.onChange(function() {
@@ -23,12 +27,22 @@
                this.setEndPoint(endPoint);
              }
 
+             setScale(scale) {
+               super.setScale(scale);
+               this.__redraw();
+               return this;
+             }
+
            __redraw() {
                this.gfx.clear();
                this.gfx.lineStyle(this.width, this.color);
                this.gfx.moveTo(0, 0);
 
                var delta = new Vec(this.endPoint).sub(this.getWorldLoc());
+               if (this.parentShape) {
+                 delta.div(this.parentShape.getWorldScale());
+                 delta.addAngle(-this.parentShape.getWorldAngle());
+               }
                this.gfx.lineTo(delta.getX(), delta.getY());
                this.gfx.endFill();
             }

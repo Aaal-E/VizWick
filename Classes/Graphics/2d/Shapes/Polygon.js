@@ -38,7 +38,7 @@
               var radius = 0;
               for(var i = 0; i < this.points.length - 1; i += 2) {
                   var corner = new Vec(this.points[i], this.points[i+1], 0);
-                  var dist = Math.abs(corner.getLength() - this.getWorldLoc().getLength());
+                  var dist = corner.getLength();
                   if (dist > radius) {
                       radius = dist;
                   }
