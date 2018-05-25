@@ -8,7 +8,7 @@ class ShapeGroup2d extends Shape2d{
         super(graphics, null, preInit);
         this.shapes = [];
         this.radius = 0;
-        
+
         //forward location change to children (world location)
         var This = this;
         this.getLoc().onChange(function(){
@@ -19,7 +19,7 @@ class ShapeGroup2d extends Shape2d{
             for(var i=0; i<This.shapes.length; i++)
                 This.shapes[i].getLoc().__fireEvent();
         });
-        
+
         //create group (not sure why, but it seems to work)
         this.group = new PIXI.display.Group(1, true);
     }
@@ -29,7 +29,7 @@ class ShapeGroup2d extends Shape2d{
     __getGroup(){
         return this.group;
     }
-    
+
     //shape interaction
     getShapes(){
         return this.shapes;
@@ -57,6 +57,8 @@ class ShapeGroup2d extends Shape2d{
         this.__updateRadius();
         return this;
     }
+
+    //manage the radius
     __updateRadius(){
         this.radius = 0;
         for(var i=0; i<this.shapes.length; i++){
@@ -66,5 +68,12 @@ class ShapeGroup2d extends Shape2d{
     }
     __getRadius(){
         return this.radius;
+    }
+
+    //forward scale events
+    __triggerScaleChange(){
+        super.__triggerScaleChange();
+        for(var i=0; i<this.shapes.length; i++)
+            this.shapes[i].__triggerScaleChange;
     }
 }

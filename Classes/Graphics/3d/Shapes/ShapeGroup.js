@@ -8,7 +8,7 @@ class ShapeGroup3d extends Shape3d{
         super(graphics, null, preInit);
         this.shapes = [];
         this.radius = 0;
-        
+
         //forward location change to children (world location)
         var This = this;
         this.getLoc().onChange(function(){
@@ -24,7 +24,7 @@ class ShapeGroup3d extends Shape3d{
         this.mesh = new THREE.Object3D();
         this.mesh.userData = {shape: this};
     }
-    
+
     //shape interaction
     getShapes(){
         return this.shapes;
@@ -52,6 +52,8 @@ class ShapeGroup3d extends Shape3d{
         this.__updateRadius();
         return this;
     }
+
+    //manage the radius
     __updateRadius(){
         this.radius = 0;
         for(var i=0; i<this.shapes.length; i++){
@@ -61,5 +63,13 @@ class ShapeGroup3d extends Shape3d{
     }
     __getRadius(){
         return this.radius*this.getScale();
+    }
+
+
+    //forward scale events
+    __triggerScaleChange(){
+        super.__triggerScaleChange();
+        for(var i=0; i<this.shapes.length; i++)
+            this.shapes[i].__triggerScaleChange;
     }
 }
