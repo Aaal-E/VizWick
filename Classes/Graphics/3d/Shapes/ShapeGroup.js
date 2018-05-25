@@ -50,6 +50,7 @@ class ShapeGroup3d extends Shape3d{
             }
         }
         this.__updateRadius();
+        craps
         return this;
     }
 
