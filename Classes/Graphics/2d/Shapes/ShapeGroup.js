@@ -37,9 +37,11 @@ class ShapeGroup2d extends Shape2d{
     addShape(shape){
         for(var i=0; i<arguments.length; i++){
             var shape = arguments[i];
-            this.gfx.addChild(shape.gfx);
-            this.shapes.push(shape);
-            shape.__setParentShape(this);
+            if(this.shapes.indexOf(shape)==-1){
+                this.gfx.addChild(shape.gfx);
+                this.shapes.push(shape);
+                shape.__setParentShape(this);
+            }
         }
         this.__updateRadius();
         return this;
@@ -74,6 +76,6 @@ class ShapeGroup2d extends Shape2d{
     __triggerScaleChange(){
         super.__triggerScaleChange();
         for(var i=0; i<this.shapes.length; i++)
-            this.shapes[i].__triggerScaleChange;
+            this.shapes[i].__triggerScaleChange();
     }
 }

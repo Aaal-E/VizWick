@@ -134,7 +134,12 @@
                         this.setScale(this.scale);
 
                         //create primary circle shape
-                        this.line = new VIZ.Line(gfx, new VIZ.XYZ(0, 0), new VIZ.XYZ(0, 0), 10, 0xffffff);
+                        this.line = new VIZ.Line(gfx, new VIZ.XYZ(0, 0), new VIZ.XYZ(0, 0), 10, 0xffffff).setZ(-1);
+                        var This = this;
+                        this.getLoc().onChange(function(){
+                            if(!This.getParent())
+                                This.line.setEndPoint(This.getLoc());
+                        })
                         this.addShape(this.line);
                         this.circle = new VIZ.Circle(gfx, 30, 0xff0000);
                         this.addShape(this.circle);
@@ -191,7 +196,7 @@
                             this.targetLoc = new VIZ.XYZ(parent.targetLoc).add(w, -130*parent.scale, this.getZ());
                             var This = this;
                             parent.getLoc().onChange(function(){
-                                This.line.getEndPoint().set(this).setZ(-1);
+                                This.line.getEndPoint().set(this);
                             });
                         }else{
                             this.targetLoc = new VIZ.XYZ();
@@ -201,11 +206,17 @@
                         var connectedNode = this.getConnectedNodeShape();
                         //set initial location
                         if(connectedNode){  //copy connected node if available
-                            this.getLoc().set(connectedNode.getLoc()).sub(0, 0, 1e-9);
+                            this.getLoc().set(connectedNode.getLoc()).sub(0, 0, (connectedNode==this.getParent()?1:-1)*1e-9);
                             this.setScale(connectedNode.getScale());
                         }else{
                             this.setLoc(this.targetLoc);
                             this.setScale(0);
+                        }
+
+                        //set line end point
+                        if(this.getParent()){
+                            this.line.getEndPoint().set(this.getParent().getLoc());
+                        }else{
                         }
 
                         //set location to move to
@@ -274,6 +285,7 @@
             var children = [];
             if(height>0){
                 var childCount = Math.floor(Math.random()*3)+1;
+                // var childCount = 2;
                 for(var i=0; i<childCount; i++){
                     children.push(createTree(name+"-"+i, height-1));
                 }

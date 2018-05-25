@@ -7,7 +7,7 @@ class CompoundShape2d extends Shape2d{
     constructor(graphics, preInit){
         super(graphics, null, preInit);
         this.shapes = [];
-        
+
         //forward location change to children (world location)
         var This = this;
         this.getLoc().onChange(function(){
@@ -22,13 +22,15 @@ class CompoundShape2d extends Shape2d{
     __createGfx(){
         return new PIXI.Sprite();
     }
-    
+
     //updating shapes
     addShape(shape){
         for(var i=0; i<arguments.length; i++){
             var shape = arguments[i];
-            this.shapes.push(shape);
-            shape.__setParentShape(this);
+            if(this.shapes.indexOf(shape)==-1){
+                this.shapes.push(shape);
+                shape.__setParentShape(this);
+            }
         }
         this.__redraw();
         return this;
@@ -45,7 +47,7 @@ class CompoundShape2d extends Shape2d{
         this.__redraw();
         return this;
     }
-    
+
     //redraw shapes
     __redraw(){
         var aabb = {
@@ -59,26 +61,26 @@ class CompoundShape2d extends Shape2d{
             var shape = this.shapes[i];
             var r = shape.__getRadius()*shape.getScale();
             var l = shape.getLoc();
-            
+
             if((ax=l.getX()+r)>aabb.maxX) aabb.maxX=ax;
             if((ix=l.getX()-r)<aabb.minX) aabb.minX=ix;
             if((ay=l.getY()+r)>aabb.maxY) aabb.maxY=ay;
             if((iy=l.getY()-r)<aabb.minY) aabb.minY=iy;
         }
-        
+
         var rt = PIXI.RenderTexture.create(aabb.maxX-aabb.minX, aabb.maxY-aabb.minY);
         for(var i=0; i<this.shapes.length; i++){
             var shape = this.shapes[i];
-            
+
             shape.gfx.x -= aabb.minX;
             shape.gfx.y -= aabb.minY;
             this.graphics.__getRenderer().render(shape.gfx, rt, false);
             shape.gfx.x += aabb.minX;
             shape.gfx.y += aabb.minY;
         }
-        
+
         this.gfx.setTexture(rt);
-        
+
         //update width and height
         this.size = {
             width: Math.max(-aabb.minX, aabb.maxX)*2,

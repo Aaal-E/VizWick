@@ -7,14 +7,14 @@ class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete sha
     constructor(){ super(); } //constructor will never be used
     __setupNodeShape(node){  //acts as the constructor
         this.node = node;
-        
+
         this.connectionHasBeenSetup = false; //track if an initial connection has ever been made
-        
+
         //keep track of some tree related properties to decide how to grow and shrink the visualisation
         this.parent = null;
         this.children = [];
         this.__init();      //seperate method in order to allow for it to be overwritten
-        
+
         //save state data
         this.state = {
             hover: false,
@@ -23,12 +23,12 @@ class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete sha
             focused: false,
             dragged: false,
         };
-        
+
         //setup connection
         var parent = this.__getParentFromNode();
         this.__connectParent(parent);
     }
-    
+
     getNode(){
         return this.node;
     }
@@ -39,17 +39,17 @@ class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete sha
         this.graphics.__deregisterShapeNode(this);
         return this;
     }
-    
+
     getVisualisation(){
         return this.getGraphics();
     }
-    
+
     //rendering related methods
     __show(){}                                  //method to be extended to animate the appearance of the node
     __hide(){return true}                       //method to be extended to animate the dissapearance of the node
     __stateChanged(field, val, oldState){}      //method to be extended to update the visuals to represent the state
     __connectParent(parent){}                   //method to be extended to connect the parent shape
-    
+
     __changeState(field, value){
         var oldState = Object.assign({}, this.state);
         this.state[field] = value;
@@ -57,33 +57,33 @@ class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete sha
         this.__stateChanged(changed?field:null, changed?value:null, oldState);
         return this;
     }
-    
+
     //to be used when creating child or parent instances
     __getClass(node){
         //attempt to get from graphics
         var getFromGFX = this.graphics.__getNodeShapeClass;
         if(getFromGFX) return getFromGFX.call(this.graphics, Visualisation2d.classes, node);
-        
+
         //otherwise return this class
         return this.__proto__.constructor;
     }
-    
+
     __init(){  //initialise node connection
         var UID = this.graphics.getUID();
         var prevShape = this.node.getShape(UID);
         this.graphics.__registerShapeNode(this);
-        
+
         if(prevShape==this) return; //this shape has already been set up
-        
+
         if(prevShape!=null){ // it shouldn't occur that 1 node gets created twice
             console.warn("A shape in the tree got overwritten", prevShape);
             prevShape.remove();
         }
-        
-        
+
+
         this.node.addShape(UID, this);
     }
-    
+
     //adding/removing
     __addNode(){
         //register shape as root and leave, as no parent or children are set up yet
@@ -91,15 +91,15 @@ class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete sha
         this.graphics.__registerShapeRoot(this);
         if(this.__getChildNodes().length!=this.children.length)
             this.graphics.__registerShapeCollapsed(this);
-        
+
         //connect the parent and child nodes
         var parent = this.__getParentFromNode(true);
         if(parent) this.__setParent(parent);
-        
+
         var children = this.__getChildrenFromNode(true);
         for(var i=0; i<children.length; i++)
             this.__addChild(children[i]);
-            
+
         //update visuals for the state
         this.__stateChanged(null, null, this.state);
         this.__show();
@@ -107,19 +107,19 @@ class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete sha
     }
     __removeNode(){
         var notFully = !this.__hide();
-        
+
         //collapse the parent as not all its child nodes are shown anymore
         parent = this.getParent();
         if(parent) parent.__removeChild(this);
-        
+
         //remove fron children
         for(var i=0; i<this.children.length; i++)
             this.children[i].__setParent(null);
-            
+
         //clean up own relations
         this.__setParent(null);
         this.children = [];
-        
+
         return notFully;
     }
     __deleteNode(){
@@ -127,19 +127,19 @@ class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete sha
         // //if the shape is deleted from the visualisation, disconnect it from the tree
         // if(this.graphics && this.node)
         //     this.node.removeShape(this.graphics.getUID());
-            
+
         //indicate that this shape is no longer anything in tree
-        this.graphics.__deregisterShapeRoot(this);  
+        this.graphics.__deregisterShapeRoot(this);
         this.graphics.__deregisterShapeCollapsed(this);
         this.graphics.__deregisterShapeLeave(this);
-        
+
         if(this.destroyCallback){ //a method that listens for the destroy method to finish
             this.destroyCallback();
             delete this.destroyCallback;
         }
         return this;
     }
-    
+
     //relation methods
     __setParent(parentShape){
         if(this.parent!=parentShape){
@@ -164,7 +164,7 @@ class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete sha
                 this.graphics.__deregisterShapeCollapsed(this); //indicate that there is nothing left to expand
                 this.__changeState("expanded", true);
             }
-        } 
+        }
         return this;
     }
     __removeChild(childShape){
@@ -172,7 +172,7 @@ class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete sha
         if(index!=-1){
             if(this.__getChildNodes().length==this.children.length)
                 this.graphics.__registerShapeCollapsed(this);//indicate that there is something left to expand
-                
+
             this.children.splice(index, 1);
             if(this.children.length==0)
                 this.graphics.__registerShapeLeave(this);    //indicate that this shape is now a leave
@@ -180,7 +180,7 @@ class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete sha
         }
         return this;
     }
-    
+
     getParent(){
         return this.parent;
     }
@@ -202,7 +202,7 @@ class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete sha
     getAncestors(depth){
         if(depth==null) depth=Infinity;
         if(depth<=0) return [];
-        
+
         var ret = [];
         var p = this.getParent();
         if(p){
@@ -223,7 +223,7 @@ class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete sha
     getDescendants(depth){
         if(depth==null) depth=Infinity;
         if(depth<=0) return [];
-        
+
         var ret = [];
         var children = this.getChildren();
         ret.push.apply(ret, children);
@@ -238,7 +238,7 @@ class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete sha
         if(parent) return parent;
         return this.getChildren()[0];
     }
-    
+
     __getParentFromNode(requiresRendered){  //get parent node through the tree, as it might not have been connected yet
         var parentNode = this.__getParentNode();
         if(parentNode){
@@ -259,7 +259,7 @@ class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete sha
         }
         return children;
     }
-    
+
     //tree node retrieval methods (instead of shapes)
     __getMissingChildNodes(){
         var UID = this.graphics.getUID();
@@ -280,7 +280,7 @@ class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete sha
     __getParentNode(){
         return this.node.getParent();
     }
-    
+
     //tree statistics methods
     getDepth(){
         return this.node.getDepth();
@@ -288,7 +288,7 @@ class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete sha
     getIndex(){
         return this.__getParentNode()?this.__getParentNode().getChildren().indexOf(this.node):0;
     }
-    
+
     //methods for creating parent/children nodes
     __createChildNodeShape(node){
         return new (this.__getClass(node))(this.getGraphics(), node);
@@ -311,12 +311,12 @@ class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete sha
     createAncestors(depth, dontAdd){
         //depth indicates how many layers to create
         if(depth==null) depth = 1;
-        
+
         var ret = [];
         if(depth>=1){
             var p = this.createParent(dontAdd);
             if(p) ret.push(p);  //only add p if it waas just created
-            
+
             var p = this.getParent();
             if(p) ret.push.apply(ret, p.createAncestors(depth-1)); //recurse
         }
@@ -332,7 +332,7 @@ class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete sha
         //depth indicates how many layers to keep
         //fully indicates whether to also destroy descendants
         if(depth==null) depth = 0;
-        
+
         var ret = [];
         var parent = this.getParent();
         if(parent){
@@ -348,7 +348,7 @@ class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete sha
         var UID = this.graphics.getUID();
         if(!node){
             var missingChildNodes = this.__getMissingChildNodes();
-            node = missingChildNodes[0];   
+            node = missingChildNodes[0];
         }
         if(node){
             var shape = node.getShape(UID);
@@ -362,7 +362,7 @@ class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete sha
     createChildren(dontAdd){
         var UID = this.graphics.getUID();
         var missingChildNodes = this.__getMissingChildNodes();
-        
+
         var ret = [];
         for(var i=0; i<missingChildNodes.length; i++){
             var node = missingChildNodes[i];
@@ -378,11 +378,11 @@ class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete sha
     createDescendants(depth, dontAdd){
         //depth indicates how many layers to create
         if(depth==null) depth = 1;
-        
+
         var ret = [];
         if(depth>=1){
             ret.push.apply(ret, this.createChildren(dontAdd));
-            
+
             var children = this.getChildren();
             for(var i=0; i<children.length; i++){
                 var child = children[i];
@@ -405,7 +405,7 @@ class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete sha
         //depth indicates how many layers to keep
         //keep is a list of shapes you don't want to destroy
         if(depth==null) depth = 0;
-        
+
         var ret = [];
         var children = this.getChildren();
         for(var i=0; i<children.length; i++){
@@ -413,12 +413,12 @@ class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete sha
             if(!keep || keep.indexOf(child)==-1)
                 ret.push.apply(ret, child.destroyDescendants(depth-1, keep));
         }
-        
+
         if(depth<=0)
             ret.push.apply(ret, this.destroyChildren(keep));
         return ret;
     }
-    
+
     //methods for changing the state
     __forwardToVisualisations(func){
         this.getNode().forwardToShapes(func, this);
