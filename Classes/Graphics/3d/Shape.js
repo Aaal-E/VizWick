@@ -76,8 +76,7 @@ class Shape3d extends AbstractShape{
     getWorldRot(){
         this.mesh.getWorldQuaternion(quaternion);
         euler.setFromQuaternion(quaternion);
-        vec3.applyQuaternion(quaternion);
-        return new XYZ(euler);
+        return new XYZ(euler._x, euler._y, euler._z);
     }
     getWorldAngle(){
         return this.getWorldRotation();
@@ -104,10 +103,16 @@ class Shape3d extends AbstractShape{
     add(){
         super.add();
         this.graphics.__getScene().add(this.mesh);
+        this.mesh.updateMatrixWorld();
         return this;
     }
     __delete(){
         this.graphics.__getScene().remove(this.mesh);
         super.__delete();
+    }
+    __setParentShape(parent){
+        super.__setParentShape(parent);
+        this.mesh.updateMatrixWorld();
+        return this;
     }
 }

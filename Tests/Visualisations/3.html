@@ -1,61 +1,62 @@
 <htmL>
     <head>
-        <script src="../../Classes/Tree/.Compiled.js"></script>
-        <script src="../../Classes/Graphics/2d/.Compiled.js"></script>
-        <script src="../../Classes/GUI/resize.js"></script>
-        
-        <!--libraries-->
-        <!--<script src="../../Libraries/jQuery.js"></script>-->
-        <!--<script src="../../Libraries/pixi.min.js"></script>-->
-        <!--<script src="../../Libraries/pixiLayers.js"></script>-->
-        <!--<script src="../../Libraries/stats.js"></script>-->
-        <!--<script src="../../Libraries/RBush-3d.js"></script>-->
-        
-        <!--resize system-->
+        <!--<script src="../../Classes/Tree/.Compiled.js"></script>-->
+        <!--<script src="../../Classes/Graphics/2d/.Compiled.js"></script>-->
         <!--<script src="../../Classes/GUI/resize.js"></script>-->
         
+        <!--libraries-->
+        <script src="../../Libraries/jQuery.js"></script>
+        <script src="../../Libraries/pixi.min.js"></script>
+        <script src="../../Libraries/pixiLayers.js"></script>
+        <script src="../../Libraries/stats.js"></script>
+        <script src="../../Libraries/RBush-3d.js"></script>
+        
+        <!--resize system-->
+        <script src="../../Classes/GUI/resize.js"></script>
+        
         <!--Alex's tree system-->
-        <!--<script src="../../Classes/Tree/Tree.js"></script>-->
-        <!--<script src="../../Classes/Tree/TreeNode.js"></script>-->
+        <script src="../../Classes/Tree/Tree.js"></script>
+        <script src="../../Classes/Tree/TreeNode.js"></script>
         
         <!--graphics interface-->
-        <!--<script src="../../Classes/Graphics/Utils/XYZ.js"></script>-->
-        <!--<script src="../../Classes/Graphics/Utils/Vec.js"></script>-->
-        <!--<script src="../../Classes/Graphics/Options.js"></script>-->
+        <script src="../../Classes/Graphics/Utils/XYZ.js"></script>
+        <script src="../../Classes/Graphics/Utils/Vec.js"></script>
+        <script src="../../Classes/Graphics/Options.js"></script>
         
-        <!--<script src="../../Classes/Graphics/AbstractCamera.js"></script>-->
-        <!--<script src="../../Classes/Graphics/AbstractGraphics.js"></script>-->
-        <!--<script src="../../Classes/Graphics/AbstractShape.js"></script>-->
-        <!--<script src="../../Classes/Graphics/AbstractVisualisation.js"></script>-->
-        <!--<script src="../../Classes/Graphics/AbstractNodeShape.js"></script>-->
+        <script src="../../Classes/Graphics/AbstractCamera.js"></script>
+        <script src="../../Classes/Graphics/AbstractGraphics.js"></script>
+        <script src="../../Classes/Graphics/AbstractShape.js"></script>
+        <script src="../../Classes/Graphics/AbstractVisualisation.js"></script>
+        <script src="../../Classes/Graphics/AbstractNodeShape.js"></script>
         
         <!--2d graphics api-->
-        <!--<script src="../../Classes/Graphics/2d/Camera.js"></script>-->
-        <!--<script src="../../Classes/Graphics/2d/Graphics.js"></script>-->
-        <!--<script src="../../Classes/Graphics/2d/Shape.js"></script>-->
-        <!--<script src="../../Classes/Graphics/2d/Shapes/Circle.js"></script>-->
-        <!--<script src="../../Classes/Graphics/2d/Shapes/Line.js"></script>-->
-        <!--<script src="../../Classes/Graphics/2d/Shapes/CompoundShape.js"></script>-->
-        <!--<script src="../../Classes/Graphics/2d/Shapes/ShapeGroup.js"></script>-->
-        <!--<script src="../../Classes/Graphics/2d/Shapes/NodeShape.js"></script>-->
-        <!--<script src="../../Classes/Graphics/2d/Shapes/HtmlShape.js"></script>-->
-        <!--<script src="../../Classes/Graphics/2d/Visualisation.js"></script>-->
+        <script src="../../Classes/Graphics/2d/Camera.js"></script>
+        <script src="../../Classes/Graphics/2d/Graphics.js"></script>
+        <script src="../../Classes/Graphics/2d/Shape.js"></script>
+        <script src="../../Classes/Graphics/2d/Shapes/Circle.js"></script>
+        <script src="../../Classes/Graphics/2d/Shapes/Line.js"></script>
+        <script src="../../Classes/Graphics/2d/Shapes/CompoundShape.js"></script>
+        <script src="../../Classes/Graphics/2d/Shapes/ShapeGroup.js"></script>
+        <script src="../../Classes/Graphics/2d/Shapes/NodeShape.js"></script>
+        <script src="../../Classes/Graphics/2d/Shapes/HtmlShape.js"></script>
+        <script src="../../Classes/Graphics/2d/Visualisation.js"></script>
     </head>
     <body>
-        <div class=container>
-            <div class=q1 style=background-color:#BFB>
+        <!--<div class=container>-->
+        <!--    <div class=q1 style=background-color:#BFB>-->
                 
-            </div>
-            <div class=q2 style=background-color:#FBB>
-                test4
-            </div>
-        </div>
+        <!--    </div>-->
+        <!--    <div class=q2 style=background-color:#FBB>-->
+        <!--        test4-->
+        <!--    </div>-->
+        <!--</div>-->
     </body>
     <style>
         html, body{
             width: 100%;
             height: 100%;
             margin: 0px;
+            background-color: #100130 ;
         }
         .container{
             width: 100%;
@@ -70,10 +71,10 @@
         }
     </style>
     <script>
-        this.debug = true;
+        // this.debug = true;
         
-        //call the initialisation  code for my system
-        $(".container").resizeContainer({vertical:false});
+        // //call the initialisation  code for my system
+        // $(".container").resizeContainer({vertical:false});
         
         //from: https://stackoverflow.com/a/17243070
         function HSVtoInt(h, s, v){
@@ -113,7 +114,7 @@
                         });
                         
                         //create primary circle shape
-                        this.color = HSVtoInt(this.getDepth()/12, 1, 1);
+                        this.color = HSVtoInt(-this.getDepth()/12+0.7, 1, 1);
                         this.circle = new VIZ.Circle(gfx, this.size, this.color);
                         this.addShape(this.circle);
                         this.speedFactor = 2;
@@ -222,7 +223,7 @@
         var createTree = function(name, height){
             var children = [];
             if(height>0){
-                var childCount = 3-Math.floor(Math.pow(Math.random()*7, 1/1.8));
+                var childCount = 3-Math.floor(Math.pow(Math.random()*7, 1/1.9));
                 for(var i=0; i<childCount; i++){
                     children.push(createTree(name+"-"+i, height-1));
                 }
@@ -234,8 +235,9 @@
         }
         var tree = new Tree(createTree("Stuff", 11));
         var options = new Options();
-        var visualisation = new Visualisation($(".q1"), tree, options);
-        visualisation.getShapes()[0].createDescendants(8);
+        // var visualisation = new Visualisation($(".q1"), tree, options);
+        var visualisation = new Visualisation($("body"), tree, options);
+        visualisation.getShapes()[0].createDescendants(10);
         
         
         // var m = new VIZ2D.Circle(visualisation, 30, 0x00ff00);

@@ -116,6 +116,6 @@ class Vec extends XYZ{
     
     //translate to shape rotation
     getRot(){
-        return new Vec(0, this.getYaw(), this.getPitch());
+        return new Vec(this.getPitch(), this.getYaw(), 0);
     }
 }

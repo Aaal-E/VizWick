@@ -28,8 +28,8 @@ class Graphics3d extends AbstractGraphics{
         var camera = new THREE.PerspectiveCamera( 75, this.getWidth()/this.getHeight(), 0.1, 1000 );
         
         //create a renderer with Antialiasing
-        this.renderer = new THREE.WebGLRenderer({antialias:true});
-        this.renderer.setClearColor("#000000");
+        this.renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
+        this.renderer.setClearColor("#000000", 0);
         this.renderer.setSize(this.getWidth(), this.getHeight());
         // this.renderer.vr.enabled = true;
         this.container.append($(this.renderer.domElement).addClass("three"));

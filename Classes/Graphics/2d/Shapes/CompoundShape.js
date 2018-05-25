@@ -57,10 +57,13 @@ class CompoundShape2d extends Shape2d{
         var ix, ax, iy, ay;
         for(var i=0; i<this.shapes.length; i++){
             var shape = this.shapes[i];
-            if((ax=shape.__getMaxX())>aabb.maxX) aabb.maxX=ax;
-            if((ix=shape.__getMinX())<aabb.minX) aabb.minX=ix;
-            if((ay=shape.__getMaxY())>aabb.maxY) aabb.maxY=ay;
-            if((iy=shape.__getMinY())<aabb.minY) aabb.minY=iy;
+            var r = shape.__getRadius()*shape.getScale();
+            var l = shape.getLoc();
+            
+            if((ax=l.getX()+r)>aabb.maxX) aabb.maxX=ax;
+            if((ix=l.getX()-r)<aabb.minX) aabb.minX=ix;
+            if((ay=l.getY()+r)>aabb.maxY) aabb.maxY=ay;
+            if((iy=l.getY()-r)<aabb.minY) aabb.minY=iy;
         }
         
         var rt = PIXI.RenderTexture.create(aabb.maxX-aabb.minX, aabb.maxY-aabb.minY);
@@ -80,13 +83,13 @@ class CompoundShape2d extends Shape2d{
         this.size = {
             width: Math.max(-aabb.minX, aabb.maxX)*2,
             height: Math.max(-aabb.minY, aabb.maxY)*2
-        }
+        };
         this.gfx.pivot.x = -aabb.minX;
         this.gfx.pivot.y = -aabb.minY;
     }
     __getRadius(){
         var x = this.size.width/2;
         var y = this.size.height/2;
-        return Math.sqrt(x*x + y*y)*this.getScale();
+        return Math.sqrt(x*x + y*y);
     }
 }

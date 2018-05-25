@@ -127,6 +127,18 @@ class Shape2d extends AbstractShape{
             return this.getAngle()+this.getWorldAngle();
         return super.getWorldAngle();
     }
+    isVisible(){
+        var loc = this.getWorldLoc();
+        var graphics = this.getGraphics();
+        var camera = graphics.getCamera();
+        var camLoc = camera.getLoc();
+        var x = loc.getX()-camLoc.getX();
+        var y = loc.getY()-camLoc.getY();
+        var w = graphics.getWidth()/2/camera.getScale();
+        var h = graphics.getHeight()/2/camera.getScale();
+        var r = this.__getRadius();
+        return x+r>-w && x-r<w && y+r>-h && y-r<h;
+    }
     
     //method alias
     setAngle(angle){
@@ -185,19 +197,5 @@ class Shape2d extends AbstractShape{
         }
         
         return super.__onUpdate(deltaTime);
-    }
-    
-    //get size information to be used by the compount shape texture to determine the texture size
-    __getMinX(){
-        return this.loc.getX() - this.__getRadius();
-    }
-    __getMaxX(){
-        return this.loc.getX() + this.__getRadius();
-    }
-    __getMinY(){
-        return this.loc.getY() - this.__getRadius();
-    }
-    __getMaxY(){
-        return this.loc.getY() + this.__getRadius();
     }
 }

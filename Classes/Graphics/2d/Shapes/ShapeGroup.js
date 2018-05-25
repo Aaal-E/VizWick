@@ -1,5 +1,5 @@
 /*
-    A node shape that manages sub shapes
+    A shape that manages sub shapes
     Author: Tar van Krieken
     Starting Date: 30/04/2018
 */
@@ -19,9 +19,15 @@ class ShapeGroup2d extends Shape2d{
             for(var i=0; i<This.shapes.length; i++)
                 This.shapes[i].getLoc().__fireEvent();
         });
+        
+        //create group (not sure why, but it seems to work)
+        this.group = new PIXI.display.Group(1, true);
     }
     __createGfx(){
-        return new PIXI.Container();
+        return new PIXI.display.Layer(this.group);
+    }
+    __getGroup(){
+        return this.group;
     }
     
     //shape interaction
@@ -55,10 +61,10 @@ class ShapeGroup2d extends Shape2d{
         this.radius = 0;
         for(var i=0; i<this.shapes.length; i++){
             var shape = this.shapes[i];
-            this.radius = Math.max(this.radius, new Vec(shape.getLoc()).getLength()+shape.__getRadius());
+            this.radius = Math.max(this.radius, new Vec(shape.getLoc()).getLength()+shape.__getRadius()*shape.getScale());
         }
     }
     __getRadius(){
-        return this.radius*this.getScale();
+        return this.radius;
     }
 }

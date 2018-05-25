@@ -1,28 +1,28 @@
 <htmL>
     <head>
         <!--<script src="../Classes/Graphics/2d/.Compiled.js"></script>-->
-        
+
         <!--libraries-->
         <script src="../Libraries/jQuery.js"></script>
         <script src="../Libraries/pixi.min.js"></script>
         <script src="../Libraries/pixiLayers.js"></script>
         <script src="../Libraries/stats.js"></script>
         <script src="../Libraries/RBush-3d.js"></script>
-        
+
         <!--Alex's tree system-->
         <script src="../Classes/Tree/Tree.js"></script>
         <script src="../Classes/Tree/TreeNode.js"></script>
-        
+
         <!--graphics interface-->
         <script src="../Classes/Graphics/Utils/XYZ.js"></script>
         <script src="../Classes/Graphics/Utils/Vec.js"></script>
         <script src="../Classes/Graphics/Options.js"></script>
-        
+
         <script src="../Classes/Graphics/AbstractCamera.js"></script>
         <script src="../Classes/Graphics/AbstractGraphics.js"></script>
         <script src="../Classes/Graphics/AbstractShape.js"></script>
         <script src="../Classes/Graphics/AbstractVisualisation.js"></script>
-        
+
         <!--2d graphics api-->
         <script src="../Classes/Graphics/2d/Camera.js"></script>
         <script src="../Classes/Graphics/2d/Graphics.js"></script>
@@ -35,25 +35,25 @@
         <script src="../Classes/Graphics/2d/Visualisation.js"></script>
     </head>
     <body>
-        
+
     </body>
     <script>
         var stats = new Stats();
         stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
         document.body.appendChild(stats.domElement)
-        
+
         var keys = Object.keys(IO2d);
         for(var i=0; i<keys.length; i++){
             var key = keys[i];
             window[key] = IO2d[key];
         }
-    
+
         function randomColor(){
             return (Math.floor(Math.random()*0x100)<<16)+
                     (Math.floor(Math.random()*0x100)<<8)+
                     Math.floor(Math.random()*0x100);
         }
-        
+
         //the actual tests
         var graphics = new Graphics();
         var gfx = graphics;
@@ -100,7 +100,7 @@
             };
         }
         var tree = new Tree(createTree("Stuff", 10));
-        
+
         /*simple stress test*/
         function stressTest(){
             //create shapes
@@ -109,7 +109,7 @@
                 circle.getLoc().set(Math.random()*500-250, Math.random()*500-250);
                 graphics.add(circle);
             }
-            
+
             // update shapes and fps counter
             graphics.onUpdate(function(){
                 stats.begin();
@@ -121,7 +121,7 @@
                 stats.end();
             });
         }
-        
+
         /*compound shape test*/
         function compoundShapeTest(){
             var shape = new CompoundShape(gfx);
@@ -131,7 +131,7 @@
             circle2.setX(-200);
             graphics.add(shape);
             shape.addShape(circle, circle2);
-        
+
             console.log(shape);
             graphics.onUpdate(function(delta){
                 stats.begin();
@@ -139,35 +139,35 @@
                 stats.end();
             });
         }
-        
+
         /*spatial tree test*/
         function spatialTreeTest(){
             var range = 15;
             var circles = [];
-            
+
             for(var i=0; i<500; i++){
                 var circle = new Circle(gfx, 7, randomColor());
                 circle.setLoc(Math.random()*600-300, Math.random()*600-300);
                 graphics.add(circle);
                 circles.push(circle);
-                
+
                 circle.onClick(function(){
                     this.setRadius(15);
                 });
             }
-            
+
             for(let i=0; i<circles.length; i++){
                 var circle = circles[i];
-                
+
                 circle.onUpdate(function(delta){
                 	//get the n closests circles
                     var closeCircles = this.search(range);
-            //         var This = this;    
+            //         var This = this;
             //         closeCircles.sort(function(a, b){
             //         	return a.getSquaredDistance(This)>b.getSquaredDistance(This);
             //         });
             // 		closeCircles = closeCircles.slice(0, 10);
-                
+
                 	//compute forces based on these circles
                     var force = new Vec(0, 0, 0);
                     for(let j=0; j<closeCircles.length; j++){
@@ -175,37 +175,37 @@
                         var vec = this.getDelta(cc);
                         var dist = vec.getLength();
                         var totRad = cc.getRadius()+this.getRadius();
-                        
+
                         var forceStrength = (totRad-dist)*0.5;
                         if(forceStrength>0) forceStrength *= 100;
-                        
+
                         force.add(vec.setLength(forceStrength));
                     }
                     force.setZ(0);
-                    
+
                     //attract to the center
                     this.velo.sub(new Vec(this.getLoc()).mul(delta*1));
-                    
+
                     //mouse force
                     var mouseVec = graphics.getMouseVec(this);
                     mouseVec.setLength(Math.max(0, 150-mouseVec.getLength())*20);
                     if(graphics.getMousePressed()) mouseVec.mul(-1);
                     force.add(mouseVec);
-                    
+
                     //limit the force
                     if(force.getLength()>200) force.setLength(200);
-                    
+
                     this.velo.add(force.mul(delta*30));
                     this.velo.mul(Math.pow(0.95, 60*delta)); //drag
                 });
             }
-        
+
             graphics.onUpdate(function(){
                 stats.begin();
                 stats.end();
             });
         }
-        
+
         /*shape group test*/
         function shapeGroupTest(){
             var shape = new ShapeGroup(gfx);
@@ -215,7 +215,7 @@
             circle2.setX(-200);
             graphics.add(shape);
             shape.addShape(circle, circle2);
-            
+
             console.log(shape);
             graphics.onUpdate(function(delta){
                 stats.begin();
@@ -223,22 +223,22 @@
                 stats.end();
             });
         }
-        
-        
+
+
         /*interaction test*/
         function interactionTest(){
             var circle = new Circle(gfx, 50, randomColor());
             graphics.add(circle);
-            
+
             circle.onClick(function(){
                 alert("clicked");
             });
             circle.onHover(function(entered){
-                this.setColor(randomColor()); 
+                this.setColor(randomColor());
             });
         }
-        
-        
+
+
         /*shape group order test*/
         function interactionGroupTest(){
             var shape = new ShapeGroup(gfx);
@@ -248,7 +248,7 @@
             circle2.setX(-200);
             graphics.add(shape);
             shape.addShape(circle, circle2);
-            
+
             circle.onClick(function(){
                 circle2.setZ(0);
                 this.setZ(10);
@@ -265,26 +265,26 @@
                 var per = Math.max(40, Math.min(dist, 299))/300;
                 this.setColor((0x100*per)<<8);
             });
-            
+
             graphics.onUpdate(function(delta){
                 stats.begin();
                 // shape.setZRot(shape.getZRot()+delta);
                 stats.end();
             });
         }
-        
+
         function treeTest(){
             var initWidth = 600;
-            
+
             class NodeCircle extends NodeShape2d{
                 constructor(gfx, node, scale){
                     super(gfx, node, {scale:scale||1});
                     // this.setX(Math.random()*100-50).setY(Math.random()*100-50);
                     this.circle = new Circle(gfx, 30*this.scale, 0xff0000);
                     this.addShape(this.circle);
-                    
+
                     // this.setAngle(!scale?0:(Math.random()-0.5)*Math.PI*0.5);
-                    
+
                     this.onUpdate(function(){
                         this.getLoc().add((Math.random()-0.5)*this.scale, (Math.random()-0.5)*this.scale);
                     });
@@ -307,18 +307,18 @@
                 __showCollapsed(){
                     this.circle.setColor(0xff0000);
                 }
-                
+
                 __createNodeShape(node){
                     var scale = this.scale/this.__getChildNodes().length;
                     return new (this.__getClass())(this.getGraphics(), node, scale);
                 }
             }
-            
+
             var rootCircle = new NodeCircle(gfx, tree.getRoot());
             graphics.addShape(rootCircle);
             window.rootCicle = rootCircle;
         }
-        
+
         // stressTest();
         // compoundShapeTest();
         interactionGroupTest();

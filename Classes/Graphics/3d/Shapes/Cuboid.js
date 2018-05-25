@@ -4,7 +4,7 @@
     Starting Date: 16/05/2018
 */
 class Cuboid3d extends Shape3d{
-    constructor(graphics, color, width, height, depth, preInit){
+    constructor(graphics, width, height, depth, color, preInit){
         super(graphics, color, function(){
             this.size = new XYZ(width, height, depth);
             
@@ -34,7 +34,7 @@ class Cuboid3d extends Shape3d{
         return this;
     }
     getWorldScale(){
-        cube.mesh.getWorldScale(vec3);
+        this.mesh.getWorldScale(vec3);
         return vec3.x/this.size.getX();
     }
     
@@ -52,6 +52,6 @@ class Cuboid3d extends Shape3d{
         var x = this.size.getX()/2;
         var y = this.size.getY()/2;
         var z = this.size.getZ()/2;
-        return Math.sqrt(x*x + y*y + z*z)*this.getScale();
+        return Math.sqrt(x*x + y*y + z*z);
     }
 }

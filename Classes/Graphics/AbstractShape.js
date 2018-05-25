@@ -471,14 +471,14 @@ class AbstractShape{
         return 0;
     }
     __getRadiusPadding(){
-        return this.__getRadius()/2;
+        return this.__getRadius() * this.getWorldScale() /2;
     }
     __getTree(){
         return this.graphics.getSpatialTree();
     }
     __updateAABB(){
         if(this.storeInSpatialTree){
-            var minRad = this.__getRadius();
+            var minRad = this.__getRadius() * this.getWorldScale();
             var loc = this.getWorldLoc();
             //check whether the shape moved outside of the loose bounding box
             if( this.aabb.minX > loc.getX()-minRad||
@@ -493,7 +493,7 @@ class AbstractShape{
                 if(tree) tree.remove(this);
                 
                 //update the bounding box
-                var maxRad = this.__getRadius()+this.__getRadiusPadding();
+                var maxRad = minRad + this.__getRadiusPadding();
                 this.aabb = {
                     minX: loc.getX() - maxRad,
                     minY: loc.getY() - maxRad,
