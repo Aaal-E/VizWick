@@ -83,11 +83,6 @@
         class Visualisation extends Visualisation2d{
             constructor(container, tree, options){
                 super(container, tree, options);
-                var func = this.func || function(){};
-
-                func();
-
-
                 this.mouseSelected = null;
             }
             __onUpdate(deltaTime){
@@ -130,16 +125,12 @@
                     constructor(gfx, node, scale){
                         super(gfx, node, function(){
                             this.scale = scale||1;
+
+                            this.line = new VIZ.Line(gfx, new VIZ.XYZ(0, 0), new VIZ.XYZ(0, 0), 10, 0xffffff).setZ(-1);
                         });
                         this.setScale(this.scale);
 
                         //create primary circle shape
-                        this.line = new VIZ.Line(gfx, new VIZ.XYZ(0, 0), new VIZ.XYZ(0, 0), 10, 0xffffff).setZ(-1);
-                        var This = this;
-                        this.getLoc().onChange(function(){
-                            if(!This.getParent())
-                                This.line.setEndPoint(This.getLoc());
-                        })
                         this.addShape(this.line);
                         this.circle = new VIZ.Circle(gfx, 30, 0xff0000);
                         this.addShape(this.circle);
@@ -197,7 +188,7 @@
                             var This = this;
                             parent.getLoc().onChange(function(){
                                 This.line.getEndPoint().set(this);
-                            });
+                            }).__fireEvent();
                         }else{
                             this.targetLoc = new VIZ.XYZ();
                         }
@@ -211,12 +202,6 @@
                         }else{
                             this.setLoc(this.targetLoc);
                             this.setScale(0);
-                        }
-
-                        //set line end point
-                        if(this.getParent()){
-                            this.line.getEndPoint().set(this.getParent().getLoc());
-                        }else{
                         }
 
                         //set location to move to
