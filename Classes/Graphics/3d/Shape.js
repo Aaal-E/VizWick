@@ -9,15 +9,15 @@ var euler = new THREE.Euler(); //also temporary
 class Shape3d extends AbstractShape{
     constructor(graphics, color, preInit){
         super(graphics, preInit);
-        
+
         //setup mesh
         this.__createMaterial();
         this.__createShape();
         this.__createMesh();
-        
+
         //setup properties
         this.setColor(color);
-        
+
         //listen for location/rotation changes
         var This = this;
         this.getLoc().onChange(function(){
@@ -35,15 +35,15 @@ class Shape3d extends AbstractShape{
                 "YZX",
             );
         });
-        
+
         //data used by the hover system to support multiple pointers
         this.__hoverCodes = [];
     }
-    
+
     //shape creation
     __createShape(){}
     __createMaterial(){
-        this.material = new THREE.MeshPhongMaterial({color:"#000000"}); 
+        this.material = new THREE.MeshPhongMaterial({color:"#000000"});
         return this;
     }
     __createMesh(){
@@ -52,8 +52,8 @@ class Shape3d extends AbstractShape{
             this.mesh.userData = {shape: this};
         }
     }
-    
-    
+
+
     //absolute coordinates, relative to the screen
     getAbsoluteX(){
         var camera = this.getGraphics().getCamera();
@@ -63,14 +63,14 @@ class Shape3d extends AbstractShape{
         var camera = this.getGraphics().getCamera();
         return camera.translateWorldToScreenLoc(this.getWorldLoc()).getY();
     }
-    
+
     //world location (when in other shape)
     getWorldLoc(){
         this.mesh.getWorldPosition(vec3);
         return new XYZ(vec3);
     }
     getWorldScale(){
-        cube.mesh.getWorldScale(vec3);
+        this.mesh.getWorldScale(vec3);
         return vec3.x;
     }
     getWorldRot(){
@@ -81,7 +81,7 @@ class Shape3d extends AbstractShape{
     getWorldAngle(){
         return this.getWorldRotation();
     }
-    
+
     //properties
     setColor(color){
         this.material.color.setHex(color);
@@ -93,12 +93,12 @@ class Shape3d extends AbstractShape{
         return super.setAlpha(alpha);
     }
     setScale(scale){
-        super.setScale(scale);
         if(this.mesh)
             this.mesh.scale.set(scale, scale, scale);
+        super.setScale(scale);
         return this;
     }
-    
+
     //add to/remove from graphics
     add(){
         super.add();

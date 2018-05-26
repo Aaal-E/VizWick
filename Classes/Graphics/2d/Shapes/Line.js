@@ -33,10 +33,20 @@ class Line2d extends Shape2d {
         this.gfx.lineStyle(this.width, this.color);
         this.gfx.moveTo(0, 0);
 
-        var delta = new Vec(this.endPoint).sub(this.getWorldLoc());
+        var delta = new Vec(this.endPoint).sub(this.getWorldLoc()).setZ(0);
         if (this.parentShape) {
+            //make delta relative to the offset ancestor
+            if (this.offsetShape) delta.add(this.offsetShape.getWorldLoc());
+
+            //transform according to parent scale/angle
             delta.div(this.parentShape.getWorldScale());
             delta.addAngle(-this.parentShape.getWorldAngle());
+
+            if (this.offsetShape) {
+                //transform according to offset ancestor's scale/angle
+                delta.mul(this.offsetShape.getWorldScale());
+                delta.addAngle(this.offsetShape.getWorldAngle());
+            }
         }
         this.gfx.lineTo(delta.getX(), delta.getY());
         this.gfx.endFill();
@@ -59,6 +69,11 @@ class Line2d extends Shape2d {
         return this;
     }
 
+    setOffsetAncestor(shape) {
+        this.offsetShape = shape;
+        return this;
+    }
+
     //getters
     getWidth() {
         return this.width;
@@ -70,6 +85,10 @@ class Line2d extends Shape2d {
 
     getEndPoint() {
         return this.endPoint;
+    }
+
+    getOffsetAncestor() {
+        return this.offsetShape;
     }
 
 

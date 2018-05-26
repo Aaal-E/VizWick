@@ -28,6 +28,8 @@ class AbstractShape{
         this.aabb = {minX:0, maxX:0, minY:0, maxY:0, minZ:0, maxZ:0};   //loose bounding box
         this.color = 0;                                                 //int color
         this.isRendered = false;                                        //whether or not the shape is being rendered
+        this.isRenderedListeners = [];                                  //listeners that check if the shape is rendered
+        this.isAlive = false;                                           //whether or not the shape is rendered, and not in the process of being removed
 
         //interaction listeners
         this.listeners = {
@@ -173,7 +175,6 @@ class AbstractShape{
     //absolute position
     getAbsoluteX(){}
     getAbsoluteY(){}
-    getAbsoluteZ(){}
 
     //rotation
     setXRot(x){
@@ -426,6 +427,7 @@ class AbstractShape{
     //parent shape
     __setParentShape(parent){
         this.parentShape = parent;
+        this.__triggerRenderChange();
         return this;
     }
     getParentShape(){
@@ -454,10 +456,13 @@ class AbstractShape{
             tree.insert(this);
 
         this.isRendered = true;
+        this.isAlive = true;
+        this.__triggerRenderChange();
         return this;
     }
     remove(dontDelete){
         this.graphics.__deregisterShape(this);  //indicate that the node is being removed
+        this.isAlive = false;
         if(dontDelete) return this;
         return this.__delete();                 //fully remove it without an animation
     }
@@ -470,10 +475,33 @@ class AbstractShape{
             tree.remove(this);
 
         this.isRendered = false;
+        this.__triggerRenderChange();
         return this;
     }
     getIsRendered(){
         return this.isRendered;
+    }
+    getIsAlive(){
+        return this.isAlive;
+    }
+
+    //add render listener
+    onRendererChange(func){
+        var index = this.isRenderedListeners.indexOf(func);
+        if(index==-1) this.isRenderedListeners.push(func);
+        return this;
+    }
+    offRendererChange(func){
+        var index = this.isRenderedListeners.indexOf(func);
+        if(index!=-1) this.isRenderedListeners.splice(index, 1);
+        return this;
+    }
+    __triggerRenderChange(){
+        if(this.parentShape)
+            this.isRendered = this.parentShape.isRendered;
+        for(var i=0; i<this.isRenderedListeners.length; i++){
+            this.isRenderedListeners[i].call(this, this.isRendered);
+        }
     }
 
     //physics methods

@@ -94,4 +94,16 @@ class CompoundShape2d extends Shape2d{
         var y = this.size.height/2;
         return Math.sqrt(x*x + y*y);
     }
+
+    //forward scale event
+    __triggerScaleChange(){
+        super.__triggerScaleChange();
+        for(var i=0; i<this.shapes.length; i++)
+            this.shapes[i].__triggerScaleChange();
+    }
+    __triggerRenderChange(){
+        super.__triggerRenderChange();
+        for(var i=0; i<this.shapes.length; i++)
+            this.shapes[i].__triggerRenderChange();
+    }
 }

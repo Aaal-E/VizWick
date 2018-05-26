@@ -89,7 +89,10 @@ class Shape2d extends AbstractShape{
     __updateZOrder(){
         var zOrder = -this.getZ();
         this.gfx.zOrder = zOrder;
-        this.gfx.parentGroup = this.graphics.__getGroup();
+        if(this.parentShape)
+            this.gfx.parentGroup = this.parentShape.__getGroup();
+        else
+            this.gfx.parentGroup = this.graphics.__getGroup();
     }
 
     //change scale

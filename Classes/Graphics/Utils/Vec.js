@@ -11,7 +11,7 @@ var getXYZ = function(x, y, z){
             x: x.x||0,
             y: x.y||0,
             z: x.z||0
-        };       
+        };
     }
     if(x.x!=null ||
        x.y!=null ||
@@ -20,8 +20,8 @@ var getXYZ = function(x, y, z){
             x: x.x||0,
             y: x.y||0,
             z: x.z||0
-        };       
-    }    
+        };
+    }
     if( x!==undefined &&
         y===undefined &&
         z===undefined){
@@ -29,11 +29,11 @@ var getXYZ = function(x, y, z){
             x: x,
             y: x,
             z: x
-        }       
+        }
     }
     return {
         x: x||0,
-        y: y||0, 
+        y: y||0,
         z: z||0
     };
 };
@@ -43,13 +43,13 @@ class Vec extends XYZ{
     constructor(x, y, z){
         super(x, y, z);
     }
-    
+
     //check if it is non zero
     isNonZero(modifier){
         modifier = modifier||1
         return Math.abs(this.x)>1e-3*modifier || Math.abs(this.y)>1e-3*modifier || Math.abs(this.z)>1e-3*modifier;
     }
-    
+
     //angles
     setAngle(angle){
         var zAxisDist = Math.sqrt(this.x*this.x + this.y*this.y);
@@ -67,7 +67,7 @@ class Vec extends XYZ{
     addAngle(angle){
         return this.setAngle(this.getAngle()+angle);
     }
-    
+
     setYaw(yaw){
         var pitch = this.getPitch();
         var length = this.getLength();
@@ -78,12 +78,12 @@ class Vec extends XYZ{
         );
     }
     getYaw(){
-        return Math.atan2(this.z, this.x); 
+        return Math.atan2(-this.z, this.x);
     }
     addYaw(yaw){
         return this.setYaw(this.getYaw()+yaw);
     }
-    
+
     setPitch(pitch){
         var yaw = this.getYaw();
         var length = this.getLength();
@@ -100,7 +100,7 @@ class Vec extends XYZ{
     addPitch(pitch){
         return this.setPitch(this.getPitch()+pitch);
     }
-    
+
     setLength(length){
         return this.mul(length/this.getLength());
     }
@@ -113,9 +113,12 @@ class Vec extends XYZ{
     subLength(length){
         return this.setLength(Math.max(0, this.getLength()-length));
     }
-    
+
     //translate to shape rotation
     getRot(){
-        return new Vec(this.getPitch(), this.getYaw(), 0);
+        return new Vec(0, this.getYaw(), this.getPitch());
+    }
+    getLookAt(){
+        return new Vec(1, 0, 0).setPitch(this.getZ()).setYaw(this.getY());
     }
 }

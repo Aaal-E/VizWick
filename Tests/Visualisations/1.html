@@ -132,8 +132,17 @@
 
                         //create primary circle shape
                         this.addShape(this.line);
+                        var This = this;
+                        this.getLoc().onChange(function(){
+                            if(!This.getParent()) This.line.setEndPoint(This.getLoc());
+                        });
+
                         this.circle = new VIZ.Circle(gfx, 30, 0xff0000);
                         this.addShape(this.circle);
+                        this.circle.onHover(function(over){
+                            if(over) This.highlight();
+                            else     This.dehighlight();
+                        });
 
                         this.setAngle(Math.random()-0.1);
 
@@ -179,7 +188,7 @@
 
                         if(this.circle)
                             // this.circle.setColor(this.state.expanded?0x900000ff:0xff0000); //has alpha
-                            this.circle.setColor(this.state.expanded?0x0000ff:0xff0000);
+                            this.circle.setColor(this.state.highlighted?0xff00ff:this.state.expanded?0x0000ff:0xff0000);
                     }
                     __connectParent(parent){
                         if(parent){
@@ -197,7 +206,8 @@
                         var connectedNode = this.getConnectedNodeShape();
                         //set initial location
                         if(connectedNode){  //copy connected node if available
-                            this.getLoc().set(connectedNode.getLoc()).sub(0, 0, (connectedNode==this.getParent()?1:-1)*1e-9);
+                            this.getLoc().set(connectedNode.getLoc()).sub(0, 0, (connectedNode==this.getParent()?1:-1)*1e-4);
+                            // this.getLoc().set(connectedNode.getLoc()).sub(0, 0, 1e-4);
                             this.setScale(connectedNode.getScale());
                         }else{
                             this.setLoc(this.targetLoc);
@@ -220,13 +230,14 @@
                         var targetScale = 0;
 
                         //attempt to move to a connected shape instead
-                        var connectedShape = this.getConnectedNodeShape();
+                        var connectedShape = this.getConnectedNodeShape(true); //'true' to not go to dead shapes
                         if(connectedShape){
                             target = connectedShape.getLoc();
                             targetScale = function(){
                                 return connectedShape.getScale()
                             };
-                            this.setZ(connectedShape.getZ()-1e-9);
+                            // this.setZ(connectedShape.getZ()-1e-4);
+                            // console.log(this.getZ(), connectedShape.getZ());
                         }
 
                         //set location and scale to move to
@@ -270,7 +281,7 @@
             var children = [];
             if(height>0){
                 var childCount = Math.floor(Math.random()*3)+1;
-                // var childCount = 2;
+                // var childCount = 1;
                 for(var i=0; i<childCount; i++){
                     children.push(createTree(name+"-"+i, height-1));
                 }

@@ -31,27 +31,28 @@ personal todo list:
     //-check/fix z-indices in shape groups
     //-add method to check if shape is on screen
 
-    -add synchronised hover events
-    -add dead/alive field to nodes, and add as parameter to relation functions
+    //-add dead/alive field to nodes, and add as parameter to relation functions
+    //-add synchronised hover events
+    //-add scale listener which forwards parent changes
+    //-rotate to closest angle with camera
+    //-make resize events on window resize
+
     -simplify creating connection
-    -Synchronise even if node doesn't exist or isn't connected
+    -Synchronise focus even if node doesn't exist or isn't connected
     -Add default options:
-        -syncrhonisation
+        -synchronisation
         -antialisasing
     -Add cursor system; idk what this is anymore...
     -options:
-        -Accomedate button 'options' showing a certain text
-        -Accomedate text 'options' to just show some status text
-    //-add scale listener which forwards parent changes
-    -rotate to closest angle with camera
+        -Accommodate button 'options' showing a certain text
+        -Accommodate text 'options' to just show some status text
     -look into alex's thing not working in edge
     -add generate image system
 
 
-
     3D visualisation:
-    -finish line shape
-    -create translation for sub shape location to world location
-    -make camera target set an appropriate 'z' distance
+    //-finish line shape
+    //-make camera target set an appropriate 'z' distance
+    //-create translation for sub shape location to world location; not sure what this is anymore, but I think it is done
     -add controller rescaling, button presses and scrolling
     -add frame interpolation

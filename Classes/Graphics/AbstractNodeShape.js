@@ -17,9 +17,9 @@ class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete sha
 
         //save state data
         this.state = {
-            hover: false,
             expanded: this.node.getChildren().length==0,
             selected: false,
+            highlighted: false,
             focused: false,
             dragged: false,
         };
@@ -92,6 +92,9 @@ class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete sha
         if(this.__getChildNodes().length!=this.children.length)
             this.graphics.__registerShapeCollapsed(this);
 
+        //initially a node is never expanded upon creation
+        this.__changeState("expanded", false);
+
         //connect the parent and child nodes
         var parent = this.__getParentFromNode(true);
         if(parent) this.__setParent(parent);
@@ -106,9 +109,15 @@ class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete sha
         return this;
     }
     __removeNode(){
-        var notFully = !this.__hide();
+        return !this.__hide();
+    }
+    __deleteNode(){
+        //test: keep the node around, but don't render it
+        // //if the shape is deleted from the visualisation, disconnect it from the tree
+        // if(this.graphics && this.node)
+        //     this.node.removeShape(this.graphics.getUID());
 
-        //collapse the parent as not all its child nodes are shown anymore
+        //remove itself from parent
         parent = this.getParent();
         if(parent) parent.__removeChild(this);
 
@@ -119,14 +128,6 @@ class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete sha
         //clean up own relations
         this.__setParent(null);
         this.children = [];
-
-        return notFully;
-    }
-    __deleteNode(){
-        //test: keep the node around, but don't render it
-        // //if the shape is deleted from the visualisation, disconnect it from the tree
-        // if(this.graphics && this.node)
-        //     this.node.removeShape(this.graphics.getUID());
 
         //indicate that this shape is no longer anything in tree
         this.graphics.__deregisterShapeRoot(this);
@@ -174,15 +175,18 @@ class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete sha
                 this.graphics.__registerShapeCollapsed(this);//indicate that there is something left to expand
 
             this.children.splice(index, 1);
-            if(this.children.length==0)
-                this.graphics.__registerShapeLeave(this);    //indicate that this shape is now a leave
-            this.__changeState("expanded", false);
+            if(this.getIsAlive()){  //don't change to leave if it was only for the animating process
+                if(this.children.length==0)
+                    this.graphics.__registerShapeLeave(this);    //indicate that this shape is now a leave
+                this.__changeState("expanded", false);
+            }
         }
         return this;
     }
 
-    getParent(){
-        return this.parent;
+    getParent(onlyAlive){
+        if(!onlyAlive || (this.parent && this.parent.getIsAlive()))
+            return this.parent;
     }
     isParent(shape){
         return this.parent==shape;
@@ -193,18 +197,26 @@ class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete sha
     isLeave(){
         return this.children.length==0;
     }
-    getChildren(){
-        return this.children;
+    getChildren(onlyAlive){
+        if(!onlyAlive)
+            return this.children;
+
+        var ret = [];
+        for(var i=0; i<this.children.length; i++){
+            var child = this.children[i];
+            if(child.getIsAlive()) ret.push(child);
+        }
+        return ret;
     }
     isChild(shape){
         return this.children.indexOf(shape)!=-1;
     }
-    getAncestors(depth){
+    getAncestors(depth, onlyAlive){
         if(depth==null) depth=Infinity;
         if(depth<=0) return [];
 
         var ret = [];
-        var p = this.getParent();
+        var p = this.getParent(onlyAlive);
         if(p){
             ret.push(p);
             ret.push.apply(p, p.getAncestors(depth-1));
@@ -220,12 +232,12 @@ class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete sha
         }
         return ret;
     }
-    getDescendants(depth){
+    getDescendants(depth, onlyAlive){
         if(depth==null) depth=Infinity;
         if(depth<=0) return [];
 
         var ret = [];
-        var children = this.getChildren();
+        var children = this.getChildren(onlyAlive);
         ret.push.apply(ret, children);
         for(var i=0; i<children.length; i++){
             var child = children[i];
@@ -233,10 +245,10 @@ class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete sha
         }
         return ret;
     }
-    getConnectedNodeShape(){
-        var parent = this.getParent();
+    getConnectedNodeShape(onlyAlive){
+        var parent = this.getParent(onlyAlive);
         if(parent) return parent;
-        return this.getChildren()[0];
+        return this.getChildren(onlyAlive)[0];
     }
 
     __getParentFromNode(requiresRendered){  //get parent node through the tree, as it might not have been connected yet
@@ -423,6 +435,24 @@ class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete sha
     __forwardToVisualisations(func){
         this.getNode().forwardToShapes(func, this);
         return this;
+    }
+    highlight(forwarded){
+        if(!this.state.highlighted){
+            this.graphics.highlightShape(this);
+            if(!forwarded)
+                this.__forwardToVisualisations(function(){
+                    this.highlight(true);
+                });
+        }
+    }
+    dehighlight(forwarded){
+        if(this.state.highlighted){
+            this.graphics.highlightShape(null);
+            if(!forwarded)
+                this.__forwardToVisualisations(function(){
+                    this.dehighlight(true);
+                });
+        }
     }
     select(forwarded){
         if(!this.state.selected){

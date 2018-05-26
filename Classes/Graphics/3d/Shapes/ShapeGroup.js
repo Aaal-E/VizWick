@@ -52,7 +52,6 @@ class ShapeGroup3d extends Shape3d{
             }
         }
         this.__updateRadius();
-        craps
         return this;
     }
 
@@ -69,10 +68,15 @@ class ShapeGroup3d extends Shape3d{
     }
 
 
-    //forward scale events
+    //forward scale event
     __triggerScaleChange(){
         super.__triggerScaleChange();
         for(var i=0; i<this.shapes.length; i++)
             this.shapes[i].__triggerScaleChange();
+    }
+    __triggerRenderChange(){
+        super.__triggerRenderChange();
+        for(var i=0; i<this.shapes.length; i++)
+            this.shapes[i].__triggerRenderChange();
     }
 }

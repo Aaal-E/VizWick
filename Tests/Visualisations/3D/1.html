@@ -1,31 +1,31 @@
 <htmL>
     <head>
         <!--<script src="../Classes/Graphics/2d/.Compiled.js"></script>-->
-        
+
         <!--libraries-->
         <script src="../../../Libraries/jQuery.js"></script>
         <script src="../../../Libraries/Three/three.min.js"></script>
         <script src="../../../Libraries/Three/VRController.js"></script>
         <script src="../../../Libraries/stats.js"></script>
         <script src="../../../Libraries/RBush-3d.js"></script>
-        
+
         <!--resize system-->
         <script src="../../../Classes/GUI/resize.js"></script>
-        
+
         <!--Alex's tree system-->
         <script src="../../../Classes/Tree/Tree.js"></script>
         <script src="../../../Classes/Tree/TreeNode.js"></script>
-        
+
         <!--graphics interface-->
         <script src="../../../Classes/Graphics/Utils/XYZ.js"></script>
         <script src="../../../Classes/Graphics/Utils/Vec.js"></script>
         <script src="../../../Classes/Graphics/Options.js"></script>
-        
+
         <script src="../../../Classes/Graphics/AbstractCamera.js"></script>
         <script src="../../../Classes/Graphics/AbstractGraphics.js"></script>
         <script src="../../../Classes/Graphics/AbstractShape.js"></script>
         <script src="../../../Classes/Graphics/AbstractVisualisation.js"></script>
-        
+
         <!--3d graphics api-->
         <script src="../../../Classes/Graphics/3d/Camera.js"></script>
         <script src="../../../Classes/Graphics/3d/VRCamera.js"></script>
@@ -41,8 +41,8 @@
         <!--<script src="../../../Classes/Graphics/3d/Shapes/NodeShape.js"></script>-->
         <!--<script src="../../../Classes/Graphics/3d/Shapes/HtmlShape.js"></script>-->
         <!--<script src="../../../Classes/Graphics/3d/Visualisation.js"></script>-->
-        
-        
+
+
         <!--debugging shit for safari-->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.9/ace.js"></script>
         <script src="https://cdn.rawgit.com/TarVK/chromeConsole/version-1.0/console.js"></script>
@@ -51,7 +51,7 @@
     <body>
         <!--<div class=container>-->
         <!--    <div class=q1>-->
-                
+
         <!--    </div>-->
         <!--    <div class=q2>-->
         <!--        <div class=console></div>-->
@@ -99,53 +99,53 @@
         //         }
         //     },
         // });
-        
+
         // console.log = function(){
         //     cons.log.apply(cons, arguments);
         // };
     </script>
     <script>
-        // this.debug = true;
-        
+        this.debug = true;
+
         //call the initialisation  code for my system
         $(".container").resizeContainer({vertical:false});
-        
+
         // var graphics = new Graphics3d($(".q1"));
         var graphics = new Graphics3d($("body"));
-        
+
         //3d test setup
         function test1(){
             var t = window;
-            
+
             t.cube2 = new Cuboid3d(graphics, 0.2, 0.1, 0.1, 0xff0000).setLoc(0, 0.15, 0).setScale(3);
             t.cube = new Cuboid3d(graphics, 0.2, 0.1, 0.1, 0xff0000).setLoc(0, -0.05, 0);
-            t.group = new ShapeGroup3d(graphics).setLoc(0, 0.8, -1.5);
+            t.group = new ShapeGroup3d(graphics).setLoc(0, 0.8, 0);
             group.addShape(cube, cube2).add();
-            
-            // t.cube3 = new Cuboid3d(graphics, 0.2, 0.1, 0.1, 0x00ff00).setLoc(0.6, 0.8, -1.5).add();
-            
-            // graphics.__getScene().updateMatrixWorld();
-            // group.mesh.updateMatrixWorld();
-            // cube3.mesh.updateMatrixWorld();
-            // console.log(group.getWorldLoc(), cube3.getWorldLoc());
-            
-            // t.line = new Line3d(graphics, null, cube3.getWorldLoc(), 0.005, 0x0000ff);
-            // group.addShape(line);
-            
-            light = new PointLight3d(graphics, 0xffffff).setLoc(0, 0.9, 0).add();
-            
+
+            t.cube3 = new Cuboid3d(graphics, 0.2, 0.1, 0.1, 0x00ff00).setLoc(0.6, 0.89, 0).add();
+
+            graphics.__getScene().updateMatrixWorld();
+            group.mesh.updateMatrixWorld();
+            cube3.mesh.updateMatrixWorld();
+            console.log(group.getWorldLoc(), cube3.getWorldLoc());
+
+            t.line = new Line3d(graphics, null, cube3.getWorldLoc(), 0.005, 0x0000ff);
+            group.addShape(line);
+
+            light = new PointLight3d(graphics, 0xffffff).setLoc(0, 0.9, 0.7).add();
+
             graphics.onUpdate(function(){
             	t.group.getRot().add(0.02,0.01,0);
-            	console.log(new Vec(t.group.getRot()));
+            	// console.log(new Vec(t.group.getRot()));
             });
-            
+
             cube.onHover(function(over){
             	this.setColor(over?0x00ff00:0xff0000);
             });
-            
-            graphics.getCamera().getLoc().set(0, 0.8, 0.4); //.add(-0.27, -0.42, 0);
+
+            graphics.getCamera().getLoc().set(0, 0.8, 0); //.add(-0.27, -0.42, 0);
         }
-        
+
         function test2(){
             var t = window;
             t.cube = new Cuboid3d(graphics, 0.2, 0.1, 0.1, 0xff0000).setLoc(0.1, 0, 0);
@@ -154,18 +154,18 @@
             t.group2 = new ShapeGroup3d(graphics).setLoc(0.2, 0, 0);
             t.group.addShape(t.cube, t.group2).add();
             t.group2.addShape(t.cube2);
-            
+
             t.light = new PointLight3d(graphics, 0xffffff).setLoc(0, 0.1, 0.4).add();
-            
+
             // graphics.onUpdate(function(){
             // 	group.getRot().add(0.02,0.01,0);
             // });
-            
+
             graphics.getCamera().getLoc().set(0, 0, 1.4); //.add(-0.27, -0.42, 0);
         }
-        
+
         test1();
-        
+
         $(".q1, .VRrenderer").click(function(){
             if(!VRCamera.isInVR())
                 VRCamera.enterVR();
@@ -173,7 +173,7 @@
                 VRCamera.leaveVR();
         });
         VRCamera.setVisualisation(graphics);
-        
+
         //visualisation setup
         var createTree = function(name, height){
             var children = [];
@@ -191,6 +191,6 @@
         var tree = new Tree(createTree("Stuff", 13));
         var options = new Options();
         // var visualisation1 = new Visualisation($(".q1"), tree, options);
-        
+
     </script>
 </html>

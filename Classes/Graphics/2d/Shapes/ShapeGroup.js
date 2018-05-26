@@ -72,10 +72,15 @@ class ShapeGroup2d extends Shape2d{
         return this.radius;
     }
 
-    //forward scale events
+    //forward scale event
     __triggerScaleChange(){
         super.__triggerScaleChange();
         for(var i=0; i<this.shapes.length; i++)
             this.shapes[i].__triggerScaleChange();
+    }
+    __triggerRenderChange(){
+        super.__triggerRenderChange();
+        for(var i=0; i<this.shapes.length; i++)
+            this.shapes[i].__triggerRenderChange();
     }
 }
