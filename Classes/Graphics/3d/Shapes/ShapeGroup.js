@@ -68,7 +68,7 @@ class ShapeGroup3d extends Shape3d{
     }
 
 
-    //forward scale event
+    //forward events
     __triggerScaleChange(){
         super.__triggerScaleChange();
         for(var i=0; i<this.shapes.length; i++)
@@ -78,5 +78,17 @@ class ShapeGroup3d extends Shape3d{
         super.__triggerRenderChange();
         for(var i=0; i<this.shapes.length; i++)
             this.shapes[i].__triggerRenderChange();
+    }
+    __interpolate(per){
+        super.__interpolate(per);
+        for(var i=0; i<this.shapes.length; i++)
+            this.shapes[i].__interpolate(per);
+    }
+    updateTransform(dontCarry){
+        super.updateTransform();
+        if(!dontCarry)
+            for(var i=0; i<this.shapes.length; i++)
+                this.shapes[i].updateTransform();
+        return this;
     }
 }

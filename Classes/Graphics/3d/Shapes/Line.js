@@ -31,9 +31,13 @@ class Line3d extends Shape3d{
             This.__updateTransform();
         });
 
+        this.transform.worldLoc = new XYZ();
+        this.prevTransform.worldLoc = new XYZ();
+
         //pass init data if provided
         if(startPoint) this.setStartPoint(startPoint);
         if(endPoint) this.setEndPoint(endPoint);
+        this.updateTransform();
     }
     __createShape(){
         this.geometry = new THREE.CylinderGeometry(1, 1, 1, 32); //32 is accuracy of sorts
@@ -48,17 +52,22 @@ class Line3d extends Shape3d{
             vec.sub(this.offsetShape.getWorldLoc());
 
         //position
-        this.mesh.position.set(
-            vec.getX(),
-            vec.getY(),
-            vec.getZ(),
-        );
+        this.transform.worldLoc.set(vec);
+        // this.mesh.position.set(
+        //     vec.getX(),
+        //     vec.getY(),
+        //     vec.getZ(),
+        // );
 
+        // console.log(vec.getX(), vec.getY(), vec.getZ())
         //rotate and scale
         vec.sub(this.endPoint);
         this.setRot(vec.mul(-1).getRot());
 
+        // this.updateTransform();     //the public update transform gets rid of intpolation
+
         this.line.scale.y = vec.getLength()/this.getScale();
+        // console.log(this.mesh.position, this.mesh.rotation)
 
         //
         // //update the rotation
@@ -86,9 +95,26 @@ class Line3d extends Shape3d{
         // this.line.scale.y = length;
     }
 
+    //handle interpolation
+    updateTransform(){
+        this.prevTransform.worldLoc.set(this.transform.worldLoc);
+        return super.updateTransform();
+    }
+    __setMeshLoc(per){
+        var prevLoc = this.prevTransform.worldLoc;
+        var loc = this.transform.worldLoc;
+        this.mesh.position.set(
+            prevLoc.x*(1-per) + loc.x*per,
+            prevLoc.y*(1-per) + loc.y*per,
+            prevLoc.z*(1-per) + loc.z*per
+        );
+    }
+
     //update line when rendering state changes
     __setParentShape(parent){
         super.__setParentShape(parent);
+
+        this.__updateTransform();
 
         this.isRendered = parent.isRendered;
         this.__triggerRenderChange();

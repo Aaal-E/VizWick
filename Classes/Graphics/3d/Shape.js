@@ -21,20 +21,18 @@ class Shape3d extends AbstractShape{
         //listen for location/rotation changes
         var This = this;
         this.getLoc().onChange(function(){
-            This.mesh.position.set(
-                This.getX(),
-                This.getY(),
-                This.getZ(),
-            );
+            This.prevTransform.tick = This.graphics.tick+1;
         });
-        this.getRot().onChange(function(){
-            This.mesh.rotation.set(
-                This.getXRot(),
-                This.getYRot(),
-                This.getZRot(),
-                "YZX",
-            );
+        this.getRot().onChange(function(old){
+            This.prevTransform.tick = This.graphics.tick+1;
         });
+
+        //transform of the previous tick
+        this.prevTransform = {
+            loc: new XYZ(),
+            rot: new Vec(),
+            scale: 1,
+        };
 
         //data used by the hover system to support multiple pointers
         this.__hoverCodes = [];
@@ -51,6 +49,53 @@ class Shape3d extends AbstractShape{
             this.mesh = new THREE.Mesh(this.geometry, this.material);
             this.mesh.userData = {shape: this};
         }
+    }
+
+    //interpolate the animation
+    __interpolate(delta){
+        if(this.prevTransform.tick>=this.graphics.tick){ //movement has happened
+            if(this.prevTransform.tick==this.graphics.tick)
+                this.updateTransform();
+            else{
+                this.__setMeshRot(delta);
+                this.__setMeshLoc(delta);
+                this.__setMeshScale(delta);
+            }
+        }
+    }
+    updateTransform(){
+        this.prevTransform.rot.set(this.transform.rot);
+        this.prevTransform.loc.set(this.transform.loc);
+        this.prevTransform.scale = this.transform.scale;
+
+        this.__setMeshRot(0);
+        this.__setMeshLoc(0);
+        this.__setMeshScale(0);
+        return this;
+    }
+
+    __setMeshRot(per){
+        var prevRot = this.prevTransform.rot;
+        var rot = this.transform.rot;
+        this.mesh.rotation.set(
+            prevRot.x*(1-per) + rot.x*per,
+            prevRot.y*(1-per) + rot.y*per,
+            prevRot.z*(1-per) + rot.z*per,
+            "YZX",
+        );
+    }
+    __setMeshLoc(per){
+        var prevLoc = this.prevTransform.loc;
+        var loc = this.transform.loc;
+        this.mesh.position.set(
+            prevLoc.x*(1-per) + loc.x*per,
+            prevLoc.y*(1-per) + loc.y*per,
+            prevLoc.z*(1-per) + loc.z*per
+        );
+    }
+    __setMeshScale(per){
+        var scale = this.prevTransform.scale*(1-per) + this.transform.scale*per;
+        this.mesh.scale.set(scale, scale, scale);
     }
 
 
@@ -93,8 +138,8 @@ class Shape3d extends AbstractShape{
         return super.setAlpha(alpha);
     }
     setScale(scale){
-        if(this.mesh)
-            this.mesh.scale.set(scale, scale, scale);
+        this.prevTransform.tick = this.graphics.tick+1;
+
         super.setScale(scale);
         return this;
     }
@@ -104,6 +149,7 @@ class Shape3d extends AbstractShape{
         super.add();
         this.graphics.__getScene().add(this.mesh);
         this.mesh.updateMatrixWorld();
+        this.updateTransform(); //don't interpolate
         return this;
     }
     __delete(){
@@ -113,6 +159,7 @@ class Shape3d extends AbstractShape{
     __setParentShape(parent){
         super.__setParentShape(parent);
         this.mesh.updateMatrixWorld();
+        this.updateTransform(); //don't interpolate
         return this;
     }
 }

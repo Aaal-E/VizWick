@@ -49,14 +49,14 @@
         <link rel="stylesheet" href="https://cdn.rawgit.com/TarVK/chromeConsole/version-1.0/console.css" type="text/css" />
     </head>
     <body>
-        <!--<div class=container>-->
-        <!--    <div class=q1>-->
+        <div class=container>
+           <div class=q1>
 
-        <!--    </div>-->
-        <!--    <div class=q2>-->
-        <!--        <div class=console></div>-->
-        <!--    </div>-->
-        <!--</div>-->
+           </div>
+           <div class=q2>
+               <div class=console></div>
+           </div>
+        </div>
     </body>
     <style>
         html, body{
@@ -89,20 +89,20 @@
         }
     </style>
     <script>
-        // var cons = $(".console").console({
-        //     onInput: function(text){
-        //         try{
-        //             var result = eval(text);
-        //             this.output(result);
-        //         }catch(e){
-        //             this.error(e);
-        //         }
-        //     },
-        // });
+        var cons = $(".console").console({
+            onInput: function(text){
+                try{
+                    var result = eval(text);
+                    this.output(result);
+                }catch(e){
+                    this.error(e);
+                }
+            },
+        });
 
-        // console.log = function(){
-        //     cons.log.apply(cons, arguments);
-        // };
+        console.log = function(){
+            cons.log.apply(cons, arguments);
+        };
     </script>
     <script>
         this.debug = true;
@@ -110,8 +110,8 @@
         //call the initialisation  code for my system
         $(".container").resizeContainer({vertical:false});
 
-        // var graphics = new Graphics3d($(".q1"));
-        var graphics = new Graphics3d($("body"));
+        var graphics = new Graphics3d($(".q1"));
+        // var graphics = new Graphics3d($("body"));
 
         //3d test setup
         function test1(){
@@ -134,9 +134,23 @@
 
             light = new PointLight3d(graphics, 0xffffff).setLoc(0, 0.9, 0.7).add();
 
+            var cubes = [];
+            for(var i=0; i<200; i++){
+                var c = new Cuboid3d(graphics, 0.1, 0.1, 0.1, 0xff0000).setScale(0.4).setLoc(Math.random()-0.5, Math.random()-0.5+0.8, Math.random()-0.5).add();
+                cubes.push(c);
+            }
+
             graphics.onUpdate(function(){
-            	t.group.getRot().add(0.02,0.01,0);
+            	t.group.getRot().add(0.2,0.1,0);
             	// console.log(new Vec(t.group.getRot()));
+
+                var loc = this.getMouseLoc(null, "hand2");
+                light.setLoc(loc);
+                //
+                for(var i=0; i<cubes.length; i++){
+                    cubes[i].getRot().add(0.1, 0.2, 0.3);
+                }
+                // graphics.getCamera().getRot().add(0, 0.3, 0);
             });
 
             cube.onHover(function(over){

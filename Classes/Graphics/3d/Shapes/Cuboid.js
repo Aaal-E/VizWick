@@ -7,27 +7,45 @@ class Cuboid3d extends Shape3d{
     constructor(graphics, width, height, depth, color, preInit){
         super(graphics, color, function(){
             this.size = new XYZ(width, height, depth);
-            
+
             if(height && height.call) height.call(this);
             if(preInit && preInit.call) preInit.call(this);
         });
-        
-        
+
+
         //listen for size changes
+        this.prevTransform.size = new XYZ();
+
         var This = this;
         this.size.onChange(function(){
-            This.mesh.scale.x = This.transform.scale*This.size.getX();
-            This.mesh.scale.y = This.transform.scale*This.size.getY();
-            This.mesh.scale.z = This.transform.scale*This.size.getZ();
+            This.prevTransform.scaleTick = This.graphics.tick+1;
+            This.dirty = true;
         });
-        
+
         //update size
         this.setScale(1);
+        this.updateTransform(); //don't interpolate size on creation
     }
     __createShape(){
         this.geometry = new THREE.BoxGeometry(1, 1, 1);
     }
-    
+
+    //interpolation
+    __setMeshScale(per){
+        var scale = this.prevTransform.scale*(1-per) + this.transform.scale*per;
+        var oldSize = this.prevTransform.size;
+        var size = this.size;
+
+        this.mesh.scale.x = scale* (oldSize.x*(1-per) + size.x*per);
+        this.mesh.scale.y = scale* (oldSize.y*(1-per) + size.y*per);
+        this.mesh.scale.z = scale* (oldSize.z*(1-per) + size.z*per);
+    }
+    updateTransform(){
+        this.prevTransform.size.set(this.size);
+        return super.updateTransform();
+    }
+
+    //scale functions
     setScale(scale){
         super.setScale(scale);
         this.setSize(this.getSize());
@@ -37,7 +55,7 @@ class Cuboid3d extends Shape3d{
         this.mesh.getWorldScale(vec3);
         return vec3.x/this.size.getX();
     }
-    
+
     //change size
     setSize(width, height, depth){
         this.size.set(width, height, depth);
@@ -46,9 +64,9 @@ class Cuboid3d extends Shape3d{
     getSize(){
         return this.size;
     }
-    
+
     //the radius to be used for the AABB
-    __getRadius(){  
+    __getRadius(){
         var x = this.size.getX()/2;
         var y = this.size.getY()/2;
         var z = this.size.getZ()/2;

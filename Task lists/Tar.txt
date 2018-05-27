@@ -54,5 +54,9 @@ personal todo list:
     //-finish line shape
     //-make camera target set an appropriate 'z' distance
     //-create translation for sub shape location to world location; not sure what this is anymore, but I think it is done
-    -add controller rescaling, button presses and scrolling
-    -add frame interpolation
+    //-add controller rescaling
+    -add controller button presses and scrolling
+    //-add frame interpolation:
+        -add line interpolation
+        -add sphere radius interpolation
+        -add render event listener system

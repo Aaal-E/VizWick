@@ -34,8 +34,7 @@ class Camera3d extends AbstractCamera{
 
     __updateLoc(){
         var vec = new Vec(this.getLoc());
-        vec.add(this.getRot().getLookAt().addYaw(Math.PI/2).setLength(this.distance));
-        // console.log(this.getRot().getLookAt().addYaw(Math.PI/2).setLength(this.distance));
+        vec.add(this.getRot().getLookAt().addYaw(-Math.PI/2).setLength(this.distance));
         this.camera.position.set(
             vec.getX(),
             vec.getY(),
@@ -111,7 +110,7 @@ class Camera3d extends AbstractCamera{
 
         this.rayCaster.setFromCamera(vec2, this.camera);
         var vector = new THREE.Vector3();
-        this.rayCaster.ray.at(vec.getZ()/Math.max(this.graphics.getWidth(), this.graphics.getHeight()), vector);
+        this.rayCaster.ray.at((vec.getZ()+this.distance), vector);
 
         return new Vec(vector);
     }

@@ -50,7 +50,7 @@ class Vec extends XYZ{
         return Math.abs(this.x)>1e-3*modifier || Math.abs(this.y)>1e-3*modifier || Math.abs(this.z)>1e-3*modifier;
     }
 
-    //angles
+    //angles (for 2d)
     setAngle(angle){
         var zAxisDist = Math.sqrt(this.x*this.x + this.y*this.y);
         var p = Math.atan2(this.z, zAxisDist);
@@ -68,14 +68,20 @@ class Vec extends XYZ{
         return this.setAngle(this.getAngle()+angle);
     }
 
-    setYaw(yaw){
-        var pitch = this.getPitch();
-        var length = this.getLength();
+    //set angles
+    setPYL(pitch, yaw, length){
         return this.set(
             Math.cos(yaw)*Math.cos(pitch)*length,
             Math.sin(pitch)*length,
-            Math.sin(yaw)*Math.cos(pitch)*length
+            -Math.sin(yaw)*Math.cos(pitch)*length
         );
+    }
+
+    //yaw
+    setYaw(yaw){
+        var pitch = this.getPitch();
+        var length = this.getLength();
+        return this.setPYL(pitch, yaw, length);
     }
     getYaw(){
         return Math.atan2(-this.z, this.x);
@@ -84,14 +90,11 @@ class Vec extends XYZ{
         return this.setYaw(this.getYaw()+yaw);
     }
 
+    //pitch
     setPitch(pitch){
         var yaw = this.getYaw();
         var length = this.getLength();
-        return this.set(
-            Math.cos(yaw)*Math.cos(pitch)*length,
-            Math.sin(pitch)*length,
-            Math.sin(yaw)*Math.cos(pitch)*length
-        );
+        return this.setPYL(pitch, yaw, length);
     }
     getPitch(){
         var yAxisDist = Math.sqrt(this.x*this.x + this.z*this.z);
@@ -101,6 +104,7 @@ class Vec extends XYZ{
         return this.setPitch(this.getPitch()+pitch);
     }
 
+    //length
     setLength(length){
         return this.mul(length/this.getLength());
     }
@@ -112,6 +116,14 @@ class Vec extends XYZ{
     }
     subLength(length){
         return this.setLength(Math.max(0, this.getLength()-length));
+    }
+
+    //rotate around rotation vector
+    rotate(x, y, z){
+        var XYZ = getXYZ(x, y, z);
+        this.addYaw(XYZ.y);
+        this.addPitch(XYZ.z);
+        return this;
     }
 
     //translate to shape rotation
