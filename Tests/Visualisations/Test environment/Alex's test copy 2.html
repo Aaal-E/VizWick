@@ -157,7 +157,6 @@
 							if(this.highlighted.getParent()){
 								var i = this.highlighted.getNode().getParent().getChildren().indexOf(this.highlighted.getNode()) - 1;
 								if(i < 0) i = i + this.highlighted.getNode().getParent().getChildren().length;
-								console.log(this.highlighted)
 								this.highlight(this.highlighted.getNode().getParent().getChildren()[i].getShape(this.getUID()));
 							}
 						} else if(key=="arrowright"){

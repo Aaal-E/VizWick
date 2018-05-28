@@ -145,7 +145,7 @@
 						this.pressed = true;
 					} else {
 						this.pressed = false;
-						this.updateScreen();
+						//this.updateScreen();
 					}
 				});
 				
@@ -162,7 +162,7 @@
 			}
 			
 			loadShape(shape){
-				if(shape.getScale() > this.renderdepth /*&& shape.onScreen()*/){
+				if(shape.getScale() > this.renderdepth && shape.isVisible()){
 					shape.createDescendants(2);
 					for(var i=0;i<shape.getChildren().length;i++){
 						this.loadShape(shape.getChildren()[i]);
