@@ -11,7 +11,7 @@ var getXYZ = function(x, y, z){
             x: x.x||0,
             y: x.y||0,
             z: x.z||0
-        };       
+        };
     }
     if(x.x!=null ||
        x.y!=null ||
@@ -20,8 +20,8 @@ var getXYZ = function(x, y, z){
             x: x.x||0,
             y: x.y||0,
             z: x.z||0
-        };       
-    }    
+        };
+    }
     if( x!==undefined &&
         y===undefined &&
         z===undefined){
@@ -29,11 +29,11 @@ var getXYZ = function(x, y, z){
             x: x,
             y: x,
             z: x
-        }       
+        }
     }
     return {
         x: x||0,
-        y: y||0, 
+        y: y||0,
         z: z||0
     };
 };
@@ -44,7 +44,7 @@ class XYZ{
         this.l = []; //change listeners
         this.set(x||0, y, z);
     }
-    
+
     //listeners
     onChange(func){
         this.l.push(func);
@@ -59,16 +59,16 @@ class XYZ{
         for(var i=0; i<this.l.length; i++) //notify all listeners
             this.l[i].call(this, this, old||this);
     }
-    
+
     //set
     set(x, y, z){
         var old = {x:this.x, y:this.y, z:this.z};
-        
+
         var xyz = getXYZ(x, y, z);
         this.x = xyz.x;
         this.y = xyz.y;
         this.z = xyz.z;
-        
+
         this.__fireEvent(old);
         return this;
     }
@@ -90,7 +90,7 @@ class XYZ{
     getZ(){
         return this.z;
     }
-    
+
     //alter
     add(x, y, z){
         var xyz = getXYZ(x, y, z);
@@ -124,13 +124,21 @@ class XYZ{
             this.z / xyz.z
         );
     }
-    
+    mod(x, y, z){
+        var xyz = getXYZ(x, y, z);
+        return this.set(
+            xyz.x==0? this.x: this.x%xyz.x,
+            xyz.y==0? this.y: this.y%xyz.y,
+            xyz.z==0? this.z: this.z%xyz.z
+        );
+    }
+
     //compare method
     equals(x, y, z){
         var xyz = getXYZ(x, y, z);
         return xyz.x==this.x && xyz.y==this.y && xyz.z==this.z;
     }
-    
+
     //create
     getVecTo(x, y, z){
         return new Vec(x, y, z).sub(this);

@@ -9,14 +9,14 @@ class Shape2d extends AbstractShape{
         this.gfx = this.__createGfx();
         this.setColor(color);
         this.gfx.zIndex = 0;            //orders the rendering of th shapes
-        
+
         //add listeners to change pos/rot
         var This = this;
         var oldZ = 0;
         this.getLoc().onChange(function(){
             This.gfx.x = this.getX();
             This.gfx.y = this.getY();
-            
+
             var newZ = this.getZ();
             if(oldZ!=newZ){
                 This.__updateZOrder();
@@ -26,7 +26,7 @@ class Shape2d extends AbstractShape{
         this.getRot().onChange(function(){
             This.gfx.rotation = this.getZ();
         });
-        
+
         //add interaction events
         {
             //add hover handlers
@@ -38,13 +38,13 @@ class Shape2d extends AbstractShape{
                 if(This.__triggerHover(false, data))
                     data.stopPropagation();
             });
-            
+
             //add click handler
             this.gfx.on("click", function(data){
                 if(This.__triggerClick(data))
                     data.stopPropagation();
             });
-            
+
             //add mouse events
             var mouseDown = function(data){
                 if(This.__triggerMousePress(true, data))
@@ -89,15 +89,18 @@ class Shape2d extends AbstractShape{
     __updateZOrder(){
         var zOrder = -this.getZ();
         this.gfx.zOrder = zOrder;
-        this.gfx.parentGroup = this.graphics.__getGroup();
+        if(this.parentShape)
+            this.gfx.parentGroup = this.parentShape.__getGroup();
+        else
+            this.gfx.parentGroup = this.graphics.__getGroup();
     }
-    
+
     //change scale
     setScale(scale){
         this.gfx.scale.set(scale);
         return super.setScale(scale);
     }
-    
+
     //absolute coordinates, relative to the screen
     getAbsoluteX(){
         return this.gfx.worldTransform.tx;
@@ -105,7 +108,7 @@ class Shape2d extends AbstractShape{
     getAbsoluteY(){
         return this.gfx.worldTransform.ty;
     }
-    
+
     //world location (when in other shape)
     getWorldLoc(){
         if(this.parentShape){
@@ -127,7 +130,19 @@ class Shape2d extends AbstractShape{
             return this.getAngle()+this.getWorldAngle();
         return super.getWorldAngle();
     }
-    
+    isVisible(){
+        var loc = this.getWorldLoc();
+        var graphics = this.getGraphics();
+        var camera = graphics.getCamera();
+        var camLoc = camera.getLoc();
+        var x = loc.getX()-camLoc.getX();
+        var y = loc.getY()-camLoc.getY();
+        var w = graphics.getWidth()/2/camera.getScale();
+        var h = graphics.getHeight()/2/camera.getScale();
+        var r = this.__getRadius();
+        return x+r>-w && x-r<w && y+r>-h && y-r<h;
+    }
+
     //method alias
     setAngle(angle){
         return this.setZRot(angle);
@@ -135,7 +150,7 @@ class Shape2d extends AbstractShape{
     getAngle(){
         return this.getZRot();
     }
-    
+
     //update color
     setColor(color){
         super.setColor(color);
@@ -146,7 +161,7 @@ class Shape2d extends AbstractShape{
         this.gfx.alpha = alpha;
         return super.setAlpha(alpha);
     }
-    
+
     //enable/disabling interactions
     enableInteraction(internally){
         this.gfx.interactive = true;
@@ -156,20 +171,27 @@ class Shape2d extends AbstractShape{
         this.gfx.interactive = false;
         super.disableInteraction(internally);
     }
-    
+
     //add to/remove from graphics
     add(){
         super.add();
         this.graphics.__getStage().addChild(this.gfx);
-        this.gfx.parentGroup = this.graphics.group;
+        this.__updateZOrder();
         return this;
     }
     __delete(){
         this.graphics.__getStage().removeChild(this.gfx);
         super.__delete();
     }
-    
-    
+
+    //update zindex on parent changes
+    __setParentShape(parent){
+        super.__setParentShape(parent);
+        this.__updateZOrder();
+        return this;
+    }
+
+
     //targetting ignore z
     __onUpdate(deltaTime){
         this.getVelo().setZ(0);
@@ -183,21 +205,7 @@ class Shape2d extends AbstractShape{
                 this.target.callback.loc = null;
             }
         }
-        
+
         return super.__onUpdate(deltaTime);
-    }
-    
-    //get size information to be used by the compount shape texture to determine the texture size
-    __getMinX(){
-        return this.loc.getX() - this.__getRadius();
-    }
-    __getMaxX(){
-        return this.loc.getX() + this.__getRadius();
-    }
-    __getMinY(){
-        return this.loc.getY() - this.__getRadius();
-    }
-    __getMaxY(){
-        return this.loc.getY() + this.__getRadius();
     }
 }

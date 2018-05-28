@@ -8,7 +8,7 @@ class ShapeGroup3d extends Shape3d{
         super(graphics, null, preInit);
         this.shapes = [];
         this.radius = 0;
-        
+
         //forward location change to children (world location)
         var This = this;
         this.getLoc().onChange(function(){
@@ -24,7 +24,7 @@ class ShapeGroup3d extends Shape3d{
         this.mesh = new THREE.Object3D();
         this.mesh.userData = {shape: this};
     }
-    
+
     //shape interaction
     getShapes(){
         return this.shapes;
@@ -32,9 +32,11 @@ class ShapeGroup3d extends Shape3d{
     addShape(shape){
         for(var i=0; i<arguments.length; i++){
             var shape = arguments[i];
-            this.mesh.add(shape.mesh);
-            this.shapes.push(shape);
-            shape.__setParentShape(this);
+            if(this.shapes.indexOf(shape)==-1){
+                this.mesh.add(shape.mesh);
+                this.shapes.push(shape);
+                shape.__setParentShape(this);
+            }
         }
         this.__updateRadius();
         return this;
@@ -52,6 +54,8 @@ class ShapeGroup3d extends Shape3d{
         this.__updateRadius();
         return this;
     }
+
+    //manage the radius
     __updateRadius(){
         this.radius = 0;
         for(var i=0; i<this.shapes.length; i++){
@@ -61,5 +65,30 @@ class ShapeGroup3d extends Shape3d{
     }
     __getRadius(){
         return this.radius*this.getScale();
+    }
+
+
+    //forward events
+    __triggerScaleChange(){
+        super.__triggerScaleChange();
+        for(var i=0; i<this.shapes.length; i++)
+            this.shapes[i].__triggerScaleChange();
+    }
+    __triggerRenderChange(){
+        super.__triggerRenderChange();
+        for(var i=0; i<this.shapes.length; i++)
+            this.shapes[i].__triggerRenderChange();
+    }
+    __interpolate(per){
+        super.__interpolate(per);
+        for(var i=0; i<this.shapes.length; i++)
+            this.shapes[i].__interpolate(per);
+    }
+    updateTransform(dontCarry){
+        super.updateTransform();
+        if(!dontCarry)
+            for(var i=0; i<this.shapes.length; i++)
+                this.shapes[i].updateTransform();
+        return this;
     }
 }

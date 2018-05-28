@@ -1,0 +1,62 @@
+personal todo list:
+    //Scrapped: -add option to assign position to shape with relative offsets
+    //-add line shape (done by Mara)
+    //-add texture shape (done by Mara)
+    //-add text shape (done by Mara)
+    //-add dom text shape
+
+    //-continue dynamic tree growing /shrinking support
+
+    //-simplify mouse interaction and physics
+    //-fix bugs with animations
+    //-add support for functions with targets
+
+    //-add alpha to the color
+    //-create shape selection system
+    //-create shape dragging system
+    //-create view synchronisation between visualisations
+    //-create 'is root' method
+    //-create system for getting the node that is closest to the mouse/pointer
+    //-add DOM shape, fix dom shape hover event stuff
+
+    //-fix visualisation not syncing with focus when nodeShape doesn't exist
+    //-improve sharpness on resize
+
+    //-test random node creation through visualisation
+
+    //-Add name to visualisation
+    //-on dispose:
+    //    -remove all shapes from tree
+    //    -remove visualisation from page
+    //-check/fix z-indices in shape groups
+    //-add method to check if shape is on screen
+
+    //-add dead/alive field to nodes, and add as parameter to relation functions
+    //-add synchronised hover events
+    //-add scale listener which forwards parent changes
+    //-rotate to closest angle with camera
+    //-make resize events on window resize
+
+    -simplify creating connection
+    -Synchronise focus even if node doesn't exist or isn't connected
+    -Add default options:
+        -synchronisation
+        -antialisasing
+    -Add cursor system; idk what this is anymore...
+    -options:
+        -Accommodate button 'options' showing a certain text
+        -Accommodate text 'options' to just show some status text
+    -look into alex's thing not working in edge
+    -add generate image system
+
+
+    3D visualisation:
+    //-finish line shape
+    //-make camera target set an appropriate 'z' distance
+    //-create translation for sub shape location to world location; not sure what this is anymore, but I think it is done
+    //-add controller rescaling
+    -add controller button presses and scrolling
+    //-add frame interpolation:
+        -add line interpolation
+        -add sphere radius interpolation
+        -add render event listener system

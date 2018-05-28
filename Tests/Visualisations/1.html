@@ -1,32 +1,32 @@
 <htmL>
     <head>
         <!--<script src="../Classes/Graphics/2d/.Compiled.js"></script>-->
-        
+
         <!--libraries-->
         <script src="../../Libraries/jQuery.js"></script>
         <script src="../../Libraries/pixi.min.js"></script>
         <script src="../../Libraries/pixiLayers.js"></script>
         <script src="../../Libraries/stats.js"></script>
         <script src="../../Libraries/RBush-3d.js"></script>
-        
+
         <!--resize system-->
         <script src="../../Classes/GUI/resize.js"></script>
-        
+
         <!--Alex's tree system-->
         <script src="../../Classes/Tree/Tree.js"></script>
         <script src="../../Classes/Tree/TreeNode.js"></script>
-        
+
         <!--graphics interface-->
         <script src="../../Classes/Graphics/Utils/XYZ.js"></script>
         <script src="../../Classes/Graphics/Utils/Vec.js"></script>
         <script src="../../Classes/Graphics/Options.js"></script>
-        
+
         <script src="../../Classes/Graphics/AbstractCamera.js"></script>
         <script src="../../Classes/Graphics/AbstractGraphics.js"></script>
         <script src="../../Classes/Graphics/AbstractShape.js"></script>
         <script src="../../Classes/Graphics/AbstractVisualisation.js"></script>
         <script src="../../Classes/Graphics/AbstractNodeShape.js"></script>
-        
+
         <!--2d graphics api-->
         <script src="../../Classes/Graphics/2d/Camera.js"></script>
         <script src="../../Classes/Graphics/2d/Graphics.js"></script>
@@ -42,7 +42,7 @@
     <body>
         <div class=container>
             <div class=q1>
-                
+
             </div>
             <div class=q2>
             </div>
@@ -53,6 +53,7 @@
             width: 100%;
             height: 100%;
             margin: 0px;
+            background-color: #100130;
         }
         .container{
             width: 100%;
@@ -69,37 +70,31 @@
             background-color: white !important;
         }
         .q1,.q2{
-            background-color: black;
             position: relative;
         }
     </style>
     <script>
-        this.debug = true;
-        
+        // this.debug = true;
+
         //call the initialisation  code for my system
         $(".container").resizeContainer({vertical:false});
-        
+
         //the visualisation class
         class Visualisation extends Visualisation2d{
             constructor(container, tree, options){
                 super(container, tree, options);
-                var func = this.func || function(){};
-                
-                func();
-                
-                
                 this.mouseSelected = null;
             }
             __onUpdate(deltaTime){
                 super.__onUpdate(deltaTime);
                 var range = 30;
-                
+
                 var camera = this.getCamera();
                 var scale = camera.getScale();
                 var mouseLoc = this.getMouseLoc();
-                
+
                 var nodeShapes = this.search(mouseLoc, range/scale);
-                
+
                 var closest = {shape:null, dist:Infinity};
                 for(var i=0; i<nodeShapes.length; i++){
                     var nodeShape = nodeShapes[i];
@@ -107,15 +102,15 @@
                     if(dist<closest.dist && dist<=range/scale)
                         closest = {shape:nodeShape, dist:dist};
                 }
-                
+
                 if(this.mouseSelected != closest.shape){
                     if(this.mouseSelected)
                         this.mouseSelected.setTargetLoc(this.mouseSelected.targetLoc, 0.6, 10, function(){
                             this.__deregisterUpdateListener();
                         }).__registerUpdateListener();
-                    
+
                     this.mouseSelected = closest.shape;
-                    
+
                     if(this.mouseSelected)
                         this.mouseSelected.setTargetLoc(function(){
                             return this.getGraphics().getMouseLoc();
@@ -130,17 +125,27 @@
                     constructor(gfx, node, scale){
                         super(gfx, node, function(){
                             this.scale = scale||1;
+
+                            this.line = new VIZ.Line(gfx, new VIZ.XYZ(0, 0), new VIZ.XYZ(0, 0), 10, 0xffffff).setZ(-1);
                         });
                         this.setScale(this.scale);
-                        
+
                         //create primary circle shape
-                        this.line = new VIZ.Line(gfx, new VIZ.XYZ(0, 0), new VIZ.XYZ(0, 0), 10, 0xffffff);
-                        // this.addShape(this.line);
+                        this.addShape(this.line);
+                        var This = this;
+                        this.getLoc().onChange(function(){
+                            if(!This.getParent()) This.line.setEndPoint(This.getLoc());
+                        });
+
                         this.circle = new VIZ.Circle(gfx, 30, 0xff0000);
                         this.addShape(this.circle);
-                        
+                        this.circle.onHover(function(over){
+                            if(over) This.highlight();
+                            else     This.dehighlight();
+                        });
+
                         this.setAngle(Math.random()-0.1);
-                        
+
                         //mouse events
                         this.onClick(function(){
                             this.focus();
@@ -154,7 +159,7 @@
                                 return true;
                             }
                         });
-                        
+
                         //hover event
                         this.text = new VIZ.HtmlShape(gfx, "Test");
                         this.text.setScale(2);
@@ -165,7 +170,7 @@
                                 this.removeShape(this.text);
                             }
                         });
-                        
+
                         //update aabb
                         this.storeInSpatialTree = true;
                         this.__updateAABB();
@@ -173,16 +178,17 @@
                     __stateChanged(field, val, oldState){
                         if(field=="focused" && val==true){
                             camera.setTarget(this.targetLoc, this, this);
-                        
+
                             this.createDescendants(2);      //creates 2 layers of descendants
                             this.destroyDescendants(2);     //destroys any descendants above those 2 layers
-                            
+
                             this.createAncestors(2);        //creates 2 layers of ancestors
                             this.destroyAncestors(2, true); //destroys any ancestors below those 2 layers
                         }
-                        
+
                         if(this.circle)
-                            this.circle.setColor(this.state.expanded?0x900000ff:0xff0000);
+                            // this.circle.setColor(this.state.expanded?0x900000ff:0xff0000); //has alpha
+                            this.circle.setColor(this.state.highlighted?0xff00ff:this.state.expanded?0x0000ff:0xff0000);
                     }
                     __connectParent(parent){
                         if(parent){
@@ -190,8 +196,8 @@
                             this.targetLoc = new VIZ.XYZ(parent.targetLoc).add(w, -130*parent.scale, this.getZ());
                             var This = this;
                             parent.getLoc().onChange(function(){
-                                This.line.getEndPoint().set(this).setZ(-1);
-                            });
+                                This.line.getEndPoint().set(this);
+                            }).__fireEvent();
                         }else{
                             this.targetLoc = new VIZ.XYZ();
                         }
@@ -200,13 +206,14 @@
                         var connectedNode = this.getConnectedNodeShape();
                         //set initial location
                         if(connectedNode){  //copy connected node if available
-                            this.getLoc().set(connectedNode.getLoc()).sub(0, 0, 1e-9);
+                            this.getLoc().set(connectedNode.getLoc()).sub(0, 0, (connectedNode==this.getParent()?1:-1)*1e-4);
+                            // this.getLoc().set(connectedNode.getLoc()).sub(0, 0, 1e-4);
                             this.setScale(connectedNode.getScale());
-                        }else{ 
+                        }else{
                             this.setLoc(this.targetLoc);
                             this.setScale(0);
                         }
-                        
+
                         //set location to move to
                         var c = 2;
                         var complete = function(){
@@ -221,17 +228,18 @@
                         //set target position and scale
                         var target = this.getLoc();
                         var targetScale = 0;
-                        
+
                         //attempt to move to a connected shape instead
-                        var connectedShape = this.getConnectedNodeShape();
+                        var connectedShape = this.getConnectedNodeShape(true); //'true' to not go to dead shapes
                         if(connectedShape){
                             target = connectedShape.getLoc();
                             targetScale = function(){
                                 return connectedShape.getScale()
                             };
-                            this.setZ(connectedShape.getZ()-1e-9);
+                            // this.setZ(connectedShape.getZ()-1e-4);
+                            // console.log(this.getZ(), connectedShape.getZ());
                         }
-                        
+
                         //set location and scale to move to
                         var c = 2;
                         var complete = function(){
@@ -242,37 +250,38 @@
                             .setTargetScale(targetScale, 0, 8, complete)
                             .__registerUpdateListener();
                     }
-                    
+
                     __createNodeShape(node){
                         //Calculate the scale we want the node shape to have:
                         var scale = 1;  //just as a placeholder
-                        
+
                         //First retrieve the scale of the parent
                         var ID = this.graphics.getUID();
                         var parent = node.getParent();  //this will be a node
                         if(parent){                     //check if it isn't the root
                             var parentScale = 1;        //default scale
-                            
+
                             var parentShape = parent.getShape(ID); //get the nodeShape attached to parent
                             if(parentShape)             //if such a shape exists
                                 parentScale = parentShape.scale; //copy its scale
-                            
+
                             //Sets the scale n times as small as its parent, with n being the childcount
-                            scale = parentScale/parent.getChildren().length;    
+                            scale = parentScale/parent.getChildren().length;
                         }
-                        
+
                         //Create a new instance of your NodeShape and pass the scale
                         return new (this.__getClass())(this.getGraphics(), node, scale);
                     }
                 }
             }
         }
-        
+
         //visualisation setup
         var createTree = function(name, height){
             var children = [];
             if(height>0){
                 var childCount = Math.floor(Math.random()*3)+1;
+                // var childCount = 1;
                 for(var i=0; i<childCount; i++){
                     children.push(createTree(name+"-"+i, height-1));
                 }
@@ -285,8 +294,8 @@
         var tree = new Tree(createTree("Stuff", 13));
         var options = new Options();
         var visualisation1 = new Visualisation($(".q1"), tree, options);
-        
+
         var visualisation2 = new Visualisation($(".q2"), tree, options);
-        
+
     </script>
 </html>

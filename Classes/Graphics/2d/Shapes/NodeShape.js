@@ -10,62 +10,17 @@ class NodeShape2d extends ShapeGroup2d{
     }
     
     
-    //relation maintenance
+    //relation maintenance (needs super)
     add(){
         var ret = super.add();
-        
-        //register shape as root and leave, as no parent or children are set up yet
-        this.graphics.__registerShapeLeave(this);
-        this.graphics.__registerShapeRoot(this);
-        if(this.__getChildNodes().length!=this.children.length)
-            this.graphics.__registerShapeCollapsed(this);
-        
-        //connect the parent and child nodes
-        var parent = this.__getParentFromNode(true);
-        if(parent) this.__setParent(parent);
-        
-        var children = this.__getChildrenFromNode(true);
-        for(var i=0; i<children.length; i++)
-            this.__addChild(children[i]);
-            
-        // //setup connection
-        // if(!this.__setupConnection(this.getParent(), this.getChildren()[0], !this.connectionHasBeenSetup))   //with argument true the first time
-        //     this.connectionHasBeenSetup = true;
-            
-        //update visuals for the state
-        this.__stateChanged(null, null, this.state);
-        this.__show();
+        this.__addNode();
         return ret;
     }
     remove(){
-        var notFully = !this.__hide();
-        
-        //collapse the parent as not all its child nodes are shown anymore
-        parent = this.getParent();
-        if(parent) parent.__removeChild(this);
-        
-        //remove fron children
-        for(var i=0; i<this.children.length; i++)
-            this.children[i].__setParent(null);
-            
-        //clean up own relations
-        this.__setParent(null);
-        this.children = [];
-        
-        return super.remove(notFully);
+        return super.remove(this.__removeNode());
     }
     __delete(){
-        //test: keep the node around, but don't render it
-        // //if the shape is deleted from the visualisation, disconnect it from the tree
-        // if(this.graphics && this.node)
-        //     this.node.removeShape(this.graphics.getUID());
-            
-        
-            
-        //indicate that this shape is no longer anything in tree
-        this.graphics.__deregisterShapeRoot(this);  
-        this.graphics.__deregisterShapeCollapsed(this);
-        this.graphics.__deregisterShapeLeave(this);
+        this.__deleteNode();
         return super.__delete();
     }
 }

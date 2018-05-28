@@ -41,6 +41,6 @@ class Circle2d extends Shape2d{
     
     //the radius to be used for the AABB
     __getRadius(){  
-        return this.radius*this.getScale();
+        return this.radius;
     }
 }

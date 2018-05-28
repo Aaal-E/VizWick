@@ -6,31 +6,31 @@
 class Graphics2d extends AbstractGraphics{
     constructor(width, height, container, preInit){
         super(width, height, container, preInit);
-        
+
         //create the graphics environment
         this.app = new PIXI.Application(this.getWidth(), this.getHeight(), {transparent: true, antialias:true});
-        
+
         //add graphics to the screen
         var This = this;
         $(this.app.view).addClass("pixi");
         this.container.append(this.app.view);
         this.container.on("finishResize", function(event, size){
             var newSize = {
-                width:This.container.width(), 
+                width:This.container.width(),
                 height:This.container.height()
             };
             This.app.renderer.resize(newSize.width, newSize.height);
-            
+
             This.size = newSize;
             This.stage.hitArea = new PIXI.Rectangle(-This.getWidth()/2, -This.getHeight()/2, This.getWidth(), This.getHeight()); //update hitbox for mouse interaction
-            
+
             This.camera.__updateLoc();
         });
-        
+
         //fix interaction bugs when hovering over an html shape
         var m = this.app.renderer.plugins.interaction;
         m.interactionDOMElement.removeEventListener("pointerleave", m.onPointerOut, true);
-        
+
         //register update listener, set to 30fps
         this.updating = true;
         var last = Date.now();
@@ -46,16 +46,16 @@ class Graphics2d extends AbstractGraphics{
             }
         });
         // PIXI.settings.TARGET_FPMS = 30/1000;    //set target fps to 30
-        
+
         //setup layered container
         this.app.stage = new PIXI.display.Stage();
         this.app.stage.group.enableSort = true;
-        
+
         this.group = new PIXI.display.Group(1, true);
         this.stage = new PIXI.display.Layer(this.group);
         this.stage.hitArea = new PIXI.Rectangle(-this.getWidth()/2, -this.getHeight()/2, this.getWidth(), this.getHeight()); //setup hitbox for mouse interaction
         this.app.stage.addChild(this.stage);
-        
+
         //add event handlers
         {
             this.mouse = {x:0, y:0, pressed:false};
@@ -95,12 +95,12 @@ class Graphics2d extends AbstractGraphics{
                 .on('scroll', mouseScroll)
                 .on('keypress', keyPress);
         }
-            
+
         //create scroll event and key events
         {
             this.DOMEventListeners.scroll = function(event){
                 var interactionData = m.getInteractionDataForPointerId(event);
-                
+
                 var interactionEvent = m.configureInteractionEventForDOMEvent(m.eventData, event, interactionData);
                 m.processInteractive(interactionEvent, m.renderer._lastObjectRendered, function(interactionEvent, displayObject, hit){
                     if(hit){
@@ -110,14 +110,14 @@ class Graphics2d extends AbstractGraphics{
             };
             this.DOMEventListeners.keypress = function(event){
                 var interactionData = m.getInteractionDataForPointerId(event);
-                
+
                 if(event.type=="keyup") //remove keys even if released outside of visualisation
                     delete This.pressedKeys[event.key.toLowerCase()];
-                
+
                 //set target location
                 event.clientX = This.mouse.clientX;
                 event.clientY = This.mouse.clientY;
-                
+
                 var interactionEvent = m.configureInteractionEventForDOMEvent(m.eventData, event, interactionData);
                 m.processInteractive(interactionEvent, m.renderer._lastObjectRendered, function(interactionEvent, displayObject, hit){
                     if(hit){
@@ -129,15 +129,15 @@ class Graphics2d extends AbstractGraphics{
             $(window).on('keydown', this.DOMEventListeners.keypress);
             $(window).on('keyup', this.DOMEventListeners.keypress);
         }
-        
+
         //connect a camera
         this.camera = new Camera2d(this);
     }
-    
+
     getCanvas(){
         return this.getContainer().find("canvas.pixi");
     }
-    
+
     //disposal
     destroy(){
         $(window).off('mousewheel', this.DOMEventListeners.scroll);
@@ -145,7 +145,7 @@ class Graphics2d extends AbstractGraphics{
         $(window).off('keyup', this.DOMEventListeners.keypress);
         super.destroy();
     }
-    
+
     //start/stop rendering
     pause(fully){
         if(!fully){
@@ -158,7 +158,7 @@ class Graphics2d extends AbstractGraphics{
         this.updating = true;
         this.app.start();
     }
-    
+
     //pixi specific methods
     __getStage(){
         return this.app.stage;
@@ -169,7 +169,7 @@ class Graphics2d extends AbstractGraphics{
     __getRenderer(){
         return this.app.renderer;
     }
-    
+
     //mouse  methods
     getMouseScreenLoc(){
         return this.mouse;

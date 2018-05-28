@@ -11,7 +11,7 @@ var getXYZ = function(x, y, z){
             x: x.x||0,
             y: x.y||0,
             z: x.z||0
-        };       
+        };
     }
     if(x.x!=null ||
        x.y!=null ||
@@ -20,8 +20,8 @@ var getXYZ = function(x, y, z){
             x: x.x||0,
             y: x.y||0,
             z: x.z||0
-        };       
-    }    
+        };
+    }
     if( x!==undefined &&
         y===undefined &&
         z===undefined){
@@ -29,11 +29,11 @@ var getXYZ = function(x, y, z){
             x: x,
             y: x,
             z: x
-        }       
+        }
     }
     return {
         x: x||0,
-        y: y||0, 
+        y: y||0,
         z: z||0
     };
 };
@@ -43,14 +43,14 @@ class Vec extends XYZ{
     constructor(x, y, z){
         super(x, y, z);
     }
-    
+
     //check if it is non zero
     isNonZero(modifier){
         modifier = modifier||1
         return Math.abs(this.x)>1e-3*modifier || Math.abs(this.y)>1e-3*modifier || Math.abs(this.z)>1e-3*modifier;
     }
-    
-    //angles
+
+    //angles (for 2d)
     setAngle(angle){
         var zAxisDist = Math.sqrt(this.x*this.x + this.y*this.y);
         var p = Math.atan2(this.z, zAxisDist);
@@ -67,31 +67,34 @@ class Vec extends XYZ{
     addAngle(angle){
         return this.setAngle(this.getAngle()+angle);
     }
-    
-    setYaw(yaw){
-        var pitch = this.getPitch();
-        var length = this.getLength();
+
+    //set angles
+    setPYL(pitch, yaw, length){
         return this.set(
             Math.cos(yaw)*Math.cos(pitch)*length,
             Math.sin(pitch)*length,
-            Math.sin(yaw)*Math.cos(pitch)*length
+            -Math.sin(yaw)*Math.cos(pitch)*length
         );
     }
+
+    //yaw
+    setYaw(yaw){
+        var pitch = this.getPitch();
+        var length = this.getLength();
+        return this.setPYL(pitch, yaw, length);
+    }
     getYaw(){
-        return Math.atan2(this.z, this.x); 
+        return Math.atan2(-this.z, this.x);
     }
     addYaw(yaw){
         return this.setYaw(this.getYaw()+yaw);
     }
-    
+
+    //pitch
     setPitch(pitch){
         var yaw = this.getYaw();
         var length = this.getLength();
-        return this.set(
-            Math.cos(yaw)*Math.cos(pitch)*length,
-            Math.sin(pitch)*length,
-            Math.sin(yaw)*Math.cos(pitch)*length
-        );
+        return this.setPYL(pitch, yaw, length);
     }
     getPitch(){
         var yAxisDist = Math.sqrt(this.x*this.x + this.z*this.z);
@@ -100,7 +103,8 @@ class Vec extends XYZ{
     addPitch(pitch){
         return this.setPitch(this.getPitch()+pitch);
     }
-    
+
+    //length
     setLength(length){
         return this.mul(length/this.getLength());
     }
@@ -113,9 +117,20 @@ class Vec extends XYZ{
     subLength(length){
         return this.setLength(Math.max(0, this.getLength()-length));
     }
-    
+
+    //rotate around rotation vector
+    rotate(x, y, z){
+        var XYZ = getXYZ(x, y, z);
+        this.addYaw(XYZ.y);
+        this.addPitch(XYZ.z);
+        return this;
+    }
+
     //translate to shape rotation
     getRot(){
         return new Vec(0, this.getYaw(), this.getPitch());
+    }
+    getLookAt(){
+        return new Vec(1, 0, 0).setPitch(this.getZ()).setYaw(this.getY());
     }
 }

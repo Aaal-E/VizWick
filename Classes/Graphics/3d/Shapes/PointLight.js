@@ -17,6 +17,12 @@ class PointLight3d extends Shape3d{
             if(decay && decay.call) decay.call(this);
             if(preInit && preInit.call) preInit.call(this);
         });
+        
+        if(window.debug){
+            var geometry = new THREE.SphereGeometry(0.005, 32, 32);
+            var material = new THREE.MeshBasicMaterial(0xffffff);
+            this.mesh.add(new THREE.Mesh(geometry, material));
+        }
     }
     __createShape(){}
     __createMaterial(){}
@@ -44,11 +50,11 @@ class PointLight3d extends Shape3d{
     }
     setDecay(decay){
         this.decay = decay;
-        this.mesh.dcay = decay;
+        this.mesh.decay = decay;
         return this;
     }
     getDecay(){
-        return this.devay;
+        return this.decay;
     }
     setColor(color){
         this.mesh.color.setHex(color);

@@ -1,5 +1,5 @@
 /*
-    A node shape that manages sub shapes
+    A shape that manages sub shapes
     Author: Tar van Krieken
     Starting Date: 30/04/2018
 */
@@ -8,7 +8,7 @@ class ShapeGroup2d extends Shape2d{
         super(graphics, null, preInit);
         this.shapes = [];
         this.radius = 0;
-        
+
         //forward location change to children (world location)
         var This = this;
         this.getLoc().onChange(function(){
@@ -19,11 +19,17 @@ class ShapeGroup2d extends Shape2d{
             for(var i=0; i<This.shapes.length; i++)
                 This.shapes[i].getLoc().__fireEvent();
         });
+
+        //create group (not sure why, but it seems to work)
+        this.group = new PIXI.display.Group(1, true);
     }
     __createGfx(){
-        return new PIXI.Container();
+        return new PIXI.display.Layer(this.group);
     }
-    
+    __getGroup(){
+        return this.group;
+    }
+
     //shape interaction
     getShapes(){
         return this.shapes;
@@ -31,9 +37,11 @@ class ShapeGroup2d extends Shape2d{
     addShape(shape){
         for(var i=0; i<arguments.length; i++){
             var shape = arguments[i];
-            this.gfx.addChild(shape.gfx);
-            this.shapes.push(shape);
-            shape.__setParentShape(this);
+            if(this.shapes.indexOf(shape)==-1){
+                this.gfx.addChild(shape.gfx);
+                this.shapes.push(shape);
+                shape.__setParentShape(this);
+            }
         }
         this.__updateRadius();
         return this;
@@ -51,14 +59,28 @@ class ShapeGroup2d extends Shape2d{
         this.__updateRadius();
         return this;
     }
+
+    //manage the radius
     __updateRadius(){
         this.radius = 0;
         for(var i=0; i<this.shapes.length; i++){
             var shape = this.shapes[i];
-            this.radius = Math.max(this.radius, new Vec(shape.getLoc()).getLength()+shape.__getRadius());
+            this.radius = Math.max(this.radius, new Vec(shape.getLoc()).getLength()+shape.__getRadius()*shape.getScale());
         }
     }
     __getRadius(){
-        return this.radius*this.getScale();
+        return this.radius;
+    }
+
+    //forward scale event
+    __triggerScaleChange(){
+        super.__triggerScaleChange();
+        for(var i=0; i<this.shapes.length; i++)
+            this.shapes[i].__triggerScaleChange();
+    }
+    __triggerRenderChange(){
+        super.__triggerRenderChange();
+        for(var i=0; i<this.shapes.length; i++)
+            this.shapes[i].__triggerRenderChange();
     }
 }

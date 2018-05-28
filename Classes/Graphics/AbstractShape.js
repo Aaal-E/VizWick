@@ -9,14 +9,15 @@ class AbstractShape{
         this.storeInSpatialTree = false;
         if(preInit)
             preInit.call(this);
-            
+
         //set fields
-        this.graphics = graphics; 
-        
+        this.graphics = graphics;
+
         this.transform = {
-            loc: new XYZ(0, 0, 0), 
-            rot: new XYZ(0, 0, 0), 
-            scale: 1
+            loc: new XYZ(0, 0, 0),
+            rot: new XYZ(0, 0, 0),
+            scale: 1,
+            scaleListeners: [],
         };
         this.velo = {
             loc: new Vec(0, 0, 0),
@@ -27,7 +28,9 @@ class AbstractShape{
         this.aabb = {minX:0, maxX:0, minY:0, maxY:0, minZ:0, maxZ:0};   //loose bounding box
         this.color = 0;                                                 //int color
         this.isRendered = false;                                        //whether or not the shape is being rendered
-        
+        this.isRenderedListeners = [];                                  //listeners that check if the shape is rendered
+        this.isAlive = false;                                           //whether or not the shape is rendered, and not in the process of being removed
+
         //interaction listeners
         this.listeners = {
             update: [],
@@ -38,7 +41,7 @@ class AbstractShape{
             mouseMove: [],
             keyPress: []
         };
-        
+
         //target
         this.target = {
             loc: null,
@@ -60,27 +63,27 @@ class AbstractShape{
                 scale: null
             }
         };
-        
+
         //whether updates and interactions are disabled
         this.updatesDisabled = false;
         this.interactionsDisabled = false;
-        
+
         //add listener to loc changes in order to update aabb
         var This = this;
         this.transform.loc.onChange(function(){
             This.__updateAABB();
         });
-        
+
         //velo listeners
         this.velo.loc.onChange(function(){
              This.__updateUpdates();
         });
-        
+
         //update AABB
         this.__updateAABB();
     }
-    
-    //build in listeners                         
+
+    //build in listeners
     __onDrag(location){} //method to be overwritten for custom dragging
     __registerUpdateListener(){
         return this.onUpdate(this.__onUpdate);
@@ -99,8 +102,8 @@ class AbstractShape{
         var velo = this.getScaleVelo();
         if(Math.abs(velo)>1e-3*this.getScale())
             this.setScale(this.getScale() + velo*deltaTime*this.speedFactor );
-            
-            
+
+
         //targetting methods
         if(this.target.loc!=null){
             var delta = this.getVecTo((this.target.loc) instanceof Function?
@@ -128,17 +131,17 @@ class AbstractShape{
                             this.target.scale)
                         -this.getScale();
             this.setScaleVelo(this.getScaleVelo()*this.target.friction.scale + delta*this.target.speed.scale);
-            if(delta<0.01*Math.max(1e-2,this.getScale()) && 
-                    Math.abs(this.getScaleVelo())<0.05*Math.max(1e-2,this.getScale()) && 
+            if(delta<0.01*Math.max(1e-2,this.getScale()) &&
+                    Math.abs(this.getScaleVelo())<0.05*Math.max(1e-2,this.getScale()) &&
                     this.target.callback.scale){
                 this.target.callback.scale.call(this);
                 this.target.callback.scale = null;
             }
         }
-    
+
         return this;
     }
-    
+
     //position
     setX(x){
         this.transform.loc.setX(x);
@@ -168,12 +171,11 @@ class AbstractShape{
     getLoc(){
         return this.transform.loc;
     }
-    
+
     //absolute position
     getAbsoluteX(){}
     getAbsoluteY(){}
-    getAbsoluteZ(){}
-    
+
     //rotation
     setXRot(x){
         this.transform.rot.setX(x);
@@ -203,7 +205,7 @@ class AbstractShape{
     getRot(){
         return this.transform.rot;
     }
-    
+
     //scale
     getScale(){
         return this.transform.scale;
@@ -211,10 +213,26 @@ class AbstractShape{
     setScale(scale){
         this.transform.scale = scale;
         this.__updateAABB();
+        this.__triggerScaleChange();
         return this;
     }
-    
-    
+    onScaleChange(func){
+        var index = this.transform.scaleListeners.indexOf(func);
+        if(index==-1) this.transform.scaleListeners.push(func);
+        return this;
+    }
+    offScaleChange(func){
+        var index = this.transform.scaleListeners.indexOf(func);
+        if(index!=-1) this.transform.scaleListeners.splice(index, 1);
+        return this;
+    }
+    __triggerScaleChange(){
+        for(var i=0; i<this.transform.scaleListeners.length; i++){
+            this.transform.scaleListeners[i].call(this, this.transform.scale);
+        }
+    }
+
+
     //velocity
     getVelo(){
         return this.velo.loc;
@@ -229,7 +247,7 @@ class AbstractShape{
         this.velo.scale = scaleVelo;
         return this;
     }
-    
+
     //targetting
     setTargetLoc(loc, friction, speed, onReach){
         if(typeof(friction)=="function"){
@@ -240,7 +258,7 @@ class AbstractShape{
             speed = null;
         }
         this.getVelo().setLength(0);
-        
+
         this.target.loc = loc;
         if(friction!=null)
             this.target.friction.loc = friction;
@@ -258,7 +276,7 @@ class AbstractShape{
             onReach = speed;
             speed = null;
         }
-        
+
         this.target.rot = rot;
         if(friction!=null)
             this.target.friction.rot = friction;
@@ -276,7 +294,7 @@ class AbstractShape{
             onReach = speed;
             speed = null;
         }
-        
+
         this.target.scale = scale;
         if(friction!=null)
             this.target.friction.scale = friction;
@@ -286,7 +304,7 @@ class AbstractShape{
             this.target.callback.scale = onReach;
         return this;
     }
-    
+
     //color
     setColor(color){
         this.color = color;
@@ -303,7 +321,7 @@ class AbstractShape{
     getAlpha(){
         return this.alpha;
     }
-    
+
     //event handlers
     __registerListener(type, listener){
         if(this.listeners[type].indexOf(listener)==-1)
@@ -326,31 +344,31 @@ class AbstractShape{
             if(ls[i].apply(this, args))
                 return true;
     }
-    
+
     onClick(func){ return this.__registerListener("mouseClick", func); }
     offClick(func){ return this.__deregisterListener("mouseClick", func); }
     __triggerClick(event){ return this.__triggerListener("mouseClick", event); }
-    
+
     onHover(func){ return this.__registerListener("mouseHover", func); }
     offHover(func){ return this.__deregisterListener("mouseHover", func); }
     __triggerHover(hover, event){ return this.__triggerListener("mouseHover", hover, event); }
-    
+
     onMousePress(func){ return this.__registerListener("mousePress", func); }
     offMousePress(func){ return this.__deregisterListener("mousePress", func); }
     __triggerMousePress(down, event){ return this.__triggerListener("mousePress", down, event); }
-    
+
     onMouseScroll(func){ return this.__registerListener("mouseScroll", func); }
     offMouseScroll(func){ return this.__deregisterListener("mouseScroll", func); }
     __triggerMouseScroll(amount, event){ return this.__triggerListener("mouseScroll", amount, event); }
-    
+
     onMouseMove(func){ return this.__registerListener("mouseMove", func); }
     offMouseMove(func){ return this.__deregisterListener("mouseMove", func); }
     __triggerMouseMove(pos, event){ return this.__triggerListener("mouseMove", pos, event); }
-    
+
     onKeyPress(func){ return this.__registerListener("keyPress", func); }
     offKeyPress(func){ return this.__deregisterListener("keyPress", func); }
     __triggerKeyPress(down, key, event){ return this.__triggerListener("keyPress", down, key, event); }
-    
+
     //enable/disable interaction
     __updateInteraction(internally){
         if(!this.interactionDisabled)
@@ -365,8 +383,8 @@ class AbstractShape{
     disableInteraction(internally){
         if(!internally) this.interactionsDisabled = true;
     }
-    
-    
+
+
     //update
     onUpdate(listener){
         if(this.listeners.update.indexOf(listener)==-1)
@@ -386,7 +404,7 @@ class AbstractShape{
             this.listeners.update[i].apply(this, arguments);
         return this;
     }
-    
+
     //enable/disable updates
     __updateUpdates(){
         if(!this.updatesDisabled)
@@ -405,10 +423,11 @@ class AbstractShape{
         this.graphics.deactivateShape(this);
         return this;
     }
-    
+
     //parent shape
     __setParentShape(parent){
         this.parentShape = parent;
+        this.__triggerRenderChange();
         return this;
     }
     getParentShape(){
@@ -423,7 +442,7 @@ class AbstractShape{
     getWorldAngle(){
         return this.getAngle();
     }
-    
+
     //add or remove from graphics
     getGraphics(){
         return this.graphics;
@@ -431,54 +450,80 @@ class AbstractShape{
     add(){
         this.graphics.__registerShape(this);
         this.__updateUpdates();
-        
+
         var tree = this.__getTree();
         if(tree && this.storeInSpatialTree)
             tree.insert(this);
-            
+
         this.isRendered = true;
+        this.isAlive = true;
+        this.__triggerRenderChange();
         return this;
     }
     remove(dontDelete){
         this.graphics.__deregisterShape(this);  //indicate that the node is being removed
+        this.isAlive = false;
         if(dontDelete) return this;
         return this.__delete();                 //fully remove it without an animation
     }
     __delete(){
         this.graphics.__deregisterShape(this, true); //remove the node entirely
         this.disableUpdates(true);
-        
+
         var tree = this.__getTree();
         if(tree && this.storeInSpatialTree)
             tree.remove(this);
-            
+
         this.isRendered = false;
+        this.__triggerRenderChange();
         return this;
     }
     getIsRendered(){
         return this.isRendered;
     }
-    
+    getIsAlive(){
+        return this.isAlive;
+    }
+
+    //add render listener
+    onRendererChange(func){
+        var index = this.isRenderedListeners.indexOf(func);
+        if(index==-1) this.isRenderedListeners.push(func);
+        return this;
+    }
+    offRendererChange(func){
+        var index = this.isRenderedListeners.indexOf(func);
+        if(index!=-1) this.isRenderedListeners.splice(index, 1);
+        return this;
+    }
+    __triggerRenderChange(){
+        if(this.parentShape)
+            this.isRendered = this.parentShape.isRendered;
+        for(var i=0; i<this.isRenderedListeners.length; i++){
+            this.isRenderedListeners[i].call(this, this.isRendered);
+        }
+    }
+
     //physics methods
     getVecTo(x, y, z){
         if(x instanceof AbstractShape)
             x = x.getLoc();
         return new Vec(x, y, z).sub(this.getLoc());
     }
-    
+
     //spatial tree methods
     __getRadius(){
         return 0;
     }
     __getRadiusPadding(){
-        return this.__getRadius()/2;
+        return this.__getRadius() * this.getWorldScale() /2;
     }
     __getTree(){
         return this.graphics.getSpatialTree();
     }
     __updateAABB(){
         if(this.storeInSpatialTree){
-            var minRad = this.__getRadius();
+            var minRad = this.__getRadius() * this.getWorldScale();
             var loc = this.getWorldLoc();
             //check whether the shape moved outside of the loose bounding box
             if( this.aabb.minX > loc.getX()-minRad||
@@ -487,13 +532,13 @@ class AbstractShape{
                 this.aabb.maxX < loc.getX()+minRad||
                 this.aabb.maxY < loc.getY()+minRad||
                 this.aabb.maxZ < loc.getZ()+minRad){
-                    
+
                 //remove data from the tree
                 var tree = this.__getTree();
                 if(tree) tree.remove(this);
-                
+
                 //update the bounding box
-                var maxRad = this.__getRadius()+this.__getRadiusPadding();
+                var maxRad = minRad + this.__getRadiusPadding();
                 this.aabb = {
                     minX: loc.getX() - maxRad,
                     minY: loc.getY() - maxRad,
@@ -502,7 +547,7 @@ class AbstractShape{
                     maxY: loc.getY() + maxRad,
                     maxZ: loc.getZ() + maxRad,
                 };
-                
+
                 //reinsert the data into the tree
                 if(tree) tree.insert(this);
             }
@@ -522,13 +567,13 @@ class AbstractShape{
                 maxY: loc.getY() + radius,
                 maxZ: loc.getZ() + radius,
             });
-            
+
             var This = this;
             if(filter) //apply the filter and make sure to not include 'this'
                 return results.filter(function(val){
                     return val!=This && filter.call(val, val);
                 });
-                
+
             //only filter such that 'this' isn't returned
             return results.filter(function(val){ return val!=This; });
         }
