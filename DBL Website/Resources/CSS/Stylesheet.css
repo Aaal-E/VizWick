@@ -13,13 +13,13 @@ html, body {
   background-color: #000000;
 }
 
-.text-subpart, .go-to-video {
+.text-subpart, .video-subpart{
   display: inline-block;
   vertical-align: middle;
 }
 
 .text-subpart {
-  width: 80%;
+  width: 50%;
   height: calc(100% - 40px);
   margin-top: 20px;
   margin-left: 20px;
@@ -45,16 +45,15 @@ html, body {
   margin-right: calc(25% - 200px);
 }
 
-.go-to-video {
-  width: 15%;
-  height: 40%;
-  background-color: white;
+.video-subpart{
+  width: 45%;
+  background-color: #000000 ;
 }
 
 .main-text {
   height: 150px;
   font-size: 150px;
-  background-color: yellow;
+  background-color: white;
 }
 
 .description {
