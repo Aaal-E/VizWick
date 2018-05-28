@@ -41,8 +41,7 @@ html, body {
 
 .left-part, .right-part {
   display: inline-block;
-  margin-left: calc(25% - 200px);
-  margin-right: calc(25% - 200px);
+  width: 300px;
 }
 
 .video-subpart{
@@ -58,7 +57,6 @@ html, body {
 
 .description {
   height: 75px;
-  background-color: gray;
 }
 
 .description-text {
@@ -67,7 +65,6 @@ html, body {
 
 .group-members {
   height: 100px;
-  background-color: red;
 }
 
 .member-name {
@@ -77,22 +74,23 @@ html, body {
   margin-right: 10px;
   font-size: 20px;
   font-style: italic;
-  background-color: orange;
+}
+
+.fa-chevron-down {
+  color: black;
 }
 
 .go-to {
+  margin-top: 100px;
   height: 100px;
-  background-color: green;
 }
 
-.left-part {
-  width: 300px;
-  background-color: blue;
+.left-part{
+  margin-right: calc(25% - 175px);
 }
 
 .right-part {
-  width: 300px;
-  background-color: blue;
+  margin-left: calc(25% - 175px);
 }
 
 /* Slideshow page */
