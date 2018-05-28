@@ -15,7 +15,7 @@
     </style>
     <script>
         this.debug = true; //shows the fps coounter
-        
+
         //the visualisation class that you create
         var initWidth = 100;
         class NodeShape extends VIZ2D.NodeShape{
@@ -25,8 +25,8 @@
                     this.angle = 0.75;
                 });
                 this.setScale(this.scale);  //update the actual shape scale
-                
-				
+
+
                 //create primary circle shape
 				this.lit = new VIZ2D.Circle(gfx, 32, 0xffff00);
                 this.circle = new VIZ2D.Circle(gfx, 30, 0xff0000);
@@ -36,7 +36,7 @@
 				this.text = new VIZ2D.HtmlShape(gfx, node.getName(), 0x000000);
 				this.text.setScale(2);
 
-				
+
 				this.onHover(
 					function(enter){
 						if(enter)
@@ -49,7 +49,7 @@
 							this.removeShape(this.text);
 						}
 				});
-				
+
                 //create return button circle shape
                 this.ret = new VIZ2D.Circle(gfx, 10, 0x00ff00);
                 this.ret.setLoc(-20, 0);
@@ -61,11 +61,11 @@
                     if(p){
 						this.getGraphics().setFocussed(p);
 						this.getGraphics().highlight(This);
-						
+
 					}
                     return true;
                 });
-                
+
             //    this.onUpdate(function(){
             //        this.getLoc().add((Math.random()-0.5)*this.scale, (Math.random()-0.5)*this.scale);
             //    });
@@ -73,22 +73,22 @@
 					this.getGraphics().setFocussed(this);
 					this.getGraphics().highlight(this.children[0]);
                 });
-                
+
                 //update expanded (if there are no children to start with)
                 this.__stateChanged("expanded");
             }
-            
+
             __stateChanged(field, val, oldState){
                 if(field=="focused" && val==true){
                     this.getGraphics().getCamera().setTarget(this, this, this);
-                    
+
                     this.createDescendants(3);      //creates 2 layers of descendants
                     this.destroyDescendants(3);     //destroys any descendants above those 2 layers
-                    
+
                     this.createAncestors(2);        //creates 2 layers of ancestors
                     this.destroyAncestors(2, true); //destroys any ancestors below those 2 layers
                 }
-                
+
                 if(field=="expanded")
                     this.circle.setColor(this.state.expanded?0x0000ff:0xff0000)
             }
@@ -103,42 +103,42 @@
 					this.setAngle((this.angle*2+0.5)*Math.PI)
 					var w = initWidth * parent.scale
                     this.setLoc(new VIZ2D.Vec(parent.getLoc()).add(w*Math.cos(this.angle*2*Math.PI), w*Math.sin(this.angle*2*Math.PI), 0));
-                    
+
                     //could have been: (though your sin and cos are swapped...)
                     // this.setLoc(new VIZ.Vec(w, 0).setAngle(this.angle*2*Math.PI).add(parent.getLoc()));
                     //so:
                     // this.setLoc(new VIZ.Vec(w, 0).setAngle((-this.angle*2+0.5)*Math.PI).add(parent.getLoc()));
                 }
             }
-            
+
             __createNodeShape(node){
                 //Calculate the scale we want the node shape to have:
                 var scale = 1;  //just as a placeholder
-                
+
                 //First retrieve the scale of the parent
                 var ID = this.graphics.getUID();
                 var parent = node.getParent();  //this will be a node
                 if(parent){                     //check if it isn't the root
                     var parentScale = 1;        //default scale
-                    
+
                     var parentShape = parent.getShape(ID); //get the nodeShape attached to parent
                     if(parentShape)             //if such a shape exists
                         parentScale = parentShape.scale; //copy its scale
-                        
+
                     scale = parentScale * node.getSubtreeNodeCount()/node.getParent().getSubtreeNodeCount();
                 }
-                
+
                 return new (this.__getClass())(this.getGraphics(), node, scale);
             }
-			
+
 			highlight(){
 				this.addShape(this.lit);
 				console.log(this.lit);
 				console.log(this.circle);
-				this.lit.setLoc(0,0,100);
+				this.lit.setLoc(0,0, -100);
 				this.addShape(this.text);
 			}
-			
+
 			unhighlight(){
 				this.removeShape(this.lit);
 				this.removeShape(this.text);
@@ -149,7 +149,7 @@
                 super(container, tree, options);
 				this.focussed = this.getShapesRoot()[0];
 				this.highlighted = this.getShapesRoot()[0];
-				
+
 				this.onKeyPress(function(down, key, event){
 					if(down){
 						console.log(key);
@@ -174,7 +174,7 @@
 							this.highlight(this.focussed);
 							if(this.focussed.getParent())
 							this.setFocussed(this.focussed.getParent());
-						
+
 						}
 					}
 				});
@@ -182,20 +182,20 @@
             __getNodeShapeClass(VIZ){
                 return NodeShape;
             }
-			
+
 			setFocussed(a){
 				this.focussed = a;
 				a.focus();
 			}
-			
+
 			highlight(b){
 				this.highlighted.unhighlight();
 				this.highlighted = b;
 				this.highlighted.highlight();
 			}
-			
+
         }
-        
+
         //visualisation setup code that will be somewhere else eventually and that you can ignore
         var createTree = function(name, height){
             var children = [];

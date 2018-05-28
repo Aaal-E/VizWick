@@ -20,11 +20,13 @@ class ShapeGroup2d extends Shape2d{
                 This.shapes[i].getLoc().__fireEvent();
         });
 
-        //create group (not sure why, but it seems to work)
+        //create group
         this.group = new PIXI.display.Group(1, true);
     }
     __createGfx(){
-        return new PIXI.display.Layer(this.group);
+        var layer = new PIXI.display.Layer(this.group);
+        layer.group.enableSort = true;
+        return layer;
     }
     __getGroup(){
         return this.group;
