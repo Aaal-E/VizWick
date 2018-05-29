@@ -139,7 +139,7 @@ class Shape2d extends AbstractShape{
         var y = loc.getY()-camLoc.getY();
         var w = graphics.getWidth()/2/camera.getScale();
         var h = graphics.getHeight()/2/camera.getScale();
-        var r = this.__getRadius();
+        var r = this.__getRadius()*this.getWorldScale();
         return x+r>-w && x-r<w && y+r>-h && y-r<h;
     }
 
