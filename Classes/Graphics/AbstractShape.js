@@ -453,7 +453,7 @@ class AbstractShape{
 
         var tree = this.__getTree();
         if(tree && this.storeInSpatialTree)
-            tree.insert(this);
+        tree.insert(this);
 
         this.isRendered = true;
         this.isAlive = true;
@@ -472,7 +472,7 @@ class AbstractShape{
 
         var tree = this.__getTree();
         if(tree && this.storeInSpatialTree)
-            tree.remove(this);
+        tree.remove(this);
 
         this.isRendered = false;
         this.__triggerRenderChange();

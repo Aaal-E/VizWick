@@ -86,26 +86,28 @@ class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete sha
 
     //adding/removing
     __addNode(){
-        //register shape as root and leave, as no parent or children are set up yet
-        this.graphics.__registerShapeLeave(this);
-        this.graphics.__registerShapeRoot(this);
-        if(this.__getChildNodes().length!=this.children.length)
+        if(this.children.length==0){    //otherwise it is already added
+            //register shape as root and leave, as no parent or children are set up yet
+            this.graphics.__registerShapeLeave(this);
+            this.graphics.__registerShapeRoot(this);
+            if(this.__getChildNodes().length!=this.children.length)
             this.graphics.__registerShapeCollapsed(this);
 
-        //initially a node is never expanded upon creation
-        this.__changeState("expanded", false);
+            //initially a node is never expanded upon creation
+            this.__changeState("expanded", false);
 
-        //connect the parent and child nodes
-        var parent = this.__getParentFromNode(true);
-        if(parent) this.__setParent(parent);
+            //connect the parent and child nodes
+            var parent = this.__getParentFromNode(true);
+            if(parent) this.__setParent(parent);
 
-        var children = this.__getChildrenFromNode(true);
-        for(var i=0; i<children.length; i++)
+            var children = this.__getChildrenFromNode(true);
+            for(var i=0; i<children.length; i++)
             this.__addChild(children[i]);
 
-        //update visuals for the state
-        this.__stateChanged(null, null, this.state);
-        this.__show();
+            //update visuals for the state
+            this.__stateChanged(null, null, this.state);
+            this.__show();
+        }
         return this;
     }
     __removeNode(){
@@ -340,14 +342,14 @@ class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete sha
             return parent.remove();
         }
     }
-    destroyAncestors(depth, fully){
+    destroyAncestors(depth, fully, keep){
         //depth indicates how many layers to keep
         //fully indicates whether to also destroy descendants
         if(depth==null) depth = 0;
 
         var ret = [];
         var parent = this.getParent();
-        if(parent){
+        if(parent && parent!=keep){
             if(fully)
                 ret.push.apply(ret, parent.destroyDescendants(0, [this])); //don't destroy this decendant
             ret.push.apply(ret, parent.destroyAncestors(depth-1, fully));
@@ -417,6 +419,7 @@ class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete sha
         //depth indicates how many layers to keep
         //keep is a list of shapes you don't want to destroy
         if(depth==null) depth = 0;
+        if(keep && !(keep instanceof Array)) keep = [keep];
 
         var ret = [];
         var children = this.getChildren();
@@ -431,63 +434,29 @@ class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete sha
         return ret;
     }
 
-    //methods for changing the state
-    __forwardToVisualisations(func){
-        this.getNode().forwardToShapes(func, this);
-        return this;
-    }
-    highlight(forwarded){
-        if(!this.state.highlighted){
-            this.graphics.highlightShape(this);
-            if(!forwarded)
-                this.__forwardToVisualisations(function(){
-                    this.highlight(true);
-                });
-        }
+    //methods for changing the state and synchronizing these changes
+    highlight(){
+        if(!this.state.highlighted)
+            this.graphics.setShapeState("highlighted", this);
     }
     dehighlight(forwarded){
-        if(this.state.highlighted){
-            this.graphics.highlightShape(null);
-            if(!forwarded)
-                this.__forwardToVisualisations(function(){
-                    this.dehighlight(true);
-                });
-        }
+        if(this.state.highlighted)
+            this.graphics.setShapeState("highlighted", null);
     }
     select(forwarded){
-        if(!this.state.selected){
-            this.graphics.selectShape(this);
-            if(!forwarded)
-                this.__forwardToVisualisations(function(){
-                    this.select(true);
-                });
-        }
+        if(!this.state.selected)
+            this.graphics.setShapeState("selected", this);
     }
     deselect(forwarded){
-        if(this.state.selected){
-            this.graphics.selectShape(null);
-            if(!forwarded)
-                this.__forwardToVisualisations(function(){
-                    this.deselect(true);
-                });
-        }
+        if(this.state.selected)
+            this.graphics.setShapeState("selected", null);
     }
-    focus(forwarded){
-        if(!this.state.focused){
-            this.graphics.focusShape(this);
-            if(!forwarded)
-                this.__forwardToVisualisations(function(){
-                    this.focus(true);
-                });
-        }
+    focus(){
+        if(!this.state.focused)
+            this.graphics.setShapeState("focused", this);
     }
-    defocus(forwarded){
-        if(this.state.focused){
-            this.graphics.focusShape(null);
-            if(!forwarded)
-                this.__forwardToVisualisations(function(){
-                    this.defocus(true);
-                });
-        }
+    defocus(){
+        if(this.state.focused)
+            this.graphics.setShapeState("focused", null);
     }
 }

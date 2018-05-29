@@ -8,8 +8,8 @@ class NodeShape2d extends ShapeGroup2d{
         super(graphics, preInit);
         this.__setupNodeShape(node);
     }
-    
-    
+
+
     //relation maintenance (needs super)
     add(){
         var ret = super.add();

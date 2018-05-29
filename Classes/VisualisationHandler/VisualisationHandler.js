@@ -8,11 +8,22 @@
 
 window.VisualisationHandler =
 new (class VisualisationHandler{
-    constructor (){
-        this.visAreaCollection = {}; //holds instances of visualisationArea
+    constructor(){
+        this.visAreaCollection = {}; //Holds instances of visualisationArea
         this.visClassCollection = {}; //Holds all available visualisations classes
         this.tree = null; //The tree object based on which the visualisation is cretaed.
+
+        this.synchronisationData = { //Tracks the nodes in a certain state for syncrhnisation
+            //default node states
+            select: null,
+            highlight: null,
+            focus: null
+        };
     }
+
+    /**
+     * VISUALISATION AREA REGISTRY
+     */
 
     //creates a viusalisation area and also saves it in the visAreaCollection
     createVisArea(areaName, areaElement, optionsCreationListener){
@@ -51,12 +62,12 @@ new (class VisualisationHandler{
     setVisualisationForArea(areaName, visClassName){
         var area = this.getVisArea(areaName);
         area.setVisualisation(this.getClass(visClassName));
+        return this;
     }
 
-    //given a visualisation class name, it returns the instance of that class
-    getClass(visClassName){
-        return this.visClassCollection[visClassName];
-    }
+    /**
+     * TREE MANAGEMENT
+     */
 
     // returns the tree
     getTree(){
@@ -72,10 +83,43 @@ new (class VisualisationHandler{
         return this;
     }
 
-    //lists a viusalisation class in the available viusalisations clolection
-    registerClass(aClass){
-        // this.visClasses[aClass.getName()] = aClass;
-        this.visClassCollection[aClass.name] = aClass;
+    // set the tree based on a data blob
+    readBlob(blob){
+        var reader = new FileReader();
+        reader.readAsText(blob);
+        var This = this;
+        reader.onload=function(){
+            var obj = makeTreeObj(reader.result);
+            This.setTree(new Tree(obj));
+        };
+        return this;
     }
 
+    /**
+     * VISUALISATION REGISTRY
+     */
+
+    //lists a viusalisation class in the available viusalisations clolection
+    registerClass(aClass){
+        this.visClassCollection[aClass.getDescription().name] = aClass;
+        return this;
+    }
+    //given a visualisation class name, it returns the instance of that class
+    getClass(visClassName){
+        return this.visClassCollection[visClassName];
+    }
+
+    /**
+     * SYNCRHNISATION MANAGEMENT
+     */
+
+    synchronizeNode(type, node, sourceViz){
+        this.synchronisationData[type] = node;
+        for(var vis of this.getExistingVisualisations())
+            if(vis!=sourceViz)  //don't forward to the visualisation that triggered the synchronisation
+                vis.synchronizeNode(type, node, true);
+    }
+    getSynchronisationData(){
+        return this.synchronisationData;
+    }
 })();

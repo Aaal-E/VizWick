@@ -4,7 +4,6 @@
       Tar van Krieken
       Mehrdad Farsadyar
     Starting Date: 18/05/2018
-    Last update: 28/05/2018
 */
 
 //a class to represent visualisation areas

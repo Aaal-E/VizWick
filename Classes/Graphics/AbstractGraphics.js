@@ -8,7 +8,7 @@ class AbstractGraphics{
         if(preInit instanceof Function) preInit.call(this);
         this.updateListeners = [];
         this.background = 0;
-        
+
         //if no height and width is defined, use size of container instead
         if(!height){
             if(!width) width = $("body");
@@ -16,15 +16,15 @@ class AbstractGraphics{
             width = $(container).width();
             height = $(container).height();
         }
-        
+
         this.size = {
             width: width,
             height: height
         };
-        
+
         if(!container) container=$("body");
         this.container = $(container);
-        
+
         //event listeners
         this.listeners = {
             mouseClick: [],
@@ -34,10 +34,10 @@ class AbstractGraphics{
             keyPress: []
         };
         this.DOMEventListeners = {  //tracked for when destroying the graphics
-            
+
         };
         this.pressedKeys = {};
-        
+
         //shape data storage
         this.shapes = {
             visible: [],    //all shapes that are rendered
@@ -47,11 +47,11 @@ class AbstractGraphics{
         };
         this.maxNodeCount = 12;  //the max number of nodes that can be visible at any point
         this.spatialTree = new rbush3d(16, ['.aabb.minX', '.aabb.minY', '.aabb.minZ', '.aabb.maxX', '.aabb.maxY', '.aabb.maxZ']);;
-        
+
         //create an UID to be used when searching for shapes in the tree
         this.UID = Math.floor(Math.random()*Math.pow(10, 10));
-        
-        
+
+
         if(window.debug) this.__setupFpsCounter();
     }
     getCamera(){
@@ -63,14 +63,14 @@ class AbstractGraphics{
     getUID(){
         return this.UID;
     }
-    
+
     __setupFpsCounter(){
         var stats = this.stats = new Stats();
         this.stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
         this.getContainer().append(stats.domElement);
         $(stats.domElement).css("position", "absolute");
     }
-    
+
     //tree search
     search(loc, radius, filter){
         var tree = this.getSpatialTree();
@@ -84,23 +84,23 @@ class AbstractGraphics{
                 maxY: loc.getY() + radius,
                 maxZ: loc.getZ() + radius,
             });
-            
+
             if(filter) //apply the filter and make sure to not include 'this'
                 return results.filter(filter);
-                
+
             return results;
         }
         return [];
     }
-    
+
     //start/stop rendering
     pause(fully){}
     start(){}
     destroy(){ //dispose the graphics completely
         for(var i=this.shapes.html.length-1; i>=0; i--)
             this.shapes.html[i].remove();
-    } 
-    
+    }
+
     //just retrieve some container info
     getWidth(canvas){
         if(canvas) //tthe actual width instead of resolution width (should be the same)
@@ -118,7 +118,7 @@ class AbstractGraphics{
     getCanvas(){
         return this.getContainer().find("canvas");
     }
-    
+
     //a method to add an event that fires whenever the screen is rendered
     onUpdate(listener){
         this.updateListeners.push(listener);
@@ -131,18 +131,18 @@ class AbstractGraphics{
     }
     __onUpdate(delta){
         if(this.stats) this.stats.begin();
-        
+
         //general listeners
         for(var i=0; i<this.updateListeners.length; i++)
             this.updateListeners[i].apply(this, arguments);
         //active shape listeners
         for(var i=0; i<this.shapes.active.length; i++)
             this.shapes.active[i].__triggerUpdate(delta);
-            
+
         if(this.stats) this.stats.end();
         return this;
     }
-    
+
     //methods to add and remove shapes from the window
     add(shape){
         for(var i=0; i<arguments.length; i++)
@@ -168,7 +168,7 @@ class AbstractGraphics{
         var shapes = this.getShapes();      //remove from alive shapes
         var index = shapes.indexOf(shape);
         if(index!=-1)   shapes.splice(index, 1);
-        
+
         if(fully){                          //remove from all shapes
             var shapes = this.getShapes(true);
             var index = shapes.indexOf(shape);
@@ -180,7 +180,7 @@ class AbstractGraphics{
             return this.shapes.visible;
         return this.shapes.alive;
     }
-    
+
     //methods to active or deactive shapes (meaning that they will or won't receive update events)
     activateShape(shape){
         for(var i=0; i<arguments.length; i++){
@@ -198,7 +198,7 @@ class AbstractGraphics{
         }
         return this;
     }
-    
+
     //background color
     setBackground(color){
         this.background = color;
@@ -207,7 +207,7 @@ class AbstractGraphics{
     getBackground(){
         return this.background;
     }
-    
+
     //interactions
     getMouseScreenLoc(){}
     getMouseVec(x, y, z){}
@@ -216,7 +216,7 @@ class AbstractGraphics{
     isKeyPressed(key){
         return !!this.pressedKeys[key.toLowerCase()];
     }
-    
+
     //manage html shapes, update their locations
     getShapesHtml(){
         return this.shapes.html;
@@ -226,7 +226,7 @@ class AbstractGraphics{
             this.shapes.html[i].__updateLoc();
         }
     }
-    
+
     //event listeners
     __registerListener(type, listener){
         if(this.listeners[type].indexOf(listener)==-1)
@@ -247,30 +247,38 @@ class AbstractGraphics{
             ls[i].apply(this, args);
         return this;
     }
-    
+
     onClick(func){ return this.__registerListener("mouseClick", func); }
     offClick(func){ return this.__deregisterListener("mouseClick", func); }
     __triggerClick(event){ return this.__triggerListener("mouseClick", event); }
-    
+
     onMousePress(func){ return this.__registerListener("mousePress", func); }
     offMousePress(func){ return this.__deregisterListener("mousePress", func); }
     __triggerMousePress(down, event){ return this.__triggerListener("mousePress", down, event); }
-    
+
     onMouseScroll(func){ return this.__registerListener("mouseScroll", func); }
     offMouseScroll(func){ return this.__deregisterListener("mouseScroll", func); }
     __triggerMouseScroll(amount, event){ return this.__triggerListener("mouseScroll", amount, event); }
-    
+
     onMouseMove(func){ return this.__registerListener("mouseMove", func); }
     offMouseMove(func){ return this.__deregisterListener("mouseMove", func); }
     __triggerMouseMove(pos, event){ return this.__triggerListener("mouseMove", pos, event); }
-    
+
     onKeyPress(func){ return this.__registerListener("keyPress", func); }
     offKeyPress(func){ return this.__deregisterListener("keyPress", func); }
-    __triggerKeyPress(down, key, event){ 
+    __triggerKeyPress(down, key, event){
         if(down)
             this.pressedKeys[key.toLowerCase()] = true;
         else
             delete this.pressedKeys[key.toLowerCase()];
-        return this.__triggerListener("keyPress", down, key, event); 
+        return this.__triggerListener("keyPress", down, key, event);
     }
 }
+AbstractGraphics.getDescription = function(){
+    return this.description;
+};
+AbstractGraphics.description = {
+    name: "VIS"+Math.floor(Math.random()*Math.pow(10, 6)),
+    description: "",
+    image: ""
+};

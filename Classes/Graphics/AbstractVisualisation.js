@@ -8,7 +8,6 @@ class AbstractVisualisation extends AbstractGraphics{    //will 'extend' concret
     __setupVisualisation(tree, options){  //acts as the constructor
         this.tree = tree;
         this.options = options;
-        this.name = "VIS"+Math.floor(Math.random()*Math.pow(10, 6));    //just generate a random name for if none is provided
 
         this.shapes.root = [];      //shapes that don't have visible parents
         this.shapes.leave = [];     //shapes that don't have any children
@@ -31,37 +30,46 @@ class AbstractVisualisation extends AbstractGraphics{    //will 'extend' concret
         }).bind(this);
         $(document).on("mouseup", this.DOMEventListeners.mouseUp);
     }
-    getName(){
-        return this.name;
-    }
 
     //setup
     __setupOptions(options){}
 
-    selectShape(shape){
-        if(this.shapes.unique.selected)
-            this.shapes.unique.selected.__changeState("selected", false);
-        this.shapes.unique.selected = shape;
+
+    synchronizeNode(type, node, forwarded){
+        var shape = node.getShape(this.getUID());
+        if(this.shapes.unique[type])
+            this.shapes.unique[type].__changeState(type, false);
+
+        if(type=="focused" && !shape){
+            shape = this.createNodeShape(node).add();
+            if(!shape.getConnectedNodeShape()){ //shape is not connected with other existing shapes
+                //get rid of all existing shapes, except shape
+                for(var i=this.shapes.root.length-1; i>=0; i--){
+                    var root = this.shapes.root[i];
+                    if(root!=shape){
+                        root.destroyDescendants(0, shape)
+                        root.remove();
+                    }
+                }
+            }
+        }
+
+        this.shapes.unique[type] = shape;
         if(shape)
-            shape.__changeState("selected", true);
+            shape.__changeState(type, true);
+
+        //forward to other visualizations, if this wasn't a forward of itself
+        if(!forwarded)
+            VisualisationHandler.synchronizeNode(type, node, this);
         return this;
     }
-    focusShape(shape){
-        if(this.shapes.unique.focused)
-            this.shapes.unique.focused.__changeState("focused", false);
-        this.shapes.unique.focused = shape;
-        if(shape)
-            shape.__changeState("focused", true);
+    setShapeState(type, shape){ //a method to synchonize nodes to be called from the nodeShape
+        var node = shape.getNode && shape.getNode();
+        this.synchronizeNode(type, node);
         return this;
     }
-    highlightShape(shape){
-        if(this.shapes.unique.highlighted)
-            this.shapes.unique.highlighted.__changeState("highlighted", false);
-        this.shapes.unique.highlighted = shape;
-        if(shape)
-            shape.__changeState("highlighted", true);
-        return this;
-    }
+
+    //dragging (not synchronized)
     dragShape(shape){
         if(this.shapes.unique.dragging)
             this.shapes.unique.dragging.__changeState("dragged", false);

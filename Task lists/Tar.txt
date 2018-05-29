@@ -36,9 +36,10 @@ personal todo list:
     //-add scale listener which forwards parent changes
     //-rotate to closest angle with camera
     //-make resize events on window resize
+    //-Synchronise focus even if node doesn't exist or isn't connected
+    //-redo sync system
 
     -simplify creating connection
-    -Synchronise focus even if node doesn't exist or isn't connected
     -Add default options:
         -synchronisation
         -antialisasing
@@ -66,3 +67,5 @@ personal todo list:
         //-add sphere radius interpolation
         -add render event listener system
     -add controller button presses and scrolling
+    -add VR dragging
+    -add VR jump screen

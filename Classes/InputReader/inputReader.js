@@ -1,10 +1,6 @@
 
 /* Mehrdad Farsadyar  (1242624)*/
 
-var input = '(A,B ,(C,D)E)F;' ; //test input
-
-var endProduct = makeTreeObj(input);
-
 function makeTreeObj(input){
     var stack = []; //holds the currently open nodes till processed
     //var nodeObj = {name:null, parent:null, children:[]};
@@ -54,5 +50,3 @@ function makeTreeObj(input){
     }
     return rootOfRoot;
 }
-
-console.log(endProduct);

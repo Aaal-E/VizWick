@@ -1,7 +1,7 @@
 this.debug = true; //shows the fps coounter
 
 //the visualisation class that you create
-class NodeShape extends VIZ2D.NodeShape{
+class NodeShape2 extends VIZ2D.NodeShape{
     //Note an extra 'scale' argument got added to the constructor
     constructor(gfx, node, scale){
         if(!scale) scale = 1; //if scale is abscent, set it to 1
@@ -89,11 +89,11 @@ class NodeShape extends VIZ2D.NodeShape{
             //Some simple methods are in place to achieve this.
 
             //We can create 4 levels of descendants with this simple function
-            this.createDescendants(3);
+            this.createDescendants(1);
 
             //We can also make sure that any connected descendants that are below
             //Those 4 levels, will get destroyed
-            this.destroyDescendants(3);
+            this.destroyDescendants(1);
 
             //We can then also show 2 levels of parents (without all their children)
             this.createAncestors(2);
@@ -105,7 +105,7 @@ class NodeShape extends VIZ2D.NodeShape{
         }
     }
 }
-class a_Visualisation extends Visualisation2d{
+class a_Visualisation2 extends Visualisation2d{
     constructor(container, tree, options){
         super(container, tree, options);
 
@@ -113,12 +113,12 @@ class a_Visualisation extends Visualisation2d{
         options.createOption("Test2", "color", "red");
     }
     __getNodeShapeClass(){
-        return NodeShape;
+        return NodeShape2;
     }
 }
-a_Visualisation.description = {
-    name: "something",
+a_Visualisation2.description = {
+    name: "something 2",
     description: "",
     image: ""
 };
-VisualisationHandler.registerClass(a_Visualisation);
+VisualisationHandler.registerClass(a_Visualisation2);

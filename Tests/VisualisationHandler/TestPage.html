@@ -1,0 +1,75 @@
+<html>
+	<head>
+        <script src="../../Classes/InputReader/inputReader.js"></script>
+        <script src="../../Classes/VisualisationHandler/VisualisationArea.js"></script>
+        <script src="../../Classes/VisualisationHandler/VisualisationHandler.js"></script>
+
+        <script src="../Visualisations/Test environment/tree.js"></script>
+        <script src="../Visualisations/Test environment/visualisation.js"></script>
+        <script src=TestVisualisation.js></script>
+		<script src="TestVisualisation 2.js"></script>
+
+        <script src="../../Classes/GUI/resize.js"></script>
+
+		<!-- load test data set -->
+		<script src=TestTree.js></script>
+	</head>
+
+    <body>
+        <div class=sidebar>
+            <input type=file>
+        </div>
+        <div class=visualisations>
+            <div class=q1></div>
+            <div class=q2></div>
+        </div>
+        <style>
+            html,body{
+                margin: 0px;
+                height: 100%;
+                width: 100%;
+            }
+            .sidebar{
+                width: 100px;
+                height: 100%;
+                float: left;
+            }
+            .visualisations{
+                width: Calc(100% - 100px);
+                height: 100%;
+                float: left;
+            }
+            .q1{
+                background-color: orange;
+            }
+            .q2{
+                background-color: purple;
+            }
+        </style>
+	</body>
+	<script>
+        //setup resize functionality
+        $(".visualisations").resizeContainer();
+
+        $("input").change(function(){
+            VisualisationHandler.readBlob(this.files[0]);
+        });
+
+        //setup areas and listen for created options
+        VisualisationHandler.createVisArea("q1", $(".q1"), function(options){
+            options.onOptionsChange(function(type, option){
+                // if(type=="create"){
+                //     $("body").append(option.name);
+                // }
+                console.log(arguments);
+            });
+        });
+        VisualisationHandler.createVisArea("q2", $(".q2"), function(options){
+
+        });
+
+        //select visualisation for area
+        VisualisationHandler.setVisualisationForArea("q1", "something");
+        VisualisationHandler.setVisualisationForArea("q2", "something 2");
+	</script>
+</html>
