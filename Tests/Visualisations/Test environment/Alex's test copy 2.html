@@ -27,7 +27,7 @@
                 this.setScale(this.scale);  //update the actual shape scale
 				
                 //create primary circle shape
-				this.lit = new VIZ2D.Circle(gfx, 32, 0xffff00);
+				this.lit = new VIZ2D.Circle(gfx, 36, 0xffff00);
                 this.circle = new VIZ2D.Circle(gfx, 30, 0xff0000);
                 this.addShape(this.circle);
 				this.label = new VIZ2D.Circle(gfx, 10, 0x70ff00ff);
@@ -35,7 +35,7 @@
 				this.text = new VIZ2D.HtmlShape(gfx, '<p style="background-color:orange">' + node.getName() + "</p>", 0x000000);
 				this.text.setScale(2);
 
-				this.setZ(this.getNode().getDepth());
+				this.setZ(-this.getNode().getDepth());
 				
 				this.onHover(
 					function(enter){
@@ -115,7 +115,7 @@
 					var k = new VIZ2D.Vec(parent.getLoc()).sub(this.getLoc()).mul(1/this.scale).setAngle(0.5*Math.PI).add(v);
 					var l = new VIZ2D.Vec(parent.getLoc()).sub(this.getLoc()).mul(1/this.scale).setAngle(0.5*Math.PI).sub(v);
 					this.connection = new VIZ2D.Polygon(this.getGraphics(), [/*new VIZ2D.Vec(0,0,0)*/ 0, 0, k.x, k.y, l.x, l.y], 0x770000);
-					this.connection.setZ(-1);
+					this.connection.setZ(-150);
 					this.addShape(this.connection);
 					
                 }

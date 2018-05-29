@@ -105,13 +105,9 @@
                     var parentShape = parent.getShape(ID); //get the nodeShape attached to parent
                     if(parentShape)             //if such a shape exists
                         parentScale = parentShape.scale; //copy its scale
-<<<<<<< HEAD
                         
                     scale = parentScale*0.9 /parent.getChildren().length;
-=======
 
-                    scale = parentScale*0.9 / parent.getChildren().length;
->>>>>>> 7daa1d298acd88296fba33d1b700db360976ef2b
                 }
 
                 return new (this.__getClass())(this.getGraphics(), node, scale);
