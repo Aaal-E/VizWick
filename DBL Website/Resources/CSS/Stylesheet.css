@@ -200,3 +200,77 @@ html, body {
 
 
 /* Visualization page */
+.visualization-page {
+  width: 100%;
+  height: 100%;
+  background-color: red;
+}
+
+.top-section {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.buttons, .visualizations, .two-four-buttons, .home-button, .slideshow-button, .visualization-button, .two-button, .four-button {
+  display: inline-block;
+  margin-top: 2px;
+}
+
+.home-button, .slideshow-button, .visualization-button, .two-button, .four-button {
+  background-color: white;
+  border-radius: 10px;
+  font-size: 20px;
+  padding: 5px;
+  box-sizing: border-box;
+  min-width: 50px;
+  text-align: center;
+
+}
+
+.buttons {
+  margin-left: 4px;
+}
+
+.two-four-buttons {
+  float: right;
+  margin-right: 4px;
+}
+
+.visualizations {
+  /* in the center */
+}
+
+.left-section {
+  width: 30%;
+  height: 708px;
+}
+
+.information-section {
+  width: 100%;
+  height: 650px;
+  margin-bottom: 10px;
+  background-color: white;
+}
+
+.upload-button {
+  width: 50%;
+  height: 48px;
+  background-color: white;
+  border-radius: 10px;
+  text-align: center;
+  padding: 5px;
+  box-sizing: border-box;
+  margin-left: 25%;
+}
+
+.right-section {
+  width: calc(70% - 14px);
+  height: 708px;
+  background-color: yellow;
+  margin-left: 10px;
+}
+
+.left-section, .right-section {
+  display: inline-block;
+  vertical-align: middle;
+}
