@@ -143,6 +143,17 @@ html, body {
   top: 50%;
   transform: translate(0, -50%);
 }*/
+.right-arrow, .left-arrow {
+  color: black;
+  cursor: pointer;
+  width: auto;
+  padding: 20px;
+  margin-top: -22px;
+  font-weight: bold;
+  font-size: 25px;
+  position: relative;
+  vertical-align:bottom;
+}
 
 .slideshow-area {
   width:100%;
