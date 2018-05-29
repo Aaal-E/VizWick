@@ -106,7 +106,7 @@
                     if(parentShape)             //if such a shape exists
                         parentScale = parentShape.scale; //copy its scale
                         
-                    scale = parentScale*0.9 / parent.getChildren().length;
+                    scale = parentScale*0.9 /parent.getChildren().length;
                 }
                 
                 return new (this.__getClass())(this.getGraphics(), node, scale);
