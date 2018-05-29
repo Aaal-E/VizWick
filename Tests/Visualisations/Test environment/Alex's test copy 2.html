@@ -25,7 +25,6 @@
                     this.angle = 0.75;
                 });
                 this.setScale(this.scale);  //update the actual shape scale
-                
 				
                 //create primary circle shape
 				this.lit = new VIZ2D.Circle(gfx, 32, 0xffff00);
@@ -33,9 +32,10 @@
                 this.addShape(this.circle);
 				this.label = new VIZ2D.Circle(gfx, 10, 0x70ff00ff);
                 this.label.setLoc(20, 20,0);
-				this.text = new VIZ2D.HtmlShape(gfx, node.getName(), 0x000000);
+				this.text = new VIZ2D.HtmlShape(gfx, '<p style="background-color:orange">' + node.getName() + "</p>", 0x000000);
 				this.text.setScale(2);
 
+				this.setZ(this.getNode().getDepth());
 				
 				this.onHover(
 					function(enter){
@@ -108,6 +108,16 @@
                     // this.setLoc(new VIZ.Vec(w, 0).setAngle(this.angle*2*Math.PI).add(parent.getLoc()));
                     //so:
                     // this.setLoc(new VIZ.Vec(w, 0).setAngle((-this.angle*2+0.5)*Math.PI).add(parent.getLoc()));
+					
+					var v = new VIZ2D.Vec(parent.getLoc()).sub(this.getLoc());
+					v.setAngle(0);
+					v.setLength(30*parent.scale/this.scale);
+					var k = new VIZ2D.Vec(parent.getLoc()).sub(this.getLoc()).mul(1/this.scale).setAngle(0.5*Math.PI).add(v);
+					var l = new VIZ2D.Vec(parent.getLoc()).sub(this.getLoc()).mul(1/this.scale).setAngle(0.5*Math.PI).sub(v);
+					this.connection = new VIZ2D.Polygon(this.getGraphics(), [/*new VIZ2D.Vec(0,0,0)*/ 0, 0, k.x, k.y, l.x, l.y], 0x770000);
+					this.connection.setZ(-1);
+					this.addShape(this.connection);
+					
                 }
             }
             
@@ -133,9 +143,7 @@
 			
 			highlight(){
 				this.addShape(this.lit);
-				console.log(this.lit);
-				console.log(this.circle);
-				this.lit.setLoc(0,0,100);
+				this.lit.setZ(-100);
 				this.addShape(this.text);
 			}
 			
@@ -157,7 +165,6 @@
 							if(this.highlighted.getParent()){
 								var i = this.highlighted.getNode().getParent().getChildren().indexOf(this.highlighted.getNode()) - 1;
 								if(i < 0) i = i + this.highlighted.getNode().getParent().getChildren().length;
-								console.log(this.highlighted)
 								this.highlight(this.highlighted.getNode().getParent().getChildren()[i].getShape(this.getUID()));
 							}
 						} else if(key=="arrowright"){

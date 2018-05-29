@@ -21,30 +21,85 @@ class Line3d extends Shape3d{
         this.startPoint = this.getLoc();
         this.endPoint = new XYZ(0,0,0);
 
-        //setup listeners
+        //setup listeners to indicate that something has changed
         var This = this;
-        this.startPoint.onChange(function() {
-            This.__updateTransform();
+        this.startPoint.onChange(function(){
+            This.__markDirty();
+        });
+        this.endPoint.onChange(function(){
+            This.__markDirty();
         });
 
-        this.endPoint.onChange(function() {
-            This.__updateTransform();
-        });
-
-        this.transform.worldLoc = new XYZ();
-        this.prevTransform.worldLoc = new XYZ();
 
         //pass init data if provided
         if(startPoint) this.setStartPoint(startPoint);
         if(endPoint) this.setEndPoint(endPoint);
-        this.updateTransform();
+
+        //keep track of previous version of these properties for interpolation
+        this.prevTransform.startPoint = new XYZ(this.startPoint);
+        this.prevTransform.width = this.width;
+        this.prevTransform.endPoint = new XYZ(this.endPoint);
     }
     __createShape(){
         this.geometry = new THREE.CylinderGeometry(1, 1, 1, 32); //32 is accuracy of sorts
         this.geometry.translate(0, 0.5, 0); //shift line upwards
     }
-    __updateTransform(){
-        var vec = new Vec(this.getLoc());
+
+
+    //interpolate the animation
+    __interpolate(delta){
+        if(this.prevTransform.tick>=this.graphics.tick){ //movement has happened
+            if(this.prevTransform.tick==this.graphics.tick)
+                this.updateTransform();
+            else{
+                this.__setPoints(delta);
+                this.__setMeshScale(delta);
+            }
+        }
+    }
+    updateTransform(){
+        this.prevTransform.startPoint.set(this.startPoint);
+        this.prevTransform.endPoint.set(this.endPoint);
+        this.prevTransform.scale = this.transform.scale;
+        this.prevTransform.width = this.width;
+
+        // this.__setEndPoint(0);
+        this.__setPoints(0);
+        this.__setMeshScale(0);
+        return this;
+    }
+
+    __setPoints(per){
+        var prevStart = this.prevTransform.startPoint;
+        var start = this.startPoint;
+
+        var prevEnd = this.prevTransform.endPoint;
+        var end = this.endPoint;
+
+        //transform shape to match points
+        this.__updateTransform(new XYZ(
+            prevStart.x*(1-per) + start.x*per,
+            prevStart.y*(1-per) + start.y*per,
+            prevStart.z*(1-per) + start.z*per
+        ), new XYZ(
+            prevEnd.x*(1-per) + end.x*per,
+            prevEnd.y*(1-per) + end.y*per,
+            prevEnd.z*(1-per) + end.z*per
+        ));
+    }
+    __setMeshScale(per){
+        var scale = this.prevTransform.scale*(1-per) + this.transform.scale*per;
+        this.mesh.scale.set(scale, scale, scale);
+
+        var width = this.prevTransform.width*(1-per) + this.width*per;
+        if(this.parentShape)
+            width*= this.parentShape.getWorldScale();
+        this.line.scale.x = this.line.scale.z = width;
+    }
+
+    //calculate properties from start and end points
+    __updateTransform(start, end){
+        var vec = new Vec(start);
 
         if(this.parentShape)
             vec.add(this.parentShape.getWorldLoc());
@@ -52,69 +107,28 @@ class Line3d extends Shape3d{
             vec.sub(this.offsetShape.getWorldLoc());
 
         //position
-        this.transform.worldLoc.set(vec);
-        // this.mesh.position.set(
-        //     vec.getX(),
-        //     vec.getY(),
-        //     vec.getZ(),
-        // );
+        this.mesh.position.set(
+            vec.getX(),
+            vec.getY(),
+            vec.getZ(),
+        );
 
-        // console.log(vec.getX(), vec.getY(), vec.getZ())
-        //rotate and scale
-        vec.sub(this.endPoint);
-        this.setRot(vec.mul(-1).getRot());
-
-        // this.updateTransform();     //the public update transform gets rid of intpolation
+        //rotation
+        vec.sub(end).mul(-1);
+        this.setRot(vec.getRot());
+        this.mesh.rotation.set(
+            this.getXRot(),
+            this.getYRot(),
+            this.getZRot(),
+            "YZX",
+        );
 
         this.line.scale.y = vec.getLength()/this.getScale();
-        // console.log(this.mesh.position, this.mesh.rotation)
-
-        //
-        // //update the rotation
-        // var vec = new Vec(this.endPoint).sub(loc);
-        // var rot = vec.getRot();
-        // // console.log(rot, vec);
-        // var v = new THREE.Vector3(rot.x, rot.y, rot.z);
-        // // v.add(, -Math.PI/2, 0);
-        // if(this.parentShape){
-        //     this.parentShape.mesh.getWorldQuaternion(quaternion);
-        //     euler.setFromQuaternion(quaternion);
-        //     // vec3.set(1, 0, 0);
-        //     // v.applyQuaternion(quaternion.inverse());
-        //     v.sub(euler);
-        //     // console.log(v, euler);
-        //     // vec3.sub()
-        //     // rot.sub(this.parentShape.getWorldRot());
-        //     // console.log(this.parentShape.getWorldRot());
-        // }
-        // this.setRot(v);
-        // console.log(this.getRot());
-
-        // //update the length
-        // var length = vec.getLength(); //scale;
-        // this.line.scale.y = length;
-    }
-
-    //handle interpolation
-    updateTransform(){
-        this.prevTransform.worldLoc.set(this.transform.worldLoc);
-        return super.updateTransform();
-    }
-    __setMeshLoc(per){
-        var prevLoc = this.prevTransform.worldLoc;
-        var loc = this.transform.worldLoc;
-        this.mesh.position.set(
-            prevLoc.x*(1-per) + loc.x*per,
-            prevLoc.y*(1-per) + loc.y*per,
-            prevLoc.z*(1-per) + loc.z*per
-        );
     }
 
     //update line when rendering state changes
     __setParentShape(parent){
         super.__setParentShape(parent);
-
-        this.__updateTransform();
 
         this.isRendered = parent.isRendered;
         this.__triggerRenderChange();
@@ -130,21 +144,10 @@ class Line3d extends Shape3d{
         }
     }
 
-    //scale fix
-    setScale(scale){
-        super.setScale(scale);
-        this.__updateTransform();
-        return this;
-    }
-
     //attribute getters and setters
     setWidth(width){
         this.width = width;
-        if(this.parentShape){
-            console.log(width, this.parentShape.getWorldScale(), this.parentShape.getScale());
-            width*= this.parentShape.getWorldScale();
-        }
-        this.line.scale.x = this.line.scale.z = width;
+        this.__markDirty();
         return this;
     }
     setStartPoint(startX, startY, startZ){

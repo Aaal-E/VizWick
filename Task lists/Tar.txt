@@ -48,6 +48,12 @@ personal todo list:
         -Accommodate text 'options' to just show some status text
     -look into alex's thing not working in edge
     -add generate image system
+    -alex's complaints:
+        //-z index highlight
+        //-isVisible not working
+        -add transform to vec class to transform according to shape/camera
+        //-getHtml in html shape error
+        -look into alex's html vibrating
 
 
     3D visualisation:
@@ -55,8 +61,8 @@ personal todo list:
     //-make camera target set an appropriate 'z' distance
     //-create translation for sub shape location to world location; not sure what this is anymore, but I think it is done
     //-add controller rescaling
-    -add controller button presses and scrolling
     //-add frame interpolation:
-        -add line interpolation
-        -add sphere radius interpolation
+        //-add line interpolation
+        //-add sphere radius interpolation
         -add render event listener system
+    -add controller button presses and scrolling

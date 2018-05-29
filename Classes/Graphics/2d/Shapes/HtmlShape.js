@@ -14,13 +14,13 @@ class HtmlShape2d extends Shape2d{
         this.setContainer(graphics.getContainer());
         this.setInteractive(false);
         this.visCont = graphics.getCanvas();
-        
+
         var This = this;
         this.getLoc().onChange(function(){
             This.__updateLoc();
         });
     }
-    
+
     //interactive means that it catches mouse events
     setInteractive(interactive){
         this.interactive = interactive;
@@ -33,7 +33,7 @@ class HtmlShape2d extends Shape2d{
     getInteractive(){
         return this.interactive;
     }
-    
+
     //container methods
     setContainer(container){
         this.container = $(container);
@@ -42,36 +42,36 @@ class HtmlShape2d extends Shape2d{
     getContainer(){
         return this.container;
     }
-    
+
     //html methods
     setHtml(html){
         this.element.html(html);
         return this;
     }
     getHtml(){
-        return this.element.content();
+        return this.element.contents();
     }
     getElement(){
         return this.element;
     }
-    
+
     //add/remove element from page
     __addToPage(){
         this.getContainer().append(this.element);
-        
+
         var shapes = this.graphics.getShapesHtml();
         if(shapes.indexOf(this)==-1) shapes.push(this);
-        
+
         this.__updateLoc();
         return this;
     }
     __removeFromPage(){
         this.element.remove();
-        
+
         var shapes = this.graphics.getShapesHtml();
         var index = shapes.indexOf(this);
         if(index!=-1) shapes.splice(index, 1);
-        
+
         return this;
     }
     add(){
@@ -91,29 +91,29 @@ class HtmlShape2d extends Shape2d{
             this.__removeFromPage();
         return ret;
     }
-    
+
     //scale handeling
     setScale(scale){
         super.setScale(scale);
         this.element.css("transform", "scale("+(Math.floor(scale*100)/100)+")");
         return this;
     }
-    
+
     //method to keep the html element in the correct location
     __updateLoc(){
         var loc = this.getGraphics().getCamera().translateWorldToScreenLoc(this.getWorldLoc());
-        
+
         var o = this.visCont.offset();
         // var c = this.getContainer().offset();
         o.left += loc.getX()-this.element.width()*this.transform.scale/2; //-c.left;
         o.top += loc.getY()-this.element.height()*this.transform.scale/2; //-c.top;
         this.element.offset(o);
-        
+
         return this;
     }
-    
+
     //the radius to be used for the AABB
-    __getRadius(){  
+    __getRadius(){
         var dx = this.element.width()/2;
         var dy = this.element.height()/2;
         return Math.sqrt(dx*dx + dy*dy);
