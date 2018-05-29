@@ -15,7 +15,7 @@
     </style>
     <script>
         this.debug = true; //shows the fps coounter
-        
+
 		//from: https://stackoverflow.com/a/17243070
         function HSVtoInt(h, s, v){
             var r, g, b, i, f, p, q, t;
@@ -37,7 +37,7 @@
             }
             return (Math.round(r * 255)<<16) + (Math.round(g * 255)<<8) + Math.round(b * 255);
         }
-		
+
         //the visualisation class that you create
         var initWidth = 30;
         class NodeShape extends VIZ2D.NodeShape{
@@ -47,32 +47,32 @@
 					this.angle = 0.5;
                 });
                 this.setScale(this.scale); //update the actual shape scale
-                
+
                 //create primary circle shape
 				this.color = HSVtoInt(this.getDepth()/6, 1, 1);
                 this.circle = new VIZ2D.Circle(gfx, 30, this.color);
                 this.addShape(this.circle);
 				this.text = new VIZ2D.HtmlShape(gfx, node.getName(), 0x000000);
 				this.text.setScale(2);
-				
+
 				//this.onClick(function(){
                 //    this.focus();
                 //});
-				
-                
+
+
             }
-            
+
             __stateChanged(field, val, oldState){
                 if(field=="focused" && val==true){
                     this.getGraphics().getCamera().setTarget(this, this, this);
-                    
+
                     this.createDescendants(2);      //creates 2 layers of descendants
                     this.destroyDescendants(2);     //destroys any descendants above those 2 layers
-                    
+
                     this.createAncestors(2);        //creates 2 layers of ancestors
                     this.destroyAncestors(2, true); //destroys any ancestors below those 2 layers
                 }
-                
+
             }
             __connectParent(parent){
                 if(parent){
@@ -85,7 +85,7 @@
 					this.setAngle((this.angle*2+0.5)*Math.PI)
 					var w = initWidth * (parent.scale*0.9 - this.scale)
                     this.setLoc(new VIZ2D.Vec(parent.getLoc()).add(w*Math.cos(this.angle*2*Math.PI), w*Math.sin(this.angle*2*Math.PI), 0));
-                    
+
                     //could have been: (though your sin and cos are swapped...)
                     // this.setLoc(new VIZ.Vec(w, 0).setAngle(this.angle*2*Math.PI).add(parent.getLoc()));
                     //so:
@@ -95,20 +95,25 @@
             __createNodeShape(node){
                 //Calculate the scale we want the node shape to have:
                 var scale = 1;  //just as a placeholder
-                
+
                 //First retrieve the scale of the parent
                 var ID = this.graphics.getUID();
                 var parent = node.getParent();  //this will be a node
                 if(parent){                     //check if it isn't the root
                     var parentScale = 1;        //default scale
-                    
+
                     var parentShape = parent.getShape(ID); //get the nodeShape attached to parent
                     if(parentShape)             //if such a shape exists
                         parentScale = parentShape.scale; //copy its scale
+<<<<<<< HEAD
                         
                     scale = parentScale*0.9 /parent.getChildren().length;
+=======
+
+                    scale = parentScale*0.9 / parent.getChildren().length;
+>>>>>>> 7daa1d298acd88296fba33d1b700db360976ef2b
                 }
-                
+
                 return new (this.__getClass())(this.getGraphics(), node, scale);
             }
         }
@@ -118,17 +123,17 @@
 				this.renderdepth = 2
 				this.mouseloc = null
 				this.onMouseScroll(function(amount, event) {
-						this.camera.setScale(this.camera.getScale()*Math.pow(1.1,amount/100));
-						if(this.camera.getScale() < 1) this.camera.setScale(1);{
-							this.updateScreen();
-						}
-						if(amount>0){
-							this.camera.setLoc(this.camera.getLoc().add(new VIZ2D.Vec(this.getMouseLoc()).sub(this.camera.getLoc()).mul(0.2)));
-						}
-						if(amount<0){
-							this.camera.setLoc(this.camera.getLoc().add(new VIZ2D.Vec(this.camera.getLoc()).sub(this.getMouseLoc()).mul(0.2)));
-						}
-						this.renderdepth = 1/this.camera.getScale();
+                    var camera = this.getCamera();
+
+                    var oldScale = camera.getScale();
+                    var newScale = Math.max(this.camera.getScale()*Math.pow(1.1,amount/100), 1);
+                    this.camera.setScale(newScale);
+
+                    var offset = new VIZ2D.Vec(this.getMouseLoc()).sub(camera.getLoc());
+                    camera.getLoc().add(new VIZ2D.Vec(offset).mul(newScale/oldScale).sub(offset));
+
+                    this.updateScreen();
+					this.renderdepth = 1/this.camera.getScale();
 
 				});
 				this.onMouseMove(function(loc, event){
@@ -148,19 +153,19 @@
 						//this.updateScreen();
 					}
 				});
-				
+
 				this.updateScreen();
             }
             __getNodeShapeClass(VIZ){
                 return NodeShape;
             }
-			
+
 			//update the current state of the screen
 			updateScreen(){
 				this.shapes.root[0].destroyDescendants(1);
 				this.loadShape(this.shapes.root[0])
 			}
-			
+
 			loadShape(shape){
 				if(shape.getScale() > this.renderdepth && shape.isVisible()){
 					shape.createDescendants(2);
@@ -170,7 +175,7 @@
 				}
 			}
         }
-        
+
         //visualisation setup code that will be somewhere else eventually and that you can ignore
         var createTree = function(name, height){
             var children = [];
@@ -185,7 +190,7 @@
                 children: children
             };
         }
-        var tree = new Tree(createTree("Stuff", 10));
+        var tree = new Tree(createTree("Stuff", 15));
         var options = new Options();
         var visualisation = new Visualisation(null, tree, options);
     </script>

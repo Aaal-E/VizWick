@@ -21,10 +21,10 @@ class Shape3d extends AbstractShape{
         //listen for location/rotation changes
         var This = this;
         this.getLoc().onChange(function(){
-            This.prevTransform.tick = This.graphics.tick+1;
+            This.__markDirty();
         });
         this.getRot().onChange(function(old){
-            This.prevTransform.tick = This.graphics.tick+1;
+            This.__markDirty();
         });
 
         //transform of the previous tick
@@ -98,6 +98,10 @@ class Shape3d extends AbstractShape{
         this.mesh.scale.set(scale, scale, scale);
     }
 
+    __markDirty(){
+        this.prevTransform.tick = this.graphics.tick+1;
+    }
+
 
     //absolute coordinates, relative to the screen
     getAbsoluteX(){
@@ -138,8 +142,7 @@ class Shape3d extends AbstractShape{
         return super.setAlpha(alpha);
     }
     setScale(scale){
-        this.prevTransform.tick = this.graphics.tick+1;
-
+        this.__markDirty();
         super.setScale(scale);
         return this;
     }

@@ -21,6 +21,7 @@
         <script src="../Classes/Graphics/AbstractCamera.js"></script>
         <script src="../Classes/Graphics/AbstractGraphics.js"></script>
         <script src="../Classes/Graphics/AbstractShape.js"></script>
+        <script src="../Classes/Graphics/AbstractNodeShape.js"></script>
         <script src="../Classes/Graphics/AbstractVisualisation.js"></script>
 
         <!--2d graphics api-->
@@ -28,10 +29,17 @@
         <script src="../Classes/Graphics/2d/Graphics.js"></script>
         <script src="../Classes/Graphics/2d/Shape.js"></script>
         <script src="../Classes/Graphics/2d/Shapes/Circle.js"></script>
+        <script src="../Classes/Graphics/2d/Shapes/Line.js"></script>
+        <script src="../Classes/Graphics/2d/Shapes/TextShape.js"></script>
+        <script src="../Classes/Graphics/2d/Shapes/ImageShape.js"></script>
+        <script src="../Classes/Graphics/2d/Shapes/Polygon.js"></script>
+        <script src="../Classes/Graphics/2d/Shapes/Rectangle.js"></script>
+        <script src="../Classes/Graphics/2d/Shapes/RoundedRectangle.js"></script>
+        <script src="../Classes/Graphics/2d/Shapes/Ellipse.js"></script>
         <script src="../Classes/Graphics/2d/Shapes/CompoundShape.js"></script>
         <script src="../Classes/Graphics/2d/Shapes/ShapeGroup.js"></script>
         <script src="../Classes/Graphics/2d/Shapes/NodeShape.js"></script>
-        <script src="../Classes/Graphics/2d/IO2d.js"></script>
+        <script src="../Classes/Graphics/2d/Shapes/HtmlShape.js"></script>
         <script src="../Classes/Graphics/2d/Visualisation.js"></script>
     </head>
     <body>
@@ -42,10 +50,10 @@
         stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
         document.body.appendChild(stats.domElement)
 
-        var keys = Object.keys(IO2d);
+        var keys = Object.keys(VIZ2D);
         for(var i=0; i<keys.length; i++){
             var key = keys[i];
-            window[key] = IO2d[key];
+            window[key] = VIZ2D[key];
         }
 
         function randomColor(){
@@ -55,7 +63,7 @@
         }
 
         //the actual tests
-        var graphics = new Graphics();
+        var graphics = new Graphics2d();
         var gfx = graphics;
         var camera = graphics.getCamera();
         // var tree = new Tree({
@@ -249,6 +257,7 @@
             graphics.add(shape);
             shape.addShape(circle, circle2);
 
+            console.log(shape);
             circle.onClick(function(){
                 circle2.setZ(0);
                 this.setZ(10);
