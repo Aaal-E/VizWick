@@ -282,14 +282,14 @@ html, body {
   width: 100%;
   height: 100%;
   background-color: red;
-  visibility: hidden;
+  visibility: visible;
 }
 
 .two-layout {
   width: 100%;
   height: 100%;
   background-color: white;
-  visibility: visible;
+  visibility: hidden;
   margin-top: -708px;
 }
 
@@ -337,11 +337,18 @@ html, body {
   height:auto;
   padding: 10px;
   background-color: white;
-  border: 1px solid gray;
+  border-right: 1px solid gray;
+  padding-left: 15px;
+  border-top-left-radius: 20px;
 }
 
 .option-pane2 {
   width:100%;
   height:auto;
-  margin-left: 15px;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  background-color: white;
+  border-top: 1px solid black;
+  border-right: 1px solid black;
+  border-left: 1px solid black;
 }
