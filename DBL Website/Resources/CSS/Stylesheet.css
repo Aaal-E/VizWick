@@ -13,13 +13,13 @@ html, body {
   background-color: #000000;
 }
 
-.text-subpart, .video-subpart{
+.text-subpart, .go-to-video {
   display: inline-block;
   vertical-align: middle;
 }
 
 .text-subpart {
-  width: 50%;
+  width: 80%;
   height: calc(100% - 40px);
   margin-top: 20px;
   margin-left: 20px;
@@ -41,22 +41,25 @@ html, body {
 
 .left-part, .right-part {
   display: inline-block;
-  width: 300px;
+  margin-left: calc(25% - 200px);
+  margin-right: calc(25% - 200px);
 }
 
-.video-subpart{
-  width: 45%;
-  background-color: #000000 ;
+.go-to-video {
+  width: 15%;
+  height: 40%;
+  background-color: white;
 }
 
 .main-text {
   height: 150px;
   font-size: 150px;
-  background-color: white;
+  background-color: yellow;
 }
 
 .description {
   height: 75px;
+  background-color: gray;
 }
 
 .description-text {
@@ -65,6 +68,7 @@ html, body {
 
 .group-members {
   height: 100px;
+  background-color: red;
 }
 
 .member-name {
@@ -74,23 +78,22 @@ html, body {
   margin-right: 10px;
   font-size: 20px;
   font-style: italic;
-}
-
-.fa-chevron-down {
-  color: black;
+  background-color: orange;
 }
 
 .go-to {
-  margin-top: 100px;
   height: 100px;
+  background-color: green;
 }
 
-.left-part{
-  margin-right: calc(25% - 175px);
+.left-part {
+  width: 300px;
+  background-color: blue;
 }
 
 .right-part {
-  margin-left: calc(25% - 175px);
+  width: 300px;
+  background-color: blue;
 }
 
 /* Slideshow page */
@@ -143,17 +146,6 @@ html, body {
   top: 50%;
   transform: translate(0, -50%);
 }*/
-.right-arrow, .left-arrow {
-  color: black;
-  cursor: pointer;
-  width: auto;
-  padding: 20px;
-  margin-top: -22px;
-  font-weight: bold;
-  font-size: 25px;
-  position: relative;
-  vertical-align:bottom;
-}
 
 .slideshow-area {
   width:100%;
@@ -211,12 +203,12 @@ html, body {
   margin-bottom: 10px;
 }
 
-.buttons, .visualizations, .two-four-buttons, .home-button, .slideshow-button, .visualization-button, .two-button, .four-button {
+.buttons, .upload-button, .visualizations, .two-four-buttons, .home-button, .slideshow-button, .visualization-button, .two-button, .four-button {
   display: inline-block;
   margin-top: 2px;
 }
 
-.home-button, .slideshow-button, .visualization-button, .two-button, .four-button {
+.home-button, .slideshow-button, .upload-button, .visualization-button, .two-button, .four-button {
   background-color: white;
   border-radius: 10px;
   font-size: 20px;
@@ -241,7 +233,7 @@ html, body {
 }
 
 .left-section {
-  width: 30%;
+  width: 20%;
   height: 708px;
 }
 
@@ -252,7 +244,7 @@ html, body {
   background-color: white;
 }
 
-.upload-button {
+/*.upload-button {
   width: 50%;
   height: 48px;
   background-color: white;
@@ -261,10 +253,10 @@ html, body {
   padding: 5px;
   box-sizing: border-box;
   margin-left: 25%;
-}
+}*/
 
 .right-section {
-  width: calc(70% - 14px);
+  width: calc(80% - 14px);
   height: 708px;
   background-color: yellow;
   margin-left: 10px;
