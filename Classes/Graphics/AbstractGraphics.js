@@ -121,7 +121,8 @@ class AbstractGraphics{
 
     //a method to add an event that fires whenever the screen is rendered
     onUpdate(listener){
-        this.updateListeners.push(listener);
+        var index = this.updateListeners.indexOf(listener);
+        if(index==-1) this.updateListeners.push(listener);
         return this;
     }
     offUpdate(listener){

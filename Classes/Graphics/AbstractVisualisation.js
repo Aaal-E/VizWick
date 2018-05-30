@@ -36,7 +36,7 @@ class AbstractVisualisation extends AbstractGraphics{    //will 'extend' concret
 
 
     synchronizeNode(type, node, forwarded){
-        var shape = node.getShape(this.getUID());
+        var shape = node && node.getShape(this.getUID());
         if(this.shapes.unique[type])
             this.shapes.unique[type].__changeState(type, false);
 
@@ -64,7 +64,7 @@ class AbstractVisualisation extends AbstractGraphics{    //will 'extend' concret
         return this;
     }
     setShapeState(type, shape){ //a method to synchonize nodes to be called from the nodeShape
-        var node = shape.getNode && shape.getNode();
+        var node = shape && shape.getNode && shape.getNode();
         this.synchronizeNode(type, node);
         return this;
     }
@@ -128,13 +128,16 @@ class AbstractVisualisation extends AbstractGraphics{    //will 'extend' concret
         var nodes = this.getShapesNode();
         var destroyLeft = nodes.length;
 
+        //TODO make this work with visualisation handler
         var countFunc = function(){
-            if(--destroyLeft==0)
-                finish();
+            // if(--destroyLeft==0)
+            //     finish();
         };
 
         for(var i=nodes.length-1; i>=0; i--)
             nodes[i].destroy(countFunc);
+
+        finish();
     }
 
 

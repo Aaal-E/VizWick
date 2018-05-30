@@ -46,10 +46,10 @@ class VisualisationArea{
         return (this.visualisation);
     }
 
-    //
+    //TODO
     syncSelectedNodes(){}
 
-    //
+    //TODO
     syncFocusedNodes(){}
 
 

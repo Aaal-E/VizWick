@@ -91,6 +91,13 @@ class HtmlShape2d extends Shape2d{
             this.__removeFromPage();
         return ret;
     }
+    __triggerRenderChange(){
+        super.__triggerRenderChange();
+        if(this.isRendered)
+            this.__addToPage();
+        else
+            this.__removeFromPage();
+    }
 
     //scale handeling
     setScale(scale){

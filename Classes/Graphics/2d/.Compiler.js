@@ -1,11 +1,5 @@
 var Compiler = require("../../../Compiler/Compiler.js");
 Compiler.compile([
-    "../../../Libraries/jQuery.js",
-    "../../../Libraries/pixi.min.js",
-    "../../../Libraries/pixiLayers.js",
-    "../../../Libraries/stats.js",
-    "../../../Libraries/RBush-3d.js",
-
     "../Utils/XYZ.js",
     "../Utils/Vec.js",
     "../Options.js",
@@ -34,4 +28,4 @@ Compiler.compile([
     "Shapes/Ellipse.js",
 
     "Visualisation.js",
-], [".Compiled.js", "../../../Tests/Visualisations/Test environment/visualisation.js"]);
+], [".Compiled.js", "../../../Tests/Visualisation/Scripts/Visualisation.js"]);

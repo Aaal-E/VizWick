@@ -1,0 +1,32 @@
+{
+  "name": "visualisation_tool",
+  "version": "0.0.0",
+  "description": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Aaal-E/Visualisation.git"
+  },
+  "author": "Mostafa Eweda <mo.eweda@gmail.com>",
+  "dependencies": {
+    "async": "~0.2.8",
+    "express": "~3.2.4",
+    "socket.io": "~0.9.14",
+    "babel-core": "~6.26.3"
+  },
+  "devDependencies": {
+    "babel-preset-env": "^1.6.1"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "visualisation",
+    "hierarchical",
+    "web-tool"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Aaal-E/Visualisation/issues"
+  },
+  "homepage": "https://github.com/Aaal-E/Visualisation#readme"
+}

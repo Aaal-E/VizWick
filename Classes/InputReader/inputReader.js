@@ -7,7 +7,8 @@ function makeTreeObj(input){
     var rootOfRoot = {name:null, parent:null, children:[]};
     var regex = ",(); ";
     rootOfRoot.name = 'rootOfRoot';
-    node = rootOfRoot;
+    var node = rootOfRoot;
+    var subNode;
     for (var i = input.length-1; i >= 0; i--) {
         var n = input.charAt(i);
         switch(n) {

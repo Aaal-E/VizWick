@@ -304,7 +304,7 @@ class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete sha
     }
 
     //methods for creating parent/children nodes
-    __createChildNodeShape(node){
+    __createChildNodeShape(node, parent){
         return new (this.__getClass(node))(this.getGraphics(), node);
     }
     createParent(dontAdd){
@@ -313,9 +313,6 @@ class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete sha
             var parentNode = this.__getParentNode();
             if(parentNode){
                 var shape = parentNode.getShape(UID);
-                // shape should always exist, can't create child without parent
-                // if(!shape)
-                //     shape = this.__createNodeShape(parentNode);
                 if(!dontAdd)
                     shape.add();
                 return shape;
@@ -367,7 +364,7 @@ class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete sha
         if(node){
             var shape = node.getShape(UID);
             if(!shape)
-                shape = this.__createNodeShape(node);
+                shape = this.__createChildNodeShape(node, this);
             if(!dontAdd)
                 shape.add();
             return shape;
@@ -382,7 +379,7 @@ class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete sha
             var node = missingChildNodes[i];
             var shape = node.getShape(UID);
             if(!shape)
-                shape = this.__createNodeShape(node);
+                shape = this.__createChildNodeShape(node, this);
             if(!dontAdd)
                 shape.add();
             ret.push(shape);

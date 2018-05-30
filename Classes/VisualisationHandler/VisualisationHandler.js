@@ -31,12 +31,10 @@ new (class VisualisationHandler{
         this.visAreaCollection[areaName] = visArea;
         return visArea;
     }
-
     //Given an area name it returns the actual area object
     getVisArea(areaName){
         return this.visAreaCollection[areaName];
     }
-
     // returns an array of existing visualisation areas
     getExistingVisAreas(){
         var existingVisAreas = [];
@@ -45,7 +43,6 @@ new (class VisualisationHandler{
         };
         return existingVisAreas;
     }
-
     // returns an array of visualisation currently assigned to the visualisation areas (= shown on screen)
     getExistingVisualisations(){
         var existingVisualisations = [];
@@ -57,11 +54,16 @@ new (class VisualisationHandler{
         }
         return existingVisualisations;
     }
-
     // given a class name and an area name it sets the visualisation of that area
     setVisualisationForArea(areaName, visClassName){
         var area = this.getVisArea(areaName);
-        area.setVisualisation(this.getClass(visClassName));
+        var clas = this.getVisualisationClass(visClassName);
+        if(!area)
+            console.log("Unknown area "+areaName);
+        else if(!clas)
+            console.log("Unknown visualisation "+visClassName);
+        else
+            area.setVisualisation(clas);
         return this;
     }
 
@@ -73,7 +75,6 @@ new (class VisualisationHandler{
     getTree(){
         return this.tree;
     }
-
     // set the tree, and also refreshes the visualisation areas accordingly
     setTree(tree){
         this.tree = tree;
@@ -82,7 +83,6 @@ new (class VisualisationHandler{
         }
         return this;
     }
-
     // set the tree based on a data blob
     readBlob(blob){
         var reader = new FileReader();
@@ -100,14 +100,19 @@ new (class VisualisationHandler{
      */
 
     //lists a viusalisation class in the available viusalisations clolection
-    registerClass(aClass){
-        this.visClassCollection[aClass.getDescription().name] = aClass;
+    registerVisualisation(aClass){
+        this.visClassCollection[aClass.getDescription().name.toLowerCase()] = aClass;
         return this;
     }
     //given a visualisation class name, it returns the instance of that class
-    getClass(visClassName){
-        return this.visClassCollection[visClassName];
+    getVisualisationClass(visClassName){
+        return this.visClassCollection[visClassName.toLowerCase()];
     }
+    //get a list of available visualisation classes
+    getVisualisationTypes(){
+        return Object.keys(this.visClassCollection);
+    }
+
 
     /**
      * SYNCRHNISATION MANAGEMENT

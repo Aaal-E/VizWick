@@ -5,7 +5,7 @@
 *//*
 	main class for the tree
 */var Tree=function(){//reads the input and convers it to a tree
-function Tree(input){_classCallCheck(this,Tree);console.log("Constructing tree");this.root=new TreeNode(input);console.log("Calculating values");this.root.__calculateHeight();this.root.__calculateDepth();this.root.__calculateSubtreeNodeCount();this.depth=this.root.getHeight();console.log("Tree constructed")}//recalculates all the values of the tree
+function Tree(input){_classCallCheck(this,Tree);console.log("Constructing tree");this.root=new TreeNode(input);this.root.__setTree(this);console.log("Calculating values");this.root.__calculateHeight();this.root.__calculateDepth();this.root.__calculateSubtreeNodeCount();this.depth=this.root.getHeight();console.log("Tree constructed")}//recalculates all the values of the tree
 _createClass(Tree,[{key:"__recalculateValues",value:function __recalculateValues(){this.root.__calculateDepth();this.root.__calculateHeight();this.root.__calculateSubtreeNodeCount()}//sets the root of the tree
 },{key:"__setRoot",value:function __setRoot(rootinput){this.root=rootinput;rootinput.__setTree(this);return this}//gets the root of the tree
 },{key:"getRoot",value:function getRoot(){return this.root}//returns the height of the tree

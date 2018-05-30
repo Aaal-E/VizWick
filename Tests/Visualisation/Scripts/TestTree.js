@@ -1,5 +1,5 @@
-var data = ``;
-var obj = makeTreeObj(data);
+// var data = ``;
+// var obj = makeTreeObj(data);
 
 var createTree = function(name, height, width){
     width = width||3;

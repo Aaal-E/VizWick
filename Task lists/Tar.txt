@@ -39,6 +39,8 @@ personal todo list:
     //-Synchronise focus even if node doesn't exist or isn't connected
     //-redo sync system
 
+    -add destroy animation for visualisations
+    -add system to create z-index layers
     -simplify creating connection
     -Add default options:
         -synchronisation
@@ -65,7 +67,7 @@ personal todo list:
     //-add frame interpolation:
         //-add line interpolation
         //-add sphere radius interpolation
-        -add render event listener system
+        //-add render event listener system
     -add controller button presses and scrolling
     -add VR dragging
     -add VR jump screen

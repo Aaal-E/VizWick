@@ -99,6 +99,11 @@ class Graphics2d extends AbstractGraphics{
         //create scroll event and key events
         {
             this.DOMEventListeners.scroll = function(event){
+                var offset = This.getCanvas().offset();
+                if(event.clientX<offset.left || event.clientX>offset.left+This.getWidth() ||
+                    event.clientY<offset.top || event.clientY>offset.top+This.getHeight())
+                    return;
+
                 var interactionData = m.getInteractionDataForPointerId(event);
 
                 var interactionEvent = m.configureInteractionEventForDOMEvent(m.eventData, event, interactionData);
@@ -117,6 +122,10 @@ class Graphics2d extends AbstractGraphics{
                 //set target location
                 event.clientX = This.mouse.clientX;
                 event.clientY = This.mouse.clientY;
+                var offset = This.getCanvas().offset();
+                if(event.clientX<offset.left || event.clientX>offset.left+This.getWidth() ||
+                    event.clientY<offset.top || event.clientY>offset.top+This.getHeight())
+                    return;
 
                 var interactionEvent = m.configureInteractionEventForDOMEvent(m.eventData, event, interactionData);
                 m.processInteractive(interactionEvent, m.renderer._lastObjectRendered, function(interactionEvent, displayObject, hit){

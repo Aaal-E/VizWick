@@ -36,9 +36,11 @@ class Graphics3d extends AbstractGraphics{
 
         //render Loop
         var This = this;
+        this.renderListeners = [];
         this.updating = true;
         this.rendering = 1;
-        this.lastTime = Date.now();
+        this.lastUpdate = Date.now();
+        this.lastRender = Date.now();
         this.deltaTime = 1/3;
         this.tick = 0;
         this.renderFunc = function(){
@@ -48,15 +50,15 @@ class Graphics3d extends AbstractGraphics{
                 This.rendering = 0;
 
             var now = Date.now();
-            if((now-This.lastTime)/1000>This.deltaTime){  //update tick
+            if((now-This.lastUpdate)/1000>This.deltaTime){  //update tick
                 //reset world transform that might have been done by VR camera
                 This.__resetTransform();
 
                 //track the time /steps
                 This.tick++;//increase the tick
-                This.lastTime += This.deltaTime*1000;
-                if(now-This.lastTime>2000) //skip some if needed
-                    This.lastTime = now;
+                This.lastUpdate += This.deltaTime*1000;
+                if(now-This.lastUpdate>2000) //skip some if needed
+                    This.lastUpdate = now;
 
                 //interpolate images
                 This.__interpolate();
@@ -70,8 +72,10 @@ class Graphics3d extends AbstractGraphics{
             }else{                                 //render new interpolated frame
                 This.__interpolate();
                 This.__resetTransform();
+                This.__onRender(now-This.lastRender, (now-This.lastUpdate)/This.deltaTime);
                 This.renderer.render(This.scene, camera);
             }
+            This.lastRender = now;
         };
         this.renderFunc();
 
@@ -196,9 +200,28 @@ class Graphics3d extends AbstractGraphics{
         this.scene.updateMatrixWorld();
     }
 
+
+    //a method to add an event that fires whenever the screen is rendered
+    onRender(listener){
+        var index = this.renderListeners.indexOf(listener);
+        if(index==-1) this.renderListeners.push(listener);
+        return this;
+    }
+    offRender(listener){
+        var index = this.renderListeners.indexOf(listener);
+        if(index!=-1) this.renderListeners.splice(index, 1);
+        return this;
+    }
+    __onRender(delta, per){
+        //general listeners
+        for(var i=0; i<this.renderListeners.length; i++)
+            this.renderListeners[i].apply(this, arguments);
+        return this;
+    }
+
     //frame intpolation for VR
     __interpolate(){
-        var delta = (Date.now()-this.lastTime)/this.deltaTime/1000;
+        var delta = (Date.now()-this.lastUpdate)/this.deltaTime/1000;
 
         var shapes = this.getShapes();
         for(var i=0; i<shapes.length; i++){
