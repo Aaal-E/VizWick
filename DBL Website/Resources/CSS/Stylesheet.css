@@ -282,7 +282,7 @@ html, body {
   height: 100%;
   background-color: blue;
   visibility: visible;
-  margin-top: -58.8%;
+  margin-top: -708px;
 }
 
 .top-left, .top-right {
@@ -320,4 +320,19 @@ html, body {
 
 .left-screen {
   margin-right: 4px;
+}
+
+.option2-buttons {
+  display: inline-block;
+  width: auto;
+  height:auto;
+  padding: 10px;
+  background-color: white;
+  border: 1px solid black;
+}
+
+.option-pane2 {
+  width:100%;
+  height:auto;
+  margin-left: 15px;
 }
