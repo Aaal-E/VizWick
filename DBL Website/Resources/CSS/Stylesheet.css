@@ -214,6 +214,11 @@ html, body {
   border: 1px solid black;
 }
 
+.upload-button {
+  background-color: #4ddbff;
+  width: 100px;
+}
+
 .two-four-buttons {
   background-color: white;
   border-radius: 10px;
