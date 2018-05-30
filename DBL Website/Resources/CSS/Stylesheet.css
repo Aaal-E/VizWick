@@ -13,13 +13,13 @@ html, body {
   background-color: #000000;
 }
 
-.text-subpart, .go-to-video {
+.text-subpart, .video-subpart {
   display: inline-block;
   vertical-align: middle;
 }
 
 .text-subpart {
-  width: 80%;
+  width: 50%;
   height: calc(100% - 40px);
   margin-top: 20px;
   margin-left: 20px;
@@ -29,6 +29,10 @@ html, body {
   background-color: white;
   text-align: center;
   border-radius: 25px;
+}
+
+.text-align {
+  margin-top: 15%;
 }
 
 .parenthesis, .description-text {
@@ -41,25 +45,22 @@ html, body {
 
 .left-part, .right-part {
   display: inline-block;
-  margin-left: calc(25% - 200px);
-  margin-right: calc(25% - 200px);
+  width: auto;
 }
 
-.go-to-video {
-  width: 15%;
-  height: 40%;
-  background-color: white;
+.video-subpart {
+width: 45%;
+height: auto;
+background-color: white;
 }
 
 .main-text {
   height: 150px;
   font-size: 150px;
-  background-color: yellow;
 }
 
 .description {
   height: 75px;
-  background-color: gray;
 }
 
 .description-text {
@@ -68,7 +69,6 @@ html, body {
 
 .group-members {
   height: 100px;
-  background-color: red;
 }
 
 .member-name {
@@ -78,22 +78,23 @@ html, body {
   margin-right: 10px;
   font-size: 20px;
   font-style: italic;
-  background-color: orange;
 }
 
 .go-to {
-  height: 100px;
-  background-color: green;
+  height: auto;
+  margin-top: 100px;
 }
 
 .left-part {
-  width: 300px;
-  background-color: blue;
+  margin-right: calc(25% - 100px);
 }
 
 .right-part {
-  width: 300px;
-  background-color: blue;
+  margin-left: calc(25% - 100px);
+}
+
+.fa-chevron-down, .fa-chevron-up {
+  color: black;
 }
 
 /* Slideshow page */
