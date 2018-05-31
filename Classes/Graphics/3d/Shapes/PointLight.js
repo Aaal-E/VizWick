@@ -10,18 +10,20 @@ class PointLight3d extends Shape3d{
             this.intensity = typeof(intensity)=="Number"?intensity:1;
             this.distance = typeof(distance)=="Number"?distance:500;
             this.decay = typeof(decay)=="Number"?decay:1;
-            
+
             if(color && color.call) color.call(this);
             if(intensity && intensity.call) intensity.call(this);
             if(distance && distance.call) distance.call(this);
             if(decay && decay.call) decay.call(this);
             if(preInit && preInit.call) preInit.call(this);
         });
-        
+
         if(window.debug){
             var geometry = new THREE.SphereGeometry(0.005, 32, 32);
             var material = new THREE.MeshBasicMaterial(0xffffff);
-            this.mesh.add(new THREE.Mesh(geometry, material));
+            var sphere = new THREE.Mesh(geometry, material);
+            sphere.userData.ignore = true;
+            this.mesh.add(sphere);
         }
     }
     __createShape(){}
@@ -30,7 +32,7 @@ class PointLight3d extends Shape3d{
         this.mesh = new THREE.PointLight(this.color, this.intensity, this.distance, this.decay);
         return this;
     }
-    
+
     //change properties
     setIntensity(intensity){
         this.intensity = intensity;

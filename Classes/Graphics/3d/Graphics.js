@@ -41,7 +41,7 @@ class Graphics3d extends AbstractGraphics{
         this.rendering = 1;
         this.lastUpdate = Date.now();
         this.lastRender = Date.now();
-        this.deltaTime = 1/3;
+        this.deltaTime = 1/30;
         this.tick = 0;
         this.renderFunc = function(){
             if(This.rendering==1)
@@ -70,10 +70,13 @@ class Graphics3d extends AbstractGraphics{
                 //actually render the frame
                 This.renderer.render(This.scene, camera);
             }else{                                 //render new interpolated frame
-                This.__interpolate();
-                This.__resetTransform();
-                This.__onRender(now-This.lastRender, (now-This.lastUpdate)/This.deltaTime);
-                This.renderer.render(This.scene, camera);
+                // create interpolated frame
+                /*
+                    This.__resetTransform();
+                    This.__interpolate();
+                    This.__onRender(now-This.lastRender, (now-This.lastUpdate)/This.deltaTime);
+                    This.renderer.render(This.scene, camera);
+                 */
             }
             This.lastRender = now;
         };
@@ -92,8 +95,8 @@ class Graphics3d extends AbstractGraphics{
         this.camera = new Camera3d(this, camera);
         this.VRproperties = {
             enabled: true,
-            scale: 1,
-            offset: new XYZ(0, 0, 0)
+            scale: 1.5,
+            offset: new XYZ(0.2, 0.2, 0.2)
         };
 
         //interaction data
@@ -132,7 +135,8 @@ class Graphics3d extends AbstractGraphics{
             };
             this.DOMEventListeners.scroll = function(event){
                 This.__resetTransform();
-                var delta = event.wheelDeltaY;
+                var delta = event.originalEvent.wheelDeltaY         //chrome
+                            || event.originalEvent.deltaY*-40;      //firefox
 
                 //send event to shapes
                 var caught = This.__dispatchEvent(function(){
@@ -177,7 +181,7 @@ class Graphics3d extends AbstractGraphics{
                     This.__triggerMousePress(isMouseDown, event);
                 }
             };
-            $(window).on('mousewheel', this.DOMEventListeners.scroll);
+            $(window).on('wheel', this.DOMEventListeners.scroll);
             $(window).on('keydown', this.DOMEventListeners.keypress);
             $(window).on('keyup', this.DOMEventListeners.keypress);
             $(window).on("mousemove", this.DOMEventListeners.mousemove);
@@ -232,7 +236,7 @@ class Graphics3d extends AbstractGraphics{
 
     //disposal
     destroy(){
-        $(window).off('mousewheel', this.DOMEventListeners.scroll);
+        $(window).off('wheel', this.DOMEventListeners.scroll);
         $(window).off('keydown', this.DOMEventListeners.keypress);
         $(window).off('keyup', this.DOMEventListeners.keypress);
         $(window).off('mousemove', this.DOMEventListeners.mousemove);
@@ -243,9 +247,15 @@ class Graphics3d extends AbstractGraphics{
 
     //event handeling
     __dispatchEvent(func, pos){
-        if(!pos) pos = this.pointers.mouse;
+        var que;
+        if(pos instanceof AbstractShape){
+            que = [pos];
+        }else{
+            if(!pos) pos = this.pointers.mouse;
 
-        var que = this.camera.rayTrace(pos.x, pos.y);
+            que = this.camera.rayTrace(pos.x, pos.y);
+        }
+
         while(que.length>0){
             var shape = que.pop();
 

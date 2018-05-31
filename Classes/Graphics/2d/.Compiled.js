@@ -163,7 +163,7 @@ console.warn("A shape in the tree got overwritten",prevShape);prevShape.remove()
 },{key:"__addNode",value:function __addNode(){if(this.children.length==0){//otherwise it is already added
 //register shape as root and leave, as no parent or children are set up yet
 this.graphics.__registerShapeLeave(this);this.graphics.__registerShapeRoot(this);if(this.__getChildNodes().length!=this.children.length)this.graphics.__registerShapeCollapsed(this);//initially a node is never expanded upon creation
-this.__changeState("expanded",false);//connect the parent and child nodes
+this.__changeState("expanded",this.node.getChildren().length==0);//connect the parent and child nodes
 var parent=this.__getParentFromNode(true);if(parent)this.__setParent(parent);var children=this.__getChildrenFromNode(true);for(var i=0;i<children.length;i++){this.__addChild(children[i])}//update visuals for the state
 this.__stateChanged(null,null,this.state);this.__show()}return this}},{key:"__removeNode",value:function __removeNode(){return!this.__hide()}},{key:"__deleteNode",value:function __deleteNode(){//test: keep the node around, but don't render it
 // //if the shape is deleted from the visualisation, disconnect it from the tree

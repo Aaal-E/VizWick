@@ -24,6 +24,7 @@
         <script src="../../../Classes/Graphics/AbstractCamera.js"></script>
         <script src="../../../Classes/Graphics/AbstractGraphics.js"></script>
         <script src="../../../Classes/Graphics/AbstractShape.js"></script>
+        <script src="../../../Classes/Graphics/AbstractNodeShape.js"></script>
         <script src="../../../Classes/Graphics/AbstractVisualisation.js"></script>
 
         <!--3d graphics api-->
@@ -109,81 +110,36 @@
         //call the initialisation  code for my system
         $(".container").resizeContainer({vertical:false});
 
-        var graphics = new Graphics3d($(".q1"));
-        // var graphics = new Graphics3d($("body"));
+        class NodeShape extends VIZ3D.NodeShape{
+            constructor(gfx, node){
+                super(gfx, node);
 
-        //3d test setup
-        function test1(){
-            var t = window;
+                this.sphere = new VIZ3D.Sphere(gfx, 0.2, 0xff0000);
+                this.addShape(this.sphere);
 
-            t.cube2 = new Cuboid3d(graphics, 0.2, 0.1, 0.1, 0xff0000).setLoc(0, 0.15, 0).setScale(3);
-            t.cube = new Cuboid3d(graphics, 0.2, 0.1, 0.1, 0xff0000).setLoc(0, -0.05, 0);
-            t.group = new ShapeGroup3d(graphics).setLoc(0, 0.8, 0);
-            group.addShape(cube, cube2).add();
-
-            t.cube3 = new Cuboid3d(graphics, 0.2, 0.1, 0.1, 0x00ff00).setLoc(0.6, 0.89, 0).add();
-            group.onMouseScroll(function(amount){
-                this.getLoc().add(0, 0.0002*amount, 0);
-            });
-
-            graphics.__getScene().updateMatrixWorld();
-            group.mesh.updateMatrixWorld();
-            cube3.mesh.updateMatrixWorld();
-            console.log(group.getWorldLoc(), cube3.getWorldLoc());
-            cube3.onClick(function(){
-                this.setColor(0x0000ff);
-            });
-
-            t.line = new Line3d(graphics, null, cube3.getWorldLoc(), 0.005, 0x0000ff);
-            group.addShape(line);
-
-            light = new PointLight3d(graphics, 0xffffff).setLoc(0, 0.9, 0.7).add();
-
-            var cubes = [];
-            for(var i=0; i<200; i++){
-                var c = new Cuboid3d(graphics, 0.1, 0.1, 0.1, 0xff0000).setScale(0.4).setLoc(Math.random()-0.5, Math.random()-0.5+0.8, Math.random()-0.5).add();
-                cubes.push(c);
+                this.onMousePress(function(down, data){
+                    if(down && data)
+                        gfx.dragShape(this);
+                });
             }
+            __onDrag(loc){
+                this.getLoc().set(loc);
+            }
+            __connectParent(parent){
 
-            graphics.onUpdate(function(){
-            	t.group.getRot().add(0.02,0.01,0);
-            	// console.log(new Vec(t.group.getRot()));
-
-                var loc = this.getMouseLoc(null, "hand2");
-                light.setLoc(loc);
-                //
-                for(var i=0; i<cubes.length; i++){
-                    cubes[i].getRot().add(0.01, 0.02, 0.03);
-                }
-                // graphics.getCamera().getRot().add(0, 0.3, 0);
-            });
-
-            cube.onHover(function(over){
-            	this.setColor(over?0x00ff00:0xff0000);
-            });
-
-            graphics.getCamera().getLoc().set(0, 0.8, 0); //.add(-0.27, -0.42, 0);
+            }
+            __stateChanged(){
+                this.sphere.setColor(this.state.dragged?0x00ff00:0xff0000);
+            }
         }
-
-        function test2(){
-            var t = window;
-            t.cube = new Cuboid3d(graphics, 0.2, 0.1, 0.1, 0xff0000).setLoc(0.1, 0, 0);
-            t.cube2 = new Cuboid3d(graphics, 0.2, 0.1, 0.1, 0xff0000).setLoc(0.1, 0, 0);
-            t.group = new ShapeGroup3d(graphics).setLoc(0, 0, 0);
-            t.group2 = new ShapeGroup3d(graphics).setLoc(0.2, 0, 0);
-            t.group.addShape(t.cube, t.group2).add();
-            t.group2.addShape(t.cube2);
-
-            t.light = new PointLight3d(graphics, 0xffffff).setLoc(0, 0.1, 0.4).add();
-
-            // graphics.onUpdate(function(){
-            // 	group.getRot().add(0.02,0.01,0);
-            // });
-
-            graphics.getCamera().getLoc().set(0, 0, 1.4); //.add(-0.27, -0.42, 0);
+        class Visualisation extends VIZ3D.Visualisation{
+            constructor(container, tree, options){
+                super(container, tree, options);
+            }
+            __getNodeShapeClass(){
+                return NodeShape;
+            }
         }
-
-        test1();
 
         $(".q1, .VRrenderer").click(function(){
             if(!VRCamera.isInVR())
@@ -191,7 +147,6 @@
             else
                 VRCamera.leaveVR();
         });
-        VRCamera.setVisualisation(graphics);
 
         //visualisation setup
         var createTree = function(name, height){
@@ -209,7 +164,8 @@
         }
         var tree = new Tree(createTree("Stuff", 13));
         var options = new Options();
-        // var visualisation1 = new Visualisation($(".q1"), tree, options);
+        var visualisation1 = new Visualisation($(".q1"), tree, options);
+        VRCamera.setVisualisation(visualisation1);
 
     </script>
 </html>
