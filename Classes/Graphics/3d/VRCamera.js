@@ -339,7 +339,7 @@ window.VRCamera = new
             //transform world
             if(this.visualisation){
                 this.visualisation.__resetTransform() //make sure the transform doesn't mess with interpolation
-                this.visualisation.__interpolate(); //improves fps
+                this.visualisation.__interpolate(true); //improves fps
             }
             this.__updateTransform();
 

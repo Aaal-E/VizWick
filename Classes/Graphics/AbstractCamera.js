@@ -72,9 +72,12 @@ class AbstractCamera{
             This.rotVelo.mul(1-This.targetFriction.rot);
             This.scaleVelo *= 1-This.targetFriction.scale;
 
-            This.loc.add(new Vec(This.velo).mul(time * This.speed.loc));
-            This.rot.add(new Vec(This.rotVelo).mul(time * This.speed.rot));
-            This.setScale(This.scale + This.scaleVelo*time * This.speed.scale);
+            if(This.velo.getLength()>1e-3*This.getScale())
+                This.loc.add(new Vec(This.velo).mul(time * This.speed.loc));
+            if(This.rotVelo.getLength()>1e-6)
+                This.rot.add(new Vec(This.rotVelo).mul(time * This.speed.rot));
+            if(Math.abs(This.scaleVelo)>1e-5)
+                This.setScale(This.scale + This.scaleVelo*time * This.speed.scale);
         });
     }
     __updateLoc(){}

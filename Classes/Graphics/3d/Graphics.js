@@ -71,12 +71,10 @@ class Graphics3d extends AbstractGraphics{
                 This.renderer.render(This.scene, camera);
             }else{                                 //render new interpolated frame
                 // create interpolated frame
-                /*
-                    This.__resetTransform();
-                    This.__interpolate();
-                    This.__onRender(now-This.lastRender, (now-This.lastUpdate)/This.deltaTime);
-                    This.renderer.render(This.scene, camera);
-                 */
+
+                This.__resetTransform();
+                This.__interpolate();
+                This.renderer.render(This.scene, camera);
             }
             This.lastRender = now;
         };
@@ -224,13 +222,26 @@ class Graphics3d extends AbstractGraphics{
     }
 
     //frame intpolation for VR
-    __interpolate(){
-        var delta = (Date.now()-this.lastUpdate)/this.deltaTime/1000;
+    __interpolate(fromVR){
+        var now = Date.now();
+        var delta = (now-this.lastUpdate)/this.deltaTime/1000;
+
+        this.__onRender(now-this.lastRender, delta);
 
         var shapes = this.getShapes();
         for(var i=0; i<shapes.length; i++){
             var shape = shapes[i];
             shape.__interpolate(delta);
+        }
+
+        //make html visible or not depending on fromVR
+        for(var i=this.shapes.html.length-1; i>=0; i--){
+            var h = this.shapes.html[i];
+            if(!fromVR){
+                h.mesh.visible = false;
+            }else if(h.isRendered){
+                h.mesh.visible = true;
+            }
         }
     }
 

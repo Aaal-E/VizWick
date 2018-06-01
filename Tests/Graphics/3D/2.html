@@ -8,6 +8,7 @@
         <script src="../../../Libraries/Three/VRController.js"></script>
         <script src="../../../Libraries/stats.js"></script>
         <script src="../../../Libraries/RBush-3d.js"></script>
+        <script src="../../../Libraries/html2canvas.js"></script>
 
         <!--resize system-->
         <script src="../../../Classes/GUI/resize.js"></script>
@@ -36,6 +37,9 @@
         <script src="../../../Classes/Graphics/3d/Shapes/Sphere.js"></script>
         <script src="../../../Classes/Graphics/3d/Shapes/Line.js"></script>
         <script src="../../../Classes/Graphics/3d/Shapes/Cuboid.js"></script>
+        <script src="../../../Classes/Graphics/3d/Shapes/TextureShape.js"></script>
+        <script src="../../../Classes/Graphics/3d/Shapes/TextShape.js"></script>
+        <script src="../../../Classes/Graphics/3d/Shapes/HtmlShape.js"></script>
         <script src="../../../Classes/Graphics/3d/Shapes/PointLight.js"></script>
         <!--<script src="../../../Classes/Graphics/3d/Shapes/CompoundShape.js"></script>-->
         <script src="../../../Classes/Graphics/3d/Shapes/NodeShape.js"></script>
@@ -116,6 +120,12 @@
 
                 this.sphere = new VIZ3D.Sphere(gfx, 0.2, 0xff0000);
                 this.addShape(this.sphere);
+                window.texture = this.texture = new TextureShape3d(gfx, "robot.png", 0.4, 0.3).setLoc(0, 0.3, 0);
+                this.addShape(this.texture);
+                window.text = this.text = new TextShape3d(gfx, "hallo", 0xffffff).setLoc(0, -0.3, 0);
+                this.addShape(this.text);
+                window.html = this.html = new HtmlShape3d(gfx, "<span style=background-color:orange;border-radius:5px>hallo</style>").setLoc(0, -0.5, 0);
+                this.addShape(this.html);
 
                 this.onMousePress(function(down, data){
                     if(down && data)

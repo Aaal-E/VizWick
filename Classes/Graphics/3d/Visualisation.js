@@ -7,8 +7,6 @@ class Visualisation3d extends Graphics3d{
     constructor(container, tree, options, preInit){
         super(null, null, container, preInit);
         this.__setupVisualisation(tree, options);
-        $(document).off("mouseup", this.DOMEventListeners.mouseUp);
-
         this.shapes.unique.dragging = {
             hand1: null,
             hand2: null,
@@ -16,12 +14,14 @@ class Visualisation3d extends Graphics3d{
         };
 
 
+        $(document).off("mouseup", this.DOMEventListeners.mouseUp);
         this.DOMEventListeners.mouseUp = (function(){
             if(this.shapes.unique.dragging.mouse)
                 this.shapes.unique.dragging.mouse.__changeState("dragged", false);
             this.shapes.unique.dragging.mouse = null;
         }).bind(this);
         $(document).on("mouseup", this.DOMEventListeners.mouseUp);
+
     }
 
     //disposal, starts the removing of shapes, and removes the entire vis when done

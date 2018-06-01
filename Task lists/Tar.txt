@@ -59,6 +59,7 @@ personal todo list:
         -look into alex's html vibrating
 
     -finish options system properly (refactor)
+    -add max node count for createDescendants
 
 
     3D visualisation:
