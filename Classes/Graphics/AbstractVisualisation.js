@@ -20,6 +20,8 @@ class AbstractVisualisation extends AbstractGraphics{    //will 'extend' concret
             highlighted: null, //the highlighted shape by hovering
         };
 
+        this.maxNodeCount = 1000;
+
         this.__setupRoot();
         this.__setupOptions(options);
 
@@ -31,17 +33,34 @@ class AbstractVisualisation extends AbstractGraphics{    //will 'extend' concret
         $(document).on("mouseup", this.DOMEventListeners.mouseUp);
     }
 
+    getTree(){
+        return this.tree;
+    }
+    getOptions(){
+        return this.options;
+    }
+
     //setup
     __setupOptions(options){}
 
+    //max node count (this isn't a super strict value, it is only used by nodeShape.createDescendants)
+    setMaxNodeCount(count){
+        this.maxNodeCount = count;
+        return this;
+    }
+    getMaxNodeCount(){
+        return this.maxNodeCount;
+    }
 
+    //synchronization
     synchronizeNode(type, node, forwarded){
         var shape = node && node.getShape(this.getUID());
         if(this.shapes.unique[type])
             this.shapes.unique[type].__changeState(type, false);
 
-        if(type=="focused" && !shape){
+        if(type=="focused" && (!shape || !shape.isRendered)){
             shape = this.createNodeShape(node).add();
+            console.log(shape);
             if(!shape.getConnectedNodeShape()){ //shape is not connected with other existing shapes
                 //get rid of all existing shapes, except shape
                 for(var i=this.shapes.root.length-1; i>=0; i--){
@@ -96,6 +115,7 @@ class AbstractVisualisation extends AbstractGraphics{    //will 'extend' concret
         if(shape){  //a node shape already exists, simply return that one
             return shape;
         }else{
+            console.log("create");
             //find closest ancestor for which a shape does exists:
             var path = [node];
             var p = node.getParent();
@@ -136,6 +156,8 @@ class AbstractVisualisation extends AbstractGraphics{    //will 'extend' concret
 
         for(var i=nodes.length-1; i>=0; i--)
             nodes[i].destroy(countFunc);
+
+        this.options.destroy();
 
         finish();
     }

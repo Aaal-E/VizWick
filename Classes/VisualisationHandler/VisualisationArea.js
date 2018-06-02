@@ -22,7 +22,7 @@ class VisualisationArea{
         var tree = VisualisationHandler.getTree();
         if(tree){ //check if tree exists, otherwise do nothing
             this.options = new Options();
-            /* ??? */
+            /* send the options to the page so they can be added to the page */
             this.optionsCreationListener && this.optionsCreationListener(this.options);
             /* create an instance of the viusalisaton class and assign it to the viusalisation field of this area */
             this.visualisation = new visualisationClass(this.areaElement, tree, this.options);
@@ -51,6 +51,4 @@ class VisualisationArea{
 
     //TODO
     syncFocusedNodes(){}
-
-
 }

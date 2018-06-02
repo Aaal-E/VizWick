@@ -38,10 +38,16 @@ personal todo list:
     //-make resize events on window resize
     //-Synchronise focus even if node doesn't exist or isn't connected
     //-redo sync system
+    //-finish options system properly (refactor)
+    //-alex's complaints:
+        //-z index highlight
+        //-isVisible not working
+        //-getHtml in html shape error
+        //-look into alex's html vibrating
+    //-add max node count for createDescendants
 
     -add destroy animation for visualisations
     -add system to create z-index layers
-    -simplify creating connection
     -Add default options:
         -synchronisation
         -antialisasing
@@ -51,15 +57,7 @@ personal todo list:
         -Accommodate text 'options' to just show some status text
     -look into alex's thing not working in edge
     -add generate image system
-    -alex's complaints:
-        //-z index highlight
-        //-isVisible not working
-        -add transform to vec class to transform according to shape/camera
-        //-getHtml in html shape error
-        -look into alex's html vibrating
 
-    -finish options system properly (refactor)
-    -add max node count for createDescendants
 
 
     3D visualisation:

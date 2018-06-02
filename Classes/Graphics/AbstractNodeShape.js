@@ -391,15 +391,37 @@ class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete sha
         if(depth==null) depth = 1;
 
         var ret = [];
-        if(depth>=1){
-            ret.push.apply(ret, this.createChildren(dontAdd));
 
-            var children = this.getChildren();
+        var UID = this.graphics.getUID();
+        var shapes = this.graphics.getShapes(); //a list of all the rendered shapes
+        var max = this.graphics.getMaxNodeCount();
+
+        //use a que for a bfs kind of algorithm
+        var que = [{depth:depth, shape:this}];
+        outer:
+        while(que.length>0){
+            var data = que.shift();
+            var pShape = data.shape;
+
+            //create children of shape
+            var children = pShape.__getChildNodes();
             for(var i=0; i<children.length; i++){
-                var child = children[i];
-                ret.push.apply(ret, child.createDescendants(depth-1));
+                var node = children[i];
+                var shape = node.getShape(UID);
+                if(!shape)
+                    shape = pShape.__createChildNodeShape(node, pShape);
+                if(!shape.getIsRendered()){
+                    if(!dontAdd)
+                        shape.add();
+                    ret.push(shape);
+                }
+
+                //add children to que in order to create their children, or break if too many
+                if(data.depth>1) que.push({depth:data.depth-1, shape:shape});
+                if(shapes.length>max) break outer;
             }
         }
+
         return ret;
     }
     destroyChildren(keep){
@@ -428,6 +450,14 @@ class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete sha
 
         if(depth<=0)
             ret.push.apply(ret, this.destroyChildren(keep));
+        else{   //destroy shapes if there are too many as well
+            var shapes = this.graphics.getShapes(); //a list of all the rendered shapes
+            var max = this.graphics.getMaxNodeCount();
+
+            var children = this.getChildren();
+            while(shapes.length>max && children.length>0)
+                children[0].remove();
+        }
         return ret;
     }
 

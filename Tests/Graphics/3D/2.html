@@ -122,10 +122,10 @@
                 this.addShape(this.sphere);
                 window.texture = this.texture = new TextureShape3d(gfx, "robot.png", 0.4, 0.3).setLoc(0, 0.3, 0);
                 this.addShape(this.texture);
-                window.text = this.text = new TextShape3d(gfx, "hallo", 0xffffff).setLoc(0, -0.3, 0);
-                this.addShape(this.text);
                 window.html = this.html = new HtmlShape3d(gfx, "<span style=background-color:orange;border-radius:5px>hallo</style>").setLoc(0, -0.5, 0);
                 this.addShape(this.html);
+                window.text = this.text = new TextShape3d(gfx, "hallo", 0xffffff).setLoc(0, -0.3, 0);
+                this.addShape(this.text);
 
                 this.onMousePress(function(down, data){
                     if(down && data)
@@ -177,5 +177,8 @@
         var visualisation1 = new Visualisation($(".q1"), tree, options);
         VRCamera.setVisualisation(visualisation1);
 
+        visualisation1.onUpdate(function(){
+            this.getCamera().getRot().add(0, 0.02, 0);
+        });
     </script>
 </html>

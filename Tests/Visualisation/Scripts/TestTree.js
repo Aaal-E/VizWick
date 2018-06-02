@@ -16,5 +16,5 @@ var createTree = function(name, height, width){
     };
 }
 
-obj = createTree("tree", 7, 6);
+obj = createTree("tree", 9, 6);
 VisualisationHandler.setTree(new Tree(obj));

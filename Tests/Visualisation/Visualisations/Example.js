@@ -93,12 +93,15 @@
     class Example extends VIZ2D.Visualisation{
         constructor(container, tree, options){
             super(container, tree, options);
-
-            options.createOption("Test", "number", 4);
-            options.createOption("Test2", "color", "red");
         }
         __getNodeShapeClass(){
             return NodeShape;
+        }
+        __setupOptions(options){
+            var This = this;
+            options.add(new Options.Button("center").onClick(function(){
+                This.synchronizeNode("focused", This.getTree().getRoot());
+            }));
         }
     }
 
