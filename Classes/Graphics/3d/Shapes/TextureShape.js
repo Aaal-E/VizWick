@@ -25,10 +25,13 @@ class TextureShape3d extends Shape3d{
         this.setScale(1);
         this.updateTransform(); //don't interpolate size on creation
     }
+    __createShape(){
+        this.geometry = new THREE.BoxGeometry(1, 1, 1);
+    }
     __createMaterial(){
         if(this.source)
             this.texture = new THREE.TextureLoader().load(this.source);
-        this.material = new THREE.SpriteMaterial({map:this.texture, color:0xffffff});
+        this.material = new THREE.SpriteMaterial({map:this.texture, color:0xffffff, transparent:true, depthWrite:true});
     }
     __createMesh(){
         this.mesh = new THREE.Sprite(this.material);

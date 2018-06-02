@@ -13,8 +13,14 @@ class HtmlShape3d extends TextureShape3d{
                 "</div>"
             );
             this.visCont = gfx.getCanvas();
+            var This = this;
+            this.vrOffset = new XYZ(0, 0, 0).onChange(function(){
+                This.__markDirty();
+            });
+
             if(preInit) preInit.call(this);
         });
+
 
         this.setHtml(html);
         this.setContainer(gfx.getContainer());
@@ -69,6 +75,25 @@ class HtmlShape3d extends TextureShape3d{
     }
     getInteractive(){
         return this.interactive;
+    }
+
+    //offset to apply to shape in VR
+    getVRoffset(){
+        return this.vrOffset;
+    }
+
+    // __interpolate(delta){
+    //     console.log("detect");
+    // }
+    __setMeshLoc(per){
+        this.__updateLoc();
+        var prevLoc = this.prevTransform.loc;
+        var loc = this.transform.loc;
+        this.mesh.position.set(
+            prevLoc.x*(1-per) + loc.x*per + this.vrOffset.x,
+            prevLoc.y*(1-per) + loc.y*per + this.vrOffset.y,
+            prevLoc.z*(1-per) + loc.z*per + this.vrOffset.z
+        );
     }
 
     //container methods
@@ -144,13 +169,8 @@ class HtmlShape3d extends TextureShape3d{
     }
 
     //method to keep the html element in the correct location
-    __setMeshLoc(per){
-        super.__setMeshLoc(per);
-        this.__updateLoc();
-        return this;
-    }
     __updateLoc(){
-        var loc = this.getGraphics().getCamera().translateWorldToScreenLoc(this.getWorldLoc());
+        var loc = this.getGraphics().getCamera().translateWorldToScreenLoc(this.getWorldLoc().sub(this.vrOffset));
 
         var o = this.visCont.offset();
         // var c = this.getContainer().offset();

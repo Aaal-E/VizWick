@@ -7,6 +7,7 @@ class Graphics3d extends AbstractGraphics{
     constructor(width, height, container){
         super(width, height, container);
 
+        //resize listener
         this.container.on("finishResize", function(event, size){
             var newSize = {
                 width:This.container.width(),
@@ -235,10 +236,10 @@ class Graphics3d extends AbstractGraphics{
         }
 
         //make html visible or not depending on fromVR
-        for(var i=this.shapes.html.length-1; i>=0; i--){
+        for(var i=0; i<this.shapes.html.length; i++){
             var h = this.shapes.html[i];
             if(!fromVR){
-                h.mesh.visible = false;
+                // h.mesh.visible = false;
             }else if(h.isRendered){
                 h.mesh.visible = true;
             }
