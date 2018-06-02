@@ -30,6 +30,7 @@ class Camera3d extends AbstractCamera{
         });
 
         this.rayCaster = new THREE.Raycaster();
+        this.__updateLoc();
     }
 
     __updateLoc(){

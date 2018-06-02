@@ -94,7 +94,7 @@ class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete sha
             this.graphics.__registerShapeCollapsed(this);
 
             //initially a node is never expanded upon creation
-            this.__changeState("expanded", false);
+            this.__changeState("expanded", this.node.getChildren().length==0);
 
             //connect the parent and child nodes
             var parent = this.__getParentFromNode(true);

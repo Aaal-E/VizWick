@@ -4,13 +4,15 @@
 */
 
     class TextShape2d extends Shape2d {
-        constructor(graphics, text, color, font, size, align) {
+        constructor(graphics, text, color, font, size, preInit){
             super(graphics, color, function() {
                 this.text = text;
                 this.color = color;
                 this.font = font;
                 this.size = size;
                 this.align = align;
+
+                if(preInit) preInit.call(this);
             });
 
             var This = this;
@@ -27,10 +29,10 @@
                 fill: 0x00ff00,
                 align: 'left'
             };
-            if (this.font)    data.fontFamily = this.font;
-            // if ()
-            // if ()
-            // if ()
+            if (this.font)      data.fontFamily = this.font;
+            if (this.color)     data.fill = this.color;
+            if (this.font)      data.fontFamily = this.font;
+            if (this.align)     data.align = this.align;
 
             return new PIXI.Text(this.text, data);
         }

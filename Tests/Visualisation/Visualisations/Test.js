@@ -93,6 +93,7 @@
                     //update aabb
                     this.storeInSpatialTree = true;
                     this.__updateAABB();
+                    this.__stateChanged();
                 }
                 __stateChanged(field, val, oldState){
                     if(field=="focused" && val==true){

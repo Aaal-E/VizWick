@@ -25,6 +25,7 @@ window.VRCamera = new
         this.controller1 = null;
         this.controller2 = null;
         this.__update = this.__update.bind(this);
+        this.__render = this.__render.bind(this);
         this.transform = {
             scale: 1,
             loc: new XYZ(),
@@ -178,7 +179,7 @@ window.VRCamera = new
 		}
 
         this.renderer.vr.setDevice(this.hmd);
-        this.renderer.animate(this.__update);
+        this.renderer.animate(this.__render);
     }
     __hmdDisconnected(){
         this.state.connected = false;
@@ -232,7 +233,7 @@ window.VRCamera = new
 		controller.add(line);
 		controller.userData.line = line;
 
-		var pointerGeometry = new THREE.SphereGeometry(0.015, 32, 32);
+		var pointerGeometry = new THREE.SphereGeometry(0.005, 32, 32);
 		var pointerMaterial = new THREE.MeshPhongMaterial({color: colors.pointer.normal});
 		var pointer = new THREE.Mesh(pointerGeometry, pointerMaterial);
 		pointer.position.z = -this.defaultPointerDist;
@@ -244,6 +245,7 @@ window.VRCamera = new
 		    primary: false,
 		    grip: false
 		};
+        controller.userData.scroll = 0;
 
     	//events
     	//TODO make sure these event handlers don't remain on controller disconnect
@@ -275,6 +277,13 @@ window.VRCamera = new
     	controller.addEventListener('B press ended', buttonRelease);
     	controller.addEventListener('X press ended', buttonRelease);
     	controller.addEventListener('Y press ended', buttonRelease);
+
+        var scroll = function(event){
+            // console.log(event.axes[1]);
+            controller.userData.scroll = event.axes[1];
+        };
+        controller.addEventListener('thumbstick axes changed', scroll);
+        // THREE.VRController.verbosity = 1;
 
 
     	//initiate disposal when needed
@@ -325,13 +334,14 @@ window.VRCamera = new
     isInVR(){
         return this.state.connected;
     }
-    __update(){
+    __render(){
         if(this.hasVRSupport()){
             //transform world
             if(this.visualisation){
-                this.__updateTransform();
-                this.visualisation.__interpolate(); //improves fps
+                this.visualisation.__resetTransform() //make sure the transform doesn't mess with interpolation
+                this.visualisation.__interpolate(true); //improves fps
             }
+            this.__updateTransform();
 
             //update position and such of controller
             THREE.VRController.update();
@@ -371,7 +381,7 @@ window.VRCamera = new
 
             for(var i=0; i<controllers.length; i++){
                 var controller = controllers[i];
-                if(!controller.userData.anchor){ //don't do world interaction if transforming
+                if(!controller.userData.anchor && !controller.userData.dragging){ //don't do world interaction if transforming
                     var line = controller.userData.line;
                     var pointer = controller.userData.pointer;
                     var colors = controller.userData.colors;
@@ -381,9 +391,13 @@ window.VRCamera = new
                     this.rayCaster.ray.direction.set(0, 0, -1).applyMatrix4(tempMatrix);
 
                     var intersects = this.rayCaster.intersectObjects(this.rayCastGroup.children, true);
-                    if(intersects.length>0){
-                        var intersection = intersects[0];
-                        var object = intersection.object;
+                    var intersection = intersects.shift();
+                    var object = intersection && intersection.object;
+                    while(object && object.userData.ignore){
+                        intersection = intersects.shift();
+                        object = intersection && intersection.object;
+                    }
+                    if(intersection){
                         this.__setHover(controller, object);
 
                         //update pointer appearance
@@ -399,49 +413,111 @@ window.VRCamera = new
                 }
             }
 
+
+
             //rescale world based on controller input
-            if(this.controller1 && this.controller1.userData.anchor &&
-                this.controller2 && this.controller2.userData.anchor){ //2 handed
-                var old1 = this.controller1.userData.anchor;
-                var new1 = this.__getWorldPosition(this.controller1.userData.pointer);
-                var old2 = this.controller2.userData.anchor;
-                var new2 = this.__getWorldPosition(this.controller2.userData.pointer);
+            if(this.visualisation){
+                if(this.controller1 && this.controller1.userData.anchor &&
+                    this.controller2 && this.controller2.userData.anchor){ //2 handed
+                    var p = this.visualisation.VRproperties;
 
-                var oldGrip = new Vec(old1).sub(old2).setY(0);
-                var newGrip = new Vec(new1).sub(new2).setY(0);
-                var offset = new Vec(this.transform.loc).sub(old1);
+                    var old1 = this.controller1.userData.anchor;
+                    var new1 = this.__getWorldPosition(this.controller1.userData.pointer).sub(p.offset);
+                    var old2 = this.controller2.userData.anchor;
+                    var new2 = this.__getWorldPosition(this.controller2.userData.pointer).sub(p.offset);
 
-                var scale = newGrip.getLength()/oldGrip.getLength();
-                var angle = newGrip.getYaw()-oldGrip.getYaw();
-                var loc = new Vec(offset).mul(scale).addYaw(angle).sub(offset);
-                var movement = new Vec(new1).sub(old1).mul(1, 0.5, 1).add(0, (new2.getY()-old2.getY())/2, 0);
-                loc.add(movement);
+                    var oldGrip = new Vec(old1).sub(old2).setY(0);
+                    var newGrip = new Vec(new1).sub(new2).setY(0);
+                    var offset = new Vec(this.transform.loc).sub(old1);
 
-                this.transformOffset.scale = scale;
-                this.transformOffset.rot.setY(angle);
-                this.transformOffset.loc.set(loc);
+                    var scale = newGrip.getLength()/oldGrip.getLength();
+                    var angle = newGrip.getYaw()-oldGrip.getYaw();
+                    var loc = new Vec(offset).mul(scale).addYaw(angle).sub(offset);
+                    var movement = new Vec(new1).sub(old1).mul(1, 0.5, 1).add(0, (new2.getY()-old2.getY())/2, 0);
+                    loc.add(movement);
 
-                this.__updateTransform();
-            }else if(this.controller1 && this.controller1.userData.anchor){ //1 handed
-                var vec = this.__getWorldPosition(this.controller1.userData.pointer)
-                            .sub(this.controller1.userData.anchor);
-                this.transformOffset.loc.set(vec);
+                    this.transformOffset.scale = scale;
+                    this.transformOffset.rot.setY(angle);
+                    this.transformOffset.loc.set(loc);
 
-                this.__updateTransform();
-            }else if(this.controller2 && this.controller2.userData.anchor){ //1 handed
-                var vec = this.__getWorldPosition(this.controller2.userData.pointer)
-                            .sub(this.controller2.userData.anchor);
-                this.transformOffset.loc.set(vec);
+                    this.__updateTransform();
+                }else if(this.controller1 && this.controller1.userData.anchor){ //1 handed
+                    var p = this.visualisation.VRproperties;
 
-                this.__updateTransform();
+                    var vec = this.__getWorldPosition(this.controller1.userData.pointer)
+                                .sub(this.controller1.userData.anchor).sub(p.offset);
+                    this.transformOffset.loc.set(vec);
+
+                    this.__updateTransform();
+                }else if(this.controller2 && this.controller2.userData.anchor){ //1 handed
+                    var p = this.visualisation.VRproperties;
+
+                    var vec = this.__getWorldPosition(this.controller2.userData.pointer)
+                                .sub(this.controller2.userData.anchor).sub(p.offset);
+                    this.transformOffset.loc.set(vec);
+
+                    this.__updateTransform();
+                }
             }
 
 
             //rendering
+            this.__updateTransform();
             this.renderer.render(this.scene, this.camera);
         }
     }
+    __update(){
+        var controllers = [];
+        if(this.controller1) controllers.push(this.controller1);
+        if(this.controller2) controllers.push(this.controller2);
+
+        for(var i=0; i<controllers.length; i++){
+            var controller = controllers[i];
+            //execute interaction events
+            if(this.visualisation){
+                if(controller.userData.hover!=null){
+                    //scroll
+                    if(controller.userData.scroll!=0){
+                        var delta = controller.userData.scroll*-100;
+                        var caught = this.visualisation.__dispatchEvent(function(){
+                            return this.__triggerMouseScroll(delta);
+                        }, controller.userData.hover.userData.shape);
+
+                        if(!caught)
+                            this.visualisation.__triggerMouseScroll(delta);
+                    }
+
+                    //button change
+                    if(controller.userData.primaryChanged){
+                        controller.userData.primaryChanged = false;
+
+                        var pressed = controller.userData.pressedButtons.primary;
+                        var caught = this.visualisation.__dispatchEvent(function(){
+                            if(!pressed) this.__triggerClick();
+                            return this.__triggerMousePress(pressed);
+                        }, controller.userData.hover.userData.shape);
+
+                        if(!caught)
+                            this.visualisation.__triggerMousePress(pressed);
+                    }
+                }else{
+                    if(controller.userData.scroll!=0){
+                        var delta = controller.userData.scroll*-100;
+                        this.visualisation.__triggerMouseScroll(delta);
+                    }
+                    if(controller.userData.primaryChanged){
+                        controller.userData.primaryChanged = false;
+                        if(!pressed) this.visualisation.__triggerClick();
+                        this.visualisation.__triggerMousePress(pressed);
+                    }
+                }
+            }
+        }
+    }
+
     __applyTransformOffset(){
+        var p = this.visualisation.VRproperties;
+
         this.transform.scale *= this.transformOffset.scale;
         this.transform.loc.add(this.transformOffset.loc);
         this.transform.rot.add(this.transformOffset.rot);
@@ -451,30 +527,33 @@ window.VRCamera = new
         this.transformOffset.rot.set(0, 0, 0);
 
         if(this.controller1 && this.controller1.userData.anchor){
-            this.controller1.userData.anchor = this.__getWorldPosition(this.controller1.userData.pointer);
+            this.controller1.userData.anchor = this.__getWorldPosition(this.controller1.userData.pointer).sub(p.offset);
         }
         if(this.controller2 && this.controller2.userData.anchor){
-            this.controller2.userData.anchor = this.__getWorldPosition(this.controller2.userData.pointer);
+            this.controller2.userData.anchor = this.__getWorldPosition(this.controller2.userData.pointer).sub(p.offset);
         }
     }
     __updateTransform(){
-        var p = this.visualisation.VRproperties;
-        var scene = this.visualisation.__getScene();
-        scene.scale.set(
-            p.scale * this.transform.scale * this.transformOffset.scale,
-            p.scale * this.transform.scale * this.transformOffset.scale,
-            p.scale * this.transform.scale * this.transformOffset.scale
-        );
-        scene.position.set(
-            p.offset.getX() + this.transform.loc.getX() + this.transformOffset.loc.getX(),
-            p.offset.getY() + this.transform.loc.getY() + this.transformOffset.loc.getY(),
-            p.offset.getZ() + this.transform.loc.getZ() + this.transformOffset.loc.getZ()
-        );
-        scene.rotation.set(
-            this.transform.rot.getX() + this.transformOffset.rot.getX(),
-            this.transform.rot.getY() + this.transformOffset.rot.getY(),
-            this.transform.rot.getZ() + this.transformOffset.rot.getZ()
-        );
+        if(this.visualisation){
+            var p = this.visualisation.VRproperties;
+            var scene = this.visualisation.__getScene();
+            scene.scale.set(
+                p.scale * this.transform.scale * this.transformOffset.scale,
+                p.scale * this.transform.scale * this.transformOffset.scale,
+                p.scale * this.transform.scale * this.transformOffset.scale
+            );
+            scene.position.set(
+                p.offset.getX() + this.transform.loc.getX() + this.transformOffset.loc.getX(),
+                p.offset.getY() + this.transform.loc.getY() + this.transformOffset.loc.getY(),
+                p.offset.getZ() + this.transform.loc.getZ() + this.transformOffset.loc.getZ()
+            );
+            scene.rotation.set(
+                this.transform.rot.getX() + this.transformOffset.rot.getX(),
+                this.transform.rot.getY() + this.transformOffset.rot.getY(),
+                this.transform.rot.getZ() + this.transformOffset.rot.getZ()
+            );
+            scene.updateMatrixWorld();
+        }
     }
 
     //manage controller interactions
@@ -507,9 +586,31 @@ window.VRCamera = new
         this.__updateControllerStyle(controller);
 
 
-        if(button=="rescale"){
+        if(button=="rescale" && this.visualisation){
             this.__applyTransformOffset();
-            controller.userData.anchor = this.__getWorldPosition(controller.userData.pointer);
+
+            var p = this.visualisation.VRproperties;
+            controller.userData.anchor = this.__getWorldPosition(controller.userData.pointer).sub(p.offset);
+        }
+
+        if(button=="primary")
+            controller.userData.primaryChanged = true;
+
+        if(button=="grip" && this.visualisation && this.visualisation.dragShape){
+            var shape = controller.userData.hover;
+            shape = shape && shape.userData.shape;
+            while(shape && !(shape instanceof NodeShape3d))
+                shape = shape.parentShape;
+            if(shape){
+                this.visualisation.dragShape(shape, "hand"+controller.userData.id);
+                controller.userData.dragging = shape;
+                var dist = new Vec(shape.getWorldLoc())
+                            .sub(this.__getWorldPosition(controller.userData.pointer))
+                            .getLength();
+
+                controller.userData.line.scale.z += dist;
+                controller.userData.pointer.position.z -= dist;
+            }
         }
     }
     __setButtonReleased(controller, button){
@@ -519,6 +620,14 @@ window.VRCamera = new
         if(button=="rescale"){
             controller.userData.anchor = null;
             this.__applyTransformOffset();
+        }
+
+        if(button=="primary")
+            controller.userData.primaryChanged = true;
+
+        if(button=="grip" && this.visualisation && this.visualisation.dragShape){
+            this.visualisation.dragShape(null, "hand"+controller.userData.id);
+            controller.userData.dragging = null;
         }
     }
     __updateControllerStyle(controller){
@@ -536,13 +645,15 @@ window.VRCamera = new
         controller.userData.pointer.material.color.setHex(pointerC);
     }
     __getControllerPosRelativeToScene(controller){
-        controller.getWorldPosition(vec3);
+        controller.userData.pointer.getWorldPosition(vec3);
         var rel = new Vec(vec3);
         var scene = this.visualisation.__getScene();
         scene.getWorldPosition(vec3);
         rel.sub(vec3).div(scene.scale.x).rotate(new Vec(-scene.rotation.x, -scene.rotation.y, -scene.rotation.z));
         return rel;
     }
+
+    //utility transform methods
     __getWorldPosition(object){
         object.getWorldPosition(vec3);
         return new Vec(vec3);
@@ -562,6 +673,7 @@ window.VRCamera = new
             if(this.visualisation){
                 var scene = this.visualisation.__getScene();
                 this.visualisationScene.remove(scene);
+                this.visualisation.offUpdate(this.__update);
 
                 this.visualisation.__disableVR();
             }
@@ -572,6 +684,7 @@ window.VRCamera = new
                 if(this.visualisation){
                     var scene = this.visualisation.__getScene();
                     this.visualisationScene.add(scene);
+                    this.visualisation.onUpdate(this.__update);
 
                     this.visualisation.__enableVR();
                 }

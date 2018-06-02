@@ -90,7 +90,7 @@
             }
         }
     }
-    class Example extends Visualisation2d{
+    class Example extends VIZ2D.Visualisation{
         constructor(container, tree, options){
             super(container, tree, options);
 

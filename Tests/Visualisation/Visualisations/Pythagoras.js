@@ -123,7 +123,7 @@
             this.removeShape(this.text);
         }
     }
-    class Pythagoras extends Visualisation2d{
+    class Pythagoras extends VIZ2D.Visualisation{
         constructor(container, tree, options){
             super(container, tree, options);
             this.focussed = this.getShapesRoot()[0];

@@ -1,15 +1,15 @@
 /*
-    3d cube class
+    3d texture shape
     Author: Tar van Krieken
-    Starting Date: 16/05/2018
+    Starting Date: 01/06/2018
 */
-class Cuboid3d extends Shape3d{
-    constructor(graphics, width, height, depth, color, preInit){
-        super(graphics, color, function(){
-            this.size = new XYZ(width, height, depth);
+class TextureShape3d extends Shape3d{
+    constructor(gfx, source, width, height, initFunc){
+        super(gfx, 0xffffff, function(){
+            this.size = new XYZ(width, height, 1);
 
-            if(height && height.call) height.call(this);
-            if(preInit && preInit.call) preInit.call(this);
+            this.source = source;
+            if(initFunc) initFunc.call(this);
         });
 
 
@@ -25,9 +25,35 @@ class Cuboid3d extends Shape3d{
         this.setScale(1);
         this.updateTransform(); //don't interpolate size on creation
     }
-    __createShape(){
-        this.geometry = new THREE.BoxGeometry(1, 1, 1);
+    __createMaterial(){
+        if(this.source)
+            this.texture = new THREE.TextureLoader().load(this.source);
+        this.material = new THREE.SpriteMaterial({map:this.texture, color:0xffffff});
     }
+    __createMesh(){
+        this.mesh = new THREE.Sprite(this.material);
+        this.mesh.userData = {shape: this};
+    }
+
+    //property setters
+    setTexture(texture){
+        this.texture = texture;
+        this.material.map = this.texture;
+        return this;
+    }
+    setSource(source){
+        this.source = source;
+        return this.setTexture(new THREE.TextureLoader().load(source));
+    }
+
+    //property getters
+    getTexture(){
+        return this.texture;
+    }
+    getSource(){
+        return this.source;
+    }
+
 
     //interpolation
     __setMeshScale(per){
@@ -68,7 +94,6 @@ class Cuboid3d extends Shape3d{
     __getRadius(){
         var x = this.size.getX()/2;
         var y = this.size.getY()/2;
-        var z = this.size.getZ()/2;
-        return Math.sqrt(x*x + y*y + z*z);
+        return Math.sqrt(x*x + y*y);
     }
 }

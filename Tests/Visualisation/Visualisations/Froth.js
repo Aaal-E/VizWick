@@ -81,7 +81,7 @@
             return new (this.__getClass())(this.getGraphics(), node, scale);
         }
     }
-    class Froth extends Visualisation2d{
+    class Froth extends VIZ2D.Visualisation{
         constructor(container, tree, options){
             super(container, tree, options);
             this.renderdepth = 2

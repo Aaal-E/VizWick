@@ -58,6 +58,9 @@ personal todo list:
         //-getHtml in html shape error
         -look into alex's html vibrating
 
+    -finish options system properly (refactor)
+    -add max node count for createDescendants
+
 
     3D visualisation:
     //-finish line shape
@@ -68,6 +71,6 @@ personal todo list:
         //-add line interpolation
         //-add sphere radius interpolation
         //-add render event listener system
-    -add controller button presses and scrolling
-    -add VR dragging
+    //-add controller button presses and scrolling
+    //-add VR dragging
     -add VR jump screen
