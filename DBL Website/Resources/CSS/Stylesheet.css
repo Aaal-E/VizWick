@@ -101,7 +101,7 @@ background-color: white;
 .slideshow-page {
   width: 100%;
   height: 100%;
-  background-color: red;
+  background-color: white;
   text-align: center;
 }
 
@@ -113,10 +113,7 @@ background-color: white;
   width: 200px;
   height: 50px;
   margin-top: 20px;
-}
-
-.left-arrow, .photo-part, .right-arrow {
-  display: inline-block;
+  border: 1px solid black;
 }
 
 .go-to-welcome-page {
@@ -127,42 +124,44 @@ background-color: white;
   margin-left: calc(25% - 100px);
 }
 
-/*.left-arrow {
-  display: inline-block;
-  vertical-align: top;
-  position: relative;
-  top: 50%;
-  transform: translate(0, -50%);
-}*/
-/*Some problems with arrows displacement */
-/*.right-arrow {
-  display: inline-block;
-  vertical-align: middle;
-  position: relative;
-  top: 50%;
-  transform: translate(0, -50%);
-}*/
-
 .slideshow-area {
-  width:100%;
+  width:70%;
   height: 550px;
-  background-color: red;
+  margin-left: 15%;
 }
 
-.photo-part{
-  background-color: blue;
+
+.photo-area{
+  background-color: white;
   width: 700px;
   height: 500px;
+  margin-left: calc((100% - 700px)/2);
   margin-top: 15px;
+  border: 1px solid black;
+}
+
+.left-arrow, .right-arrow {
+  top: 50%;
+  padding: 16px;
+  width:auto;
+  margin-top: -22px;
+  color: black;
+  position: absolute;
+}
+
+
+.right-arrow {
+  right: 15%;
+  border-radius: 3px 0 0 3px;
 }
 
 .dot {
   height: 15px;
   width: 15px;
+  margin-top: 7.5px;
   border-radius: 50%;
   background-color: #bbb;
   display: inline-block;
-  margin-top: 7.5px;
   cursor: pointer;
 }
 
