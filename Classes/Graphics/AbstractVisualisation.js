@@ -142,6 +142,9 @@ class AbstractVisualisation extends AbstractGraphics{    //will 'extend' concret
         var This = this;
         var finish = function(){
             This.getCanvas().remove();
+            This.pause(true);
+            This.options.destroy();
+            
             if(callback) callback.call(This);
         };
 
@@ -156,8 +159,6 @@ class AbstractVisualisation extends AbstractGraphics{    //will 'extend' concret
 
         for(var i=nodes.length-1; i>=0; i--)
             nodes[i].destroy(countFunc);
-
-        this.options.destroy();
 
         finish();
     }

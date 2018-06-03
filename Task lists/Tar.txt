@@ -74,5 +74,5 @@ personal todo list:
     //-add controller button presses and scrolling
     //-add VR dragging
     -add VR jump screen
-    -look into shape creation performance:
-        -possibly add scheduled creation
+    //-look into shape creation performance:
+    //    -possibly add scheduled creation

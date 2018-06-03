@@ -332,6 +332,7 @@ class Graphics3d extends AbstractGraphics{
 
     //start/stop rendering
     pause(fully){
+        this.lastUpdate = Date.now()+2000;
         if(!fully){
             this.updating = false
         }else{
@@ -341,6 +342,7 @@ class Graphics3d extends AbstractGraphics{
         return this;
     }
     start(){
+        this.lastUpdate = Date.now();
         this.updating = true;
         var wasNotRendering = this.rendering==0;
         this.rendering = 1;

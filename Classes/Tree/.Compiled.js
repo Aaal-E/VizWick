@@ -13,7 +13,7 @@ _createClass(Tree,[{key:"__recalculateValues",value:function __recalculateValues
 },{key:"getDepth",value:function getDepth(){return this.depth}}]);return Tree}();window.Tree=Tree;/*
 	Alex Thieme
 	30-04-2018
-	
+
 *//*
 	main node class for storing node information
 */var TreeNode=function(){//TODO
@@ -64,4 +64,6 @@ _createClass(TreeNode,[{key:"__setName",value:function __setName(newname){this.n
 },{key:"__triggerDeleteListener",value:function __triggerDeleteListener(){for(var i=0;i<this.deleteListener.length;i++){this.deleteListener[i].apply(this,arguments)}return this}//adds a function to the insertlistener
 },{key:"addInsertListener",value:function addInsertListener(listener){this.insertlistener.push(listener)}//removes a function from the insertlistener
 },{key:"deleteInsertListener",value:function deleteInsertListener(listener){var index=this.insertListener.indexOf(listener);if(index!=-1)this.insertListener.splice(index,1)}//triggers the insertlistener
-},{key:"__triggerInsertListener",value:function __triggerInsertListener(){for(var i=0;i<this.insertListener.length;i++){this.insertListener[i].apply(this,arguments)}return this}}]);return TreeNode}();})();
+},{key:"__triggerInsertListener",value:function __triggerInsertListener(){for(var i=0;i<this.insertListener.length;i++){this.insertListener[i].apply(this,arguments)}return this}//returns the number of siblings the node has
+},{key:"getSiblingCount",value:function getSiblingCount(){return this.getParent().getChildren.length-1}//returns the number of nodes in the subtree at this node, up to n deep
+},{key:"getSubTreeNodeCountN",value:function getSubTreeNodeCountN(n){var localsubtreenodecount=1;if(this.children.length>0&&n>0){for(var i=0;i<this.children.length;i++){localsubtreenodecount=localsubtreenodecount+this.children[i].getSubtreeNodeCountN(n)}}return localsubtreenodecount}}]);return TreeNode}();})();
