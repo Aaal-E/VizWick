@@ -5,7 +5,7 @@
 var fs = require("fs");
 var path = require("path");
 
-var files = [process.cwd()];
+var files = [path.join(process.cwd(), "../")];
 function next(){
     var file = files.pop();
     if(file){

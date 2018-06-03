@@ -4,8 +4,12 @@
     Starting Date: 23/05/2018
 */
 class Line3d extends Shape3d{
-    constructor(graphics, startPoint, endPoint, width, color, preInit){
-        super(graphics, color, preInit);
+    constructor(graphics, startPoint, endPoint, width, color, ratio, preInit){
+        super(graphics, color, function(){
+            this.widthRatio = ratio||1;
+
+            if(preInit) preInit.call(this);
+        });
 
         var l = this.getLoc().l;
         l.splice(l.length-1, 1);    //remove the last listener
@@ -41,7 +45,7 @@ class Line3d extends Shape3d{
         this.prevTransform.endPoint = new XYZ(this.endPoint);
     }
     __createShape(){
-        this.geometry = new THREE.CylinderGeometry(1, 1, 1, 32); //32 is accuracy of sorts
+        this.geometry = new THREE.CylinderGeometry(1, this.widthRatio, 1, 32); //32 is accuracy of sorts
         this.geometry.translate(0, 0.5, 0); //shift line upwards
     }
 

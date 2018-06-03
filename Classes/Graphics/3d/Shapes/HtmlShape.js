@@ -3,7 +3,7 @@
     Author: Tar van Krieken
     Starting Date: 01/06/2018
 */
-class HtmlShape3d extends TextureShape3d{
+class HtmlShape3d extends ImageShape3d{
     constructor(gfx, html, preInit){
         super(gfx, null, 0, 0.2, function(){
             this.element = $(

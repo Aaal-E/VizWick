@@ -26,7 +26,7 @@ class Cuboid3d extends Shape3d{
         this.updateTransform(); //don't interpolate size on creation
     }
     __createShape(){
-        this.geometry = new THREE.BoxGeometry(1, 1, 1);
+        this.geometry = Cuboid3d.geometry;
     }
 
     //interpolation
@@ -72,3 +72,4 @@ class Cuboid3d extends Shape3d{
         return Math.sqrt(x*x + y*y + z*z);
     }
 }
+Cuboid3d.geometry = new THREE.BoxGeometry(1, 1, 1);

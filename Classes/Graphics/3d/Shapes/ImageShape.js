@@ -3,7 +3,7 @@
     Author: Tar van Krieken
     Starting Date: 01/06/2018
 */
-class TextureShape3d extends Shape3d{
+class ImageShape3d extends Shape3d{
     constructor(gfx, source, width, height, initFunc){
         super(gfx, 0xffffff, function(){
             this.size = new XYZ(width, height, 1);
@@ -24,9 +24,6 @@ class TextureShape3d extends Shape3d{
         //update size
         this.setScale(1);
         this.updateTransform(); //don't interpolate size on creation
-    }
-    __createShape(){
-        this.geometry = new THREE.BoxGeometry(1, 1, 1);
     }
     __createMaterial(){
         if(this.source)

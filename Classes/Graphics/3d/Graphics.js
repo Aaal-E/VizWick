@@ -26,7 +26,7 @@ class Graphics3d extends AbstractGraphics{
         this.scene = new THREE.Scene();
 
         //create a basic perspective camera
-        var camera = new THREE.PerspectiveCamera( 75, this.getWidth()/this.getHeight(), 0.1, 1000 );
+        var camera = new THREE.PerspectiveCamera( 75, this.getWidth()/this.getHeight(), 0.00001, 2 );
 
         //create a renderer with Antialiasing
         this.renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
@@ -239,7 +239,7 @@ class Graphics3d extends AbstractGraphics{
         for(var i=0; i<this.shapes.html.length; i++){
             var h = this.shapes.html[i];
             if(!fromVR){
-                // h.mesh.visible = false;
+                h.mesh.visible = false;
             }else if(h.isRendered){
                 h.mesh.visible = true;
             }
@@ -254,6 +254,11 @@ class Graphics3d extends AbstractGraphics{
         $(window).off('mousemove', this.DOMEventListeners.mousemove);
         $(window).off('mousedown', this.DOMEventListeners.mousepress);
         $(window).off('mouseup', this.DOMEventListeners.mousepress);
+
+        if(this.inVR){
+            VRCamera.setVisualisation(null);
+        };
+
         super.destroy();
     }
 
@@ -419,9 +424,14 @@ class Graphics3d extends AbstractGraphics{
     //VR specific stuff
     __enableVR(){
         this.pointers.types = ["mouse", "hand1", "hand2"];
+        this.inVR = true;
     }
     __disableVR(){
         this.pointers.types = ["mouse"];
+        this.inVR = false;
+    }
+    isInVR(){
+        return this.inVR;
     }
     __setHand(pointer, pos, pressed){
         var p = this.pointers[pointer];

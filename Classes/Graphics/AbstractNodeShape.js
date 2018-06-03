@@ -458,7 +458,15 @@ class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete sha
             while(shapes.length>max && children.length>0)
                 children[0].remove();
         }
+
         return ret;
+    }
+    showFamily(ancestorCount, descendantCount){
+        this.destroyAncestors(0, true);
+        this.createAncestors(ancestorCount);
+        this.destroyDescendants(0);
+        this.createDescendants(descendantCount);
+        return this;
     }
 
     //methods for changing the state and synchronizing these changes

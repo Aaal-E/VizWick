@@ -58,6 +58,8 @@ personal todo list:
     -look into alex's thing not working in edge
     -add generate image system
 
+    -rescale visualisation so it fits nicely in the screen
+    -test browser compatibility
 
 
     3D visualisation:
@@ -72,3 +74,5 @@ personal todo list:
     //-add controller button presses and scrolling
     //-add VR dragging
     -add VR jump screen
+    -look into shape creation performance:
+        -possibly add scheduled creation

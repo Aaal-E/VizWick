@@ -35,7 +35,7 @@ class Camera3d extends AbstractCamera{
 
     __updateLoc(){
         var vec = new Vec(this.getLoc());
-        vec.add(this.getRot().getLookAt().addYaw(-Math.PI/2).setLength(this.distance));
+        vec.add(this.getRot().getLookAt().addYaw(-Math.PI/2).setLength(this.distance/this.getScale()));
         this.camera.position.set(
             vec.getX(),
             vec.getY(),
@@ -55,14 +55,14 @@ class Camera3d extends AbstractCamera{
     //scale
     setScale(scale){
         var ret = super.setScale(scale);
-        this.setFOV(this.getFOV());
+        this.__updateLoc();
         return ret;
     }
 
     //FOV
     setFOV(fov){
         this.fov = fov;
-        this.camera.fov = fov/this.scale;
+        this.camera.fov = fov;
         this.camera.updateProjectionMatrix();
         return this;
     }

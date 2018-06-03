@@ -17,7 +17,7 @@ class Sphere3d extends Shape3d{
         this.setScale(1);
     }
     __createShape(){
-        this.geometry = new THREE.SphereGeometry(1, 32, 32); //32 is accuracy of sorts
+        this.geometry = Sphere3d.geometry;
     }
 
     //interpolation handler
@@ -53,3 +53,4 @@ class Sphere3d extends Shape3d{
         return this.getRadius();
     }
 }
+Sphere3d.geometry = new THREE.SphereGeometry(1, 32, 32); //32 is accuracy of sorts

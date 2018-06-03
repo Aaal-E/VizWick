@@ -75,10 +75,10 @@ window.VRCamera = new
 
     //general properties
     getWidth(){
-        return 192;
+        return 1;
     }
     getHeight(){
-        return 108;
+        return 1;
     }
     hasVRSupport(){
         return !!navigator.getVRDisplays;

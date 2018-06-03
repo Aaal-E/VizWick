@@ -6,9 +6,9 @@
 class NumberOption extends Option{
     constructor(name, value){
         super(name, "number", null);
-        var min = 1;
-        var step = 1;
-        var max = 10;
+        var min = -Infinity;
+        var step = 0.0001;
+        var max = Infinity;
         if(value instanceof Object){
             if(value.min) min = value.min;
             if(value.step) step = value.step;

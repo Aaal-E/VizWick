@@ -3,7 +3,7 @@
     Author: Tar van Krieken
     Starting Date: 01/06/2018
 */
-class TextShape3d extends TextureShape3d{
+class TextShape3d extends ImageShape3d{
     constructor(gfx, text, color, font, height, align){
         super(gfx, null, 0.2, 0.2, function(){
             this.text = text;

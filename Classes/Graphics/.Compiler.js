@@ -19,7 +19,7 @@ Compiler.compile([
     "AbstractNodeShape.js",
     "AbstractVisualisation.js",
 
-        //2d visualisation classes
+    //2d visualisation classes
         "2d/Camera.js",
         "2d/Graphics.js",
         "2d/Shape.js",
@@ -42,4 +42,28 @@ Compiler.compile([
 
         //all 2d visualisation data coming together
         "2d/Visualisation.js",
+
+
+
+    //3d visualisation classes
+        "3d/Camera.js",
+        "3d/VRCamera.js",
+        "3d/Graphics.js",
+        "3d/Shape.js",
+
+        //normal 3d shapes
+        "3d/Shapes/Cuboid.js",
+        "3d/Shapes/Line.js",
+        "3d/Shapes/ImageShape.js",
+        "3d/Shapes/TextShape.js",
+        "3d/Shapes/Sphere.js",
+
+        //special 3d shapes
+        "3d/Shapes/ShapeGroup.js",
+        "3d/Shapes/NodeShape.js",
+        "3d/Shapes/HtmlShape.js",
+        "3d/Shapes/PointLight.js",
+
+        //all 3d visualisation data coming together
+        "3d/Visualisation.js",
 ], [".Compiled.js", "../../Tests/Visualisation/Scripts/Visualisation.js"]);

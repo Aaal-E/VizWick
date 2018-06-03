@@ -17,10 +17,18 @@
         <script src="../../../Classes/Tree/Tree.js"></script>
         <script src="../../../Classes/Tree/TreeNode.js"></script>
 
+        <script src="../../../Classes/Graphics/Options/Option.js"></script>
+        <script src="../../../Classes/Graphics/Options/Types/Boolean.js"></script>
+        <script src="../../../Classes/Graphics/Options/Types/Button.js"></script>
+        <script src="../../../Classes/Graphics/Options/Types/Label.js"></script>
+        <script src="../../../Classes/Graphics/Options/Types/Number.js"></script>
+        <script src="../../../Classes/Graphics/Options/Types/State.js"></script>
+        <script src="../../../Classes/Graphics/Options/Types/Text.js"></script>
+        <script src="../../../Classes/Graphics/Options/Options.js"></script>
+
         <!--graphics interface-->
         <script src="../../../Classes/Graphics/Utils/XYZ.js"></script>
         <script src="../../../Classes/Graphics/Utils/Vec.js"></script>
-        <script src="../../../Classes/Graphics/Options.js"></script>
 
         <script src="../../../Classes/Graphics/AbstractCamera.js"></script>
         <script src="../../../Classes/Graphics/AbstractGraphics.js"></script>
@@ -37,7 +45,7 @@
         <script src="../../../Classes/Graphics/3d/Shapes/Sphere.js"></script>
         <script src="../../../Classes/Graphics/3d/Shapes/Line.js"></script>
         <script src="../../../Classes/Graphics/3d/Shapes/Cuboid.js"></script>
-        <script src="../../../Classes/Graphics/3d/Shapes/TextureShape.js"></script>
+        <script src="../../../Classes/Graphics/3d/Shapes/ImageShape.js"></script>
         <script src="../../../Classes/Graphics/3d/Shapes/TextShape.js"></script>
         <script src="../../../Classes/Graphics/3d/Shapes/HtmlShape.js"></script>
         <script src="../../../Classes/Graphics/3d/Shapes/PointLight.js"></script>
@@ -120,7 +128,7 @@
 
                 this.sphere = new VIZ3D.Sphere(gfx, 0.2, 0xff0000);
                 this.addShape(this.sphere);
-                window.texture = this.texture = new TextureShape3d(gfx, "robot.png", 0.4, 0.3).setLoc(0, 0.3, 0);
+                window.texture = this.texture = new ImageShape3d(gfx, "robot.png", 0.4, 0.3).setLoc(0, 0.3, 0);
                 this.addShape(this.texture);
                 window.html = this.html = new HtmlShape3d(gfx, "<span style=background-color:orange;border-radius:5px>hallo</style>").setLoc(0, -0.5, 0);
                 this.addShape(this.html);

@@ -13,6 +13,8 @@ class Visualisation3d extends Graphics3d{
             mouse: null
         };
 
+        //limit the node count
+        this.maxNodeCount = 500;
 
         $(document).off("mouseup", this.DOMEventListeners.mouseUp);
         this.DOMEventListeners.mouseUp = (function(){
@@ -53,14 +55,16 @@ class Visualisation3d extends Graphics3d{
 
     //shape dragging
     __onUpdate(deltaTime){
-        if(this.shapes.unique.dragging.mouse)
+        if(this.shapes.unique.dragging){
+            if(this.shapes.unique.dragging.mouse)
             this.shapes.unique.dragging.mouse.__onDrag(this.getMouseLoc());
 
-        if(this.shapes.unique.dragging.hand1 && this.pointers.hand1)
+            if(this.shapes.unique.dragging.hand1 && this.pointers.hand1)
             this.shapes.unique.dragging.hand1.__onDrag(this.pointers.hand1);
 
-        if(this.shapes.unique.dragging.hand2 && this.pointers.hand2)
+            if(this.shapes.unique.dragging.hand2 && this.pointers.hand2)
             this.shapes.unique.dragging.hand2.__onDrag(this.pointers.hand2);
+        }
 
         super.__onUpdate(deltaTime);
     }
@@ -85,13 +89,14 @@ Visualisation3d.classes = window.VIZ3D = {
     Shape: Shape3d,
     ShapeGroup: ShapeGroup3d,
     NodeShape: NodeShape3d,
-    // HtmlShape: HtmlShape3d,
+    HtmlShape: HtmlShape3d,
+    PointLight: PointLight3d,
 
     //standard shapes
     Sphere: Sphere3d,
     Line: Line3d,
-    // TextShape: TextShape2d,
-    // ImageShape: ImageShape2d,
+    TextShape: TextShape3d,
+    ImageShape: ImageShape3d,
     Cuboid: Cuboid3d,
     // Polygon: Polygon2d,
 };

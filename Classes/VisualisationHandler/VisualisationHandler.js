@@ -59,9 +59,9 @@ new (class VisualisationHandler{
         var area = this.getVisArea(areaName);
         var clas = this.getVisualisationClass(visClassName);
         if(!area)
-            console.log("Unknown area "+areaName);
+            console.log("Unknown area: "+areaName);
         else if(!clas)
-            console.log("Unknown visualisation "+visClassName);
+            console.log("Unknown visualisation: "+visClassName);
         else
             area.setVisualisation(clas);
         return this;

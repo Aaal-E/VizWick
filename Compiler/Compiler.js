@@ -14,9 +14,14 @@ exports.compile = function(data, outputFiles){
     if(!(outputFiles instanceof Array))
         outputFiles = [outputFiles];
 
+    var nonCompiled = "";
     var concatenated = "";
     for(let i=0; i<data.length; i++){
         var file = data[i];
+
+        var raw = file.match(/raw\:(.*)/);
+        if(raw) file = raw[1];
+
         var filePath = path.join(process.cwd(), file);
 
         var fileContent = fs.readFileSync(filePath, 'utf8');
@@ -25,9 +30,14 @@ exports.compile = function(data, outputFiles){
             return;
         }
 
-        concatenated += fileContent;
+        if(raw){
+            nonCompiled += fileContent+";\n";
+        }else{
+            concatenated += fileContent;
+        }
     }
     var compiled = babel.transform(concatenated, {filename:outputFile, presets:["env"], minified:true}).code;
+    compiled = nonCompiled+compiled;
 
     var finishedCount = 0;
     for(var i=0; i<outputFiles.length; i++){

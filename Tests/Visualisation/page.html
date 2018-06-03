@@ -9,9 +9,12 @@
 
         <!-- load visualisations -->
         <script src=Visualisations/Test.js></script>
+        <script src=Visualisations/Example.js></script>
+        <script src=Visualisations/Example3d.js></script>
         <script src=Visualisations/Froth.js></script>
         <script src=Visualisations/Pythagoras.js></script>
-        <script src=Visualisations/Example.js></script>
+        <script src=Visualisations/Sunburst.js></script>
+        <script src=Visualisations/Tree.js></script>
 
         <!-- load test data set -->
         <script src=Scripts/TestTree.js></script>
@@ -48,6 +51,10 @@
                 margin: 10px;
                 min-height: 200px;
             }
+            .visualisationTypes{
+                padding: 10px;
+                margin: 10px;
+            }
         </style>
     </head>
     <body>
@@ -58,6 +65,8 @@
             </div>
             <div class=q2options>
 
+            </div>
+            <div class=visualisationTypes>
             </div>
         </div>
         <div class=visualisations>
@@ -166,5 +175,15 @@
         VisualisationHandler.setVisualisationForArea("q1", viz);
         if($(".q2").length>0)
             VisualisationHandler.setVisualisationForArea("q2", viz);
+
+        //load all available visualisations and add buttons to the page
+        var types = VisualisationHandler.getVisualisationTypes();
+        for(var i=0; i<types.length; i++){
+            let type = types[i];
+            var button = $("<button></button>").text(type).click(function(){
+                VisualisationHandler.setVisualisationForArea("q1", type);
+            })
+            $(".visualisationTypes").append(button).append("<br>");
+        }
     </script>
 </html>

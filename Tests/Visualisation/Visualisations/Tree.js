@@ -1,6 +1,6 @@
 (function(){
     //the visualisation class that you create
-    class NodeShape extends VIZ2D.NodeShape{
+    class NodeShape extends VIZ3D.NodeShape{
         //Note an extra 'scale' argument got added to the constructor, this isn't necessary
         constructor(gfx, node, scale){
             if(!scale) scale = 1; //if scale is abscent, set it to 1
@@ -13,7 +13,7 @@
 
 
             //A nodeshape doesn't render anything, so we must add shapes to it to display
-            this.circle = new VIZ2D.Circle(gfx, 30, 0xff0000);
+            this.circle = new VIZ3D.Sphere(gfx, 0.07, 0xff0000);
             this.addShape(this.circle);
 
             //Focus on the shape on a click event
@@ -36,7 +36,7 @@
             if(parent){ //doesn't have a parent if root
                 //Set up the correct location for your node
                 //I will simply devide the space equally
-                var spaceWidth = 600;   //with scale 1, the children have 600 pixels of space
+                var spaceWidth = 1;   //with scale 1, the children have 600 pixels of space
 
                 //Get the number of children of the parent
                 //note parent.getChildren() would return the child shapes,
@@ -61,25 +61,47 @@
                 x *= parent.scale;
 
                 //now that we determined an appropriate x coordinate, we can set the location
-                this.setLoc(parent.getX() + x, parent.getY() - 200*this.scale);
+                this.setLoc(parent.getX() + x, parent.getY() - 0.3*this.scale);
             }
         }
 
         __stateChanged(field, val, oldState){
             if(field=="focused" && val==true){
-                this.getGraphics().getCamera().setTarget(this, this, this); //focus on shape on focus
+                this.getGraphics().getCamera().setTargetLoc(this).setTargetScale(this); //focus on shape on focus
 
                 //When we focus on a node, we might want to show more of its descendants
                 //And perhaps fewer of the parents
-                //Some simple methods are in place to achieve this, the easiest o which is:
+                //Some simple methods are in place to achieve this.
 
-                this.showFamily(2, 3);  //shows 2 ancestors and 3 layers of descendants
+                //We can create 4 levels of descendants with this simple function
+                this.createDescendants(3);
+
+                //We can also make sure that any connected descendants that are below
+                //Those 4 levels, will get destroyed
+                this.destroyDescendants(3);
+
+                //We can then also show 2 levels of parents (without all their children)
+                this.createAncestors(2);
+
+                //And similarly destroy any ancestors that are above those 2 levels
+                //Note that the argument 'true' makes sure that children of the
+                // ancestors are also properly removed, and not left floating around
+                this.destroyAncestors(2, true);
             }
         }
     }
-    class Example extends VIZ2D.Visualisation{
+    class Tree extends VIZ3D.Visualisation{
         constructor(container, tree, options){
             super(container, tree, options);
+
+            //rotate the camera for fun
+            var camera = this.getCamera();
+            this.onUpdate(function(){
+                camera.getRot().add(0, 0.04, 0);
+            });
+
+            //add light
+            var light = new VIZ3D.PointLight(this, 0xffffff).setLoc(0.1, 0.4, 0).add();
         }
         __getNodeShapeClass(){
             return NodeShape;
@@ -93,12 +115,12 @@
     }
 
     //attach some data to be displayed on the webpage
-    Example.description = {
-        name: "example",
-        description: "Some example visualisation",
+    Tree.description = {
+        name: "tree",
+        description: "3D version of carreer tree",
         image: ""   //should contain some image path relative to the page
     };
 
     //register the class
-    VisualisationHandler.registerVisualisation(Example);
+    VisualisationHandler.registerVisualisation(Tree);
 })();   //all encased in a function in order to keep variables hidden/local

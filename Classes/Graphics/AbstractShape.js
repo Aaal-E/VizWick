@@ -467,16 +467,18 @@ class AbstractShape{
         return this.__delete();                 //fully remove it without an animation
     }
     __delete(){
-        this.graphics.__deregisterShape(this, true); //remove the node entirely
-        this.disableUpdates(true);
+        if(!this.isAlive){
+            this.graphics.__deregisterShape(this, true); //remove the node entirely
+            this.disableUpdates(true);
 
-        var tree = this.__getTree();
-        if(tree && this.storeInSpatialTree)
-        tree.remove(this);
+            var tree = this.__getTree();
+            if(tree && this.storeInSpatialTree)
+            tree.remove(this);
 
-        this.isRendered = false;
-        this.__triggerRenderChange();
-        return this;
+            this.isRendered = false;
+            this.__triggerRenderChange();
+            return this;
+        }
     }
     getIsRendered(){
         return this.isRendered;
