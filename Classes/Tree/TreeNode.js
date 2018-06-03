@@ -367,7 +367,20 @@ class TreeNode{
         return this;
 	}
 	
+	//returns the number of siblings the node has
+	getSiblingCount(){
+		return this.getParent().getChildren.length - 1;
+	}
 	
+	//returns the number of nodes in the subtree at this node, up to n deep
+	getSubTreeNodeCountN(n){
+		var localsubtreenodecount = 1;
+		if(this.children.length > 0 && n > 0){
+			for(var i=0; i<this.children.length;i++){
+				localsubtreenodecount = localsubtreenodecount + this.children[i].getSubtreeNodeCountN(n);
+			}
+		}
+		return localsubtreenodecount;
 	
 	
 	
