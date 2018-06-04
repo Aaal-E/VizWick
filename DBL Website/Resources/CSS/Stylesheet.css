@@ -185,8 +185,9 @@ background-color: white;
   transform: translate(0, -50%);
 }*/
 
-
-/* Visualization page */
+/*
+  Visualization page
+*/
 .visualization-page {
   width: 100%;
   height: 100%;
@@ -195,80 +196,114 @@ background-color: white;
 
 .top-section {
   width: 100%;
-  margin-bottom: 10px;
+  height: 40px;
+  background-color: red;
 }
 
-.buttons, .upload-button, .visualizations, .two-four-buttons, .home-button, .slideshow-button, .visualization-button, .two-button, .four-button {
+.buttons, .upload-button, .visualizations, .two-four-buttons {
   display: inline-block;
-  margin-top: 2px;
+  margin-top: 5px;
 }
 
-.home-button, .slideshow-button, .upload-button, .visualization-button {
+.home-button, .slideshow-button, .upload-button, .visualization-button, .last-visualization-button, .two-button, .four-button {
+  height: 30px;
   background-color: white;
   border-radius: 10px;
   font-size: 20px;
   padding: 5px;
   box-sizing: border-box;
-  min-width: 50px;
   text-align: center;
+  display: inline-block;
 }
 
-.two-four-buttons {
-  background-color: white;
-  border-radius: 10px;
-  font-size: 20px;
-  padding: 5px;
-  box-sizing: border-box;
-  width: 75px;
-  text-align: center;
+.two-button {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-right: 1px solid gray;
+  width: 40px;
+}
+
+.four-button {
+  width: 40px;
+}
+
+.two-four-buttons .text {
+  font-weight: bold;
 }
 
 .buttons {
-  margin-left: 4px;
+  margin-left: 5px;
+}
+
+.home-button {
+  width: 40px;
+  margin-right: 5px;
+}
+
+.slideshow-button {
+  width: 40px;
+}
+
+.fa-home, .fa-info {
+  color: black;
 }
 
 .upload-button {
-  background-color: #4ddbff;
-  width: 100px;
+  background-color: #4DADF7;
+  width: 150px;
+  margin-left: calc(20% - 240px);
+  margin-right: 100px;
+  border-radius: 20px;
+}
+
+.upload {
+  font-family: 'Contrail One', cursive;
+  font-size: 18px;
+}
+
+.fa-download, .upload {
+  display: inline-block;
+  font-weight: bold;
+}
+
+.fa-download {
+  margin-right: 10px;
 }
 
 .two-four-buttons {
+  background-color: white;
+  border-radius: 10px;
   float: right;
-  margin-right: 4px;
+  margin-right: 5px;
 }
 
-.visualizations {
-  /* in the center */
+.visualization-button {
+  margin-right: 5px;
+}
+
+.text {
+  position: relative;
+  top: 50%;
+  transform: translate(0, -50%);
 }
 
 .left-section {
   width: 20%;
-  height: 708px;
+  height: calc(100% - 45px);
 }
 
 .information-section {
   width: 100%;
-  height: 708px;
+  height: 100%;
   margin-bottom: 10px;
   background-color: white;
   border-top-right-radius: 20px;
   border-bottom-right-radius: 20px;
 }
 
-/*.upload-button {
-  width: 50%;
-  height: 48px;
-  background-color: white;
-  border-radius: 10px;
-  text-align: center;
-  padding: 5px;
-  box-sizing: border-box;
-  margin-left: 25%;
-}*/
-
 .right-section {
-  width: calc(80% - 14px);
-  height: 708px;
+  width: calc(80% - 15px);
+  height: calc(100% - 45px);
   margin-left: 10px;
 }
 
@@ -277,19 +312,19 @@ background-color: white;
   vertical-align: middle;
 }
 
-.four-layout {
+.layout {
   width: 100%;
   height: 100%;
   background-color: red;
-  visibility: hidden;
 }
 
-.two-layout {
+.upper-layout-part, .bottom-layout-part {
   width: 100%;
-  height: 100%;
-  background-color: red;
-  visibility: visible;
-  margin-top: -708px;
+  height: calc(50% - 2.5px);
+}
+
+.upper-layout-part {
+  margin-bottom: 5px;
 }
 
 .top-left, .top-right {
@@ -301,15 +336,14 @@ background-color: white;
 }
 
 .top-left, .bottom-left {
-  width: calc(50% - 2px);
-  height: calc(50% - 2px);
-  margin-right: 4px;
-  margin-bottom: 4px;
+  width: calc(50% - 2.5px);
+  height: 100%;
+  margin-right: 5px;
 }
 
 .top-right, .bottom-right {
-  width: calc(50% - 2px);
-  height: calc(50% - 2px);
+  width: calc(50% - 2.5px);
+  height: 100%;
 }
 
 .top-left, .top-right, .bottom-left, .bottom-right {
@@ -320,61 +354,225 @@ background-color: white;
 
 .left-screen, .right-screen {
   display: inline-block;
-  width: calc(50% - 2px);
+  width: calc(50% - 2.5px);
   height: 100%;
   background-color: black;
   border-radius: 20px;
 }
 
 .left-screen {
-  margin-right: 4px;
+  margin-right: 5px;
 }
 
-.option-pane-4 {
-  width: 10%;
-  height: 100%;
+.option-pane {
+  width: 100%;
+  height: 30px;
   background-color: white;
   padding: 5px;
   box-sizing: border-box;
+  text-align: center;
 }
 
-.top-left>.option-pane-4, .bottom-left>.option-pane-4 {
+.option {
+  display: inline-block;
+  position: relative;
+  top: 50%;
+  transform: translate(0, -50%);
+}
+
+.top-left>.option-pane, .top-right>.option-pane {
   border-top-left-radius: 20px;
-  border-bottom-left-radius: 20px;
+  border-top-right-radius: 20px;
 }
 
-.top-right>.option-pane-4, .bottom-right>.option-pane-4 {
-  border-top-right-radius: 20px;
+.bottom-left>.option-pane, .bottom-right>.option-pane, .left-screen>.option-pane, .right-screen>.option-pane {
+  border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
 }
 
-.option-pane-4, .visualization-area-4 {
-  display: inline-block;
-  vertical-align: middle;
-}
-
-.visualization-area-4 {
-  width: 90%;
-  height: 100%;
+.visualization-area {
+  width: 100%;
+  height: calc(100% - 30px);
   background-color: black;
   border-radius: 20px;
 }
 
-.option2-buttons {
-  display: inline-block;
-  width: auto;
-  height:auto;
-  padding: 10px;
-  background-color: white;
-  border-right: 1px solid gray;
-  padding-left: 15px;
-  border-top-left-radius: 20px;
+/*
+  Welcome page
+.welcome-page {
+  width: 100%;
+  height: 100%;
+  background-color: #000000;
 }
 
-.option-pane2 {
-  width:100%;
-  height:auto;
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
+.text-subpart, .go-to-video {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.text-subpart {
+  width: 80%;
+  height: calc(100% - 40px);
+  margin-top: 20px;
+  margin-left: 20px;
+  margin-right: calc(5% - 40px);
+  padding: 20px;
+  box-sizing: border-box;
+  background-color: white;
+  text-align: center;
+  border-radius: 25px;
+}
+
+.parenthesis, .description-text {
+  display: inline;
+}
+
+.member-name {
+  display: inline;
+}
+
+.left-part, .right-part {
+  display: inline-block;
+  margin-left: calc(25% - 200px);
+  margin-right: calc(25% - 200px);
+}
+
+.go-to-video {
+  width: 15%;
+  height: 40%;
   background-color: white;
 }
+
+.main-text {
+  height: 150px;
+  font-size: 150px;
+  background-color: yellow;
+}
+
+.description {
+  height: 75px;
+  background-color: gray;
+}
+
+.description-text {
+  font-size: 25px;
+}
+
+.group-members {
+  height: 100px;
+  background-color: red;
+}
+
+.member-name {
+  width: auto;
+  height: 30px;
+  margin-left: 10px;
+  margin-right: 10px;
+  font-size: 20px;
+  font-style: italic;
+  background-color: orange;
+}
+
+.go-to {
+  height: 100px;
+  background-color: green;
+}
+
+.left-part {
+  width: 300px;
+  background-color: blue;
+}
+
+.right-part {
+  width: 300px;
+  background-color: blue;
+}
+
+  Slideshow page
+.slideshow-page {
+  width: 100%;
+  height: 100%;
+  background-color: red;
+  text-align: center;
+}
+
+.go-to-welcome-page, .go-to-visualization-page {
+  display: inline-block;
+  background-color: white;
+  border-radius: 10px;
+  font-size: 20px;
+  width: 200px;
+  height: 50px;
+  margin-top: 20px;
+}
+
+.left-arrow, .photo-part, .right-arrow {
+  display: inline-block;
+}
+
+.go-to-welcome-page {
+  margin-right: calc(25% - 100px);
+}
+
+.go-to-visualization-page {
+  margin-left: calc(25% - 100px);
+}
+
+/*.left-arrow {
+  display: inline-block;
+  vertical-align: top;
+  position: relative;
+  top: 50%;
+  transform: translate(0, -50%);
+}*/
+/*Some problems with arrows displacement */
+/*.right-arrow {
+  display: inline-block;
+  vertical-align: middle;
+  position: relative;
+  top: 50%;
+  transform: translate(0, -50%);
+}*/
+
+/*.slideshow-area {
+  width:100%;
+  height: 550px;
+  background-color: red;
+}
+
+.photo-part{
+  background-color: blue;
+  width: 700px;
+  height: 500px;
+  margin-top: 15px;
+}
+
+.dot {
+  height: 15px;
+  width: 15px;
+  border-radius: 50%;
+  background-color: #bbb;
+  display: inline-block;
+  margin-top: 7.5px;
+  cursor: pointer;
+}
+
+.vis-name {
+  font-size: 40px;
+  font-weight: bold;
+}
+
+.vis-description {
+  width: 80%;
+  height: auto;
+  margin: auto;
+  border-radius: 15px;
+  border: 2px solid black;
+}
+
+.fa-chevron-left, .fa-chevron-right {
+  font-size: 30px;
+  position: relative;
+  top: 50%;
+  transform: translate(0, -50%);
+}*/
