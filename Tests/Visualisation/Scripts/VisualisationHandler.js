@@ -8,7 +8,8 @@ break;default:// assume all other characters are node names
 subNode={name:null,parent:null,children:[]};subNode.name=n;var j=i-1;while(regex.indexOf(input[j])==-1&&j>=0){//can be simplified later using regexp
 subNode.name=input[j]+subNode.name;j--}i=j+1;//offset by one, as i is decremented at end of the loop
 subNode.parent=node;//set the parent to point to current open node
-node.children.push(subNode);break;}}return rootOfRoot}/*
+node.children.push(subNode);break;}}return rootOfRoot;//.children[0] ||  {name:"missing data", children:[]};
+}/*
     The class for representing the areas at where each visualisation is shown
     Authors:
       Tar van Krieken
