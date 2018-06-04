@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-
-
-=======
->>>>>>> 5519f169cda296bac2fce11ca0352da6bc757df7
 /* General editting of all pages */
 html, body {
   width: 100%;
@@ -131,11 +126,7 @@ background-color: white;
 
 .slideshow-area {
   width:70%;
-<<<<<<< HEAD
-  height: 500px;
-=======
   height: 550px;
->>>>>>> 5519f169cda296bac2fce11ca0352da6bc757df7
   margin-left: 15%;
 }
 
@@ -175,10 +166,7 @@ background-color: white;
 }
 
 .vis-name {
-<<<<<<< HEAD
   margin-top: 15px;
-=======
->>>>>>> 5519f169cda296bac2fce11ca0352da6bc757df7
   font-size: 40px;
   font-weight: bold;
 }
@@ -198,10 +186,6 @@ background-color: white;
   transform: translate(0, -50%);
 }*/
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 5519f169cda296bac2fce11ca0352da6bc757df7
 /*
   Visualization page
 */
