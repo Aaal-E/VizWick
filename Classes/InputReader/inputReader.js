@@ -66,5 +66,5 @@ function makeTreeObj(input){
         }
 
     }
-    return rootOfRoot; //.children[0] ||  {name:"missing data", children:[]};
+    return rootOfRoot.children[0] ||  {name:"missing data", children:[]};
 }

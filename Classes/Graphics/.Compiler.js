@@ -32,6 +32,7 @@ Compiler.compile([
 
         //normal 2d shapes
         "2d/Shapes/Circle.js",
+        "2d/Shapes/RadialBand.js",
         "2d/Shapes/Line.js",
         "2d/Shapes/TextShape.js",
         "2d/Shapes/ImageShape.js",
