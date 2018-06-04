@@ -34,13 +34,22 @@
             this.color = HSVtoInt(this.getDepth()/6, 1, 1);
             this.circle = new VIZ2D.Circle(gfx, 30, this.color);
             this.addShape(this.circle);
-            this.text = new VIZ2D.HtmlShape(gfx, node.getName(), 0x000000);
+            this.text = new VIZ2D.HtmlShape(gfx, '<p style="background-color:orange">' + node.getName() + "</p>", 0x000000);
             this.text.setScale(2);
 
             //this.onClick(function(){
             //    this.focus();
             //});
-
+			
+			
+			this.onHover(
+                function(enter){
+                    if(enter)
+                        this.addShape(this.text);
+                    else{
+                        this.removeShape(this.text);
+                    }
+            });
 
         }
 

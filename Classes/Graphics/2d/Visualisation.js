@@ -54,4 +54,5 @@ Visualisation2d.classes = window.VIZ2D = {
     RoundedRectangle: RoundedRectangle2d,
     Polygon: Polygon2d,
     Ellipse: Ellipse2d,
+    RadialBand: RadialBand2d
 };

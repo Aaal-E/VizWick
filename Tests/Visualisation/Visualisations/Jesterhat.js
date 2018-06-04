@@ -24,10 +24,6 @@
             this.onHover(
                 function(enter){
                     if(enter)
-                        this.addShape(this.label);
-                    else
-                        this.removeShape(this.label);
-                    if(enter)
                         this.addShape(this.text);
                     else{
                         this.removeShape(this.text);
@@ -123,7 +119,7 @@
             this.removeShape(this.text);
         }
     }
-    class Pythagoras extends VIZ2D.Visualisation{
+    class Jesterhat extends VIZ2D.Visualisation{
         constructor(container, tree, options){
             super(container, tree, options);
             this.focussed = this.getShapesRoot()[0];
@@ -175,12 +171,12 @@
     }
 
     //attach some data to be displayed on the webpage
-    Pythagoras.description = {
-        name: "pythagoras",
+    Jesterhat.description = {
+        name: "Jesterhat",
         description: "",
         image: ""   //should contain some image path relative to the page
     };
 
     //register the class
-    VisualisationHandler.registerVisualisation(Pythagoras);
+    VisualisationHandler.registerVisualisation(Jesterhat);
 })();   //all encased in a function in order to keep variables hidden/local

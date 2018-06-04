@@ -46,6 +46,9 @@ personal todo list:
         //-look into alex's html vibrating
     //-add max node count for createDescendants
 
+    -fix scene hitbox
+    -disable text selection while interacting with visualisation
+
     -add destroy animation for visualisations
     -add system to create z-index layers
     -Add default options:
