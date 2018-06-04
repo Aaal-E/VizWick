@@ -7,7 +7,7 @@
     Starting Date: 3/06/2018
 */
 class RadialBand2d extends Shape2d{
-    constructor(graphics, inRadius, thickness, startAngle, size,  color){
+    constructor(graphics, inRadius, thickness, startAngle, size, color){
         super(graphics, color);
         this.setSize(size);
         this.setInRadius(inRadius);
@@ -18,18 +18,20 @@ class RadialBand2d extends Shape2d{
 
     //the draw method
     __redraw(){
-        //draw the shape
-        this.gfx.clear();
-        this.gfx.beginFill(this.color);
-        // draw the inner arc:
-        this.gfx.arc(0, 0, this.inRadius, this.startAngle,
-            this.endAngle, false);
-        // draw the outer arc along with one of the side edges
-        this.gfx.arc(0, 0, this.getOutRadius(), this.endAngle,
-            this.startAngle, true); // reverse the order of angles to create one edge
-        // draw the other edge:
-        this.gfx.lineTo(this.centerX + this.radius * Math.cos(this.startAngle), this.centerX +  this.radius * Math.sin(this.endAngle))
-        this.gfx.endFill();
+        if (this.thickness != null) {
+          //draw the shape
+          this.gfx.clear();
+          this.gfx.beginFill(this.color);
+          // draw the inner arc:
+          this.gfx.arc(0, 0, this.inRadius, this.startAngle,
+              this.endAngle, false);
+          // draw the outer arc along with one of the side edges
+          this.gfx.arc(0, 0, this.getOutRadius(), this.endAngle,
+              this.startAngle, true); // reverse the order of angles to create one edge
+          // draw the other edge:
+          this.gfx.lineTo(0 + this.inRadius * Math.cos(this.startAngle), 0 +  this.inRadius * Math.sin(this.startAngle))
+          this.gfx.endFill();
+        }
     }
 
 
@@ -49,7 +51,6 @@ class RadialBand2d extends Shape2d{
 
     setThickness(thickness){
         this.thickness = thickness;
-        this.setEndAngle(this.startAngle+this.size);
         this.__redraw();
         return this;
     }
@@ -72,6 +73,6 @@ class RadialBand2d extends Shape2d{
     }
 
     getEndAngle(){
-        return this.startAngle + this.size;
+        return this.endAngle;
     }
 }
