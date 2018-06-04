@@ -68,7 +68,7 @@
         this.debug = true;
 
         var graphics = new Graphics2d();
-        var band = new radialBand2d(graphics, 10, Math.PI/3, 30, 100, 0xff0000);
+        var band = new RadialBand2d(graphics, 10, 30, Math.PI/3, Math.PI/3, 0xff0000);
         band.add();
         band.onClick(function(){
             console.log("clicked");

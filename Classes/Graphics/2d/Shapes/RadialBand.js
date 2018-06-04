@@ -7,8 +7,13 @@
     Starting Date: 3/06/2018
 */
 class RadialBand2d extends Shape2d{
+<<<<<<< HEAD
     constructor(graphics, inRadius, startAngle, thickness, size,  color, preInit){
         super(graphics, color, preInit);
+=======
+    constructor(graphics, inRadius, thickness, startAngle, size,  color){
+        super(graphics, color);
+>>>>>>> a8374f3ad6d88ff63232c230b92d8448a4deb2e2
         this.setSize(size);
         this.setInRadius(inRadius);
         this.setStartAngle(startAngle);
@@ -22,10 +27,10 @@ class RadialBand2d extends Shape2d{
         this.gfx.clear();
         this.gfx.beginFill(this.color);
         // draw the inner arc:
-        this.gfx.arc(this.centerX, this.centerY, this.inRadius, this.startAngle,
+        this.gfx.arc(0, 0, this.inRadius, this.startAngle,
             this.endAngle, false);
         // draw the outer arc along with one of the side edges
-        this.gfx.arc(this.centerX, this.centerY, this.getOutRadius(), this.endAngle,
+        this.gfx.arc(0, 0, this.getOutRadius(), this.endAngle,
             this.startAngle, true); // reverse the order of angles to create one edge
         // draw the other edge:
         this.gfx.lineTo(this.centerX + this.radius * Math.cos(this.startAngle), this.centerX +  this.radius * Math.sin(this.endAngle))
