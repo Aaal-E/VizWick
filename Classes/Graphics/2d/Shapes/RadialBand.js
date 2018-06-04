@@ -7,8 +7,8 @@
     Starting Date: 3/06/2018
 */
 class RadialBand2d extends Shape2d{
-    constructor(graphics, inRadius, startAngle, thickness, size,  color, preInit){
-        super(graphics, color, preInit);
+    constructor(graphics, inRadius, thickness, startAngle, size,  color){
+        super(graphics, color);
         this.setSize(size);
         this.setInRadius(inRadius);
         this.setStartAngle(startAngle);
