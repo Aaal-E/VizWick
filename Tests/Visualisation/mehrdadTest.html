@@ -1,0 +1,191 @@
+<html>
+    <head>
+        <!-- load required base files -->
+        <script src="Scripts/Libraries.js"></script>
+        <script src="Scripts/VisualisationHandler.js"></script>
+        <script src="Scripts/Tree.js"></script>
+        <script src="Scripts/Visualisation.js"></script>
+        <script src="Scripts/Resize.js"></script>
+
+        <!-- load visualisations -->
+        <script src=Visualisations/Test.js></script>
+        <script src=Visualisations/Example.js></script>
+        <script src=Visualisations/Example3d.js></script>
+        <script src=Visualisations/Froth.js></script>
+        <script src=Visualisations/Jesterhat.js></script>
+        <script src=Visualisations/Sunburst.js></script>
+        <script src=Visualisations/Tree.js></script>
+        <script src=Visualisations/Mehrdadtest.js></script>
+
+
+        <!-- load test data set -->
+        <script src=Scripts/TestTree.js></script>
+
+        <!-- some simple standard styling -->
+        <style>
+            html,body{
+                margin: 0px;
+                height: 100%;
+                width: 100%;
+            }
+            .sidebar{
+                width: 200px;
+                height: 100%;
+                float: left;
+            }
+            .visualisations{
+                width: Calc(100% - 200px);
+                height: 100%;
+                float: left;
+            }
+            .q1, .q1options{
+                background-color: #FFFFFF;
+            }
+            .q2, .q2options{
+                background-color: #001100;
+            }
+            .q1, .q2{
+                overflow: hidden;
+            }
+            .q1options, .q2options{
+                color: white;
+                padding: 10px;
+                margin: 10px;
+                min-height: 200px;
+            }
+            .visualisationTypes{
+                padding: 10px;
+                margin: 10px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class=sidebar>
+            <input type=file>
+            <div class=q1options>
+
+            </div>
+            <div class=q2options>
+
+            </div>
+            <div class=visualisationTypes>
+            </div>
+        </div>
+        <div class=visualisations>
+            <div class=q1></div>
+            <div class=q2></div>
+        </div>
+    </body>
+    <script>
+        //comment out the line below to show 2 visualisation and check their synchronisation:
+        $(".q2").remove();
+
+        //setup resize container
+        $(".visualisations").resizeContainer();
+
+        //handle file inputs
+        $("input").change(function(){
+            VisualisationHandler.readBlob(this.files[0]);
+        });
+
+        //a method that listeners to options being created and adds them to the page
+        function getOptionsCreateListener(area){
+            var areaIdentifier = area.attr("id");
+            return function(options){
+                options.onOptionsChange(function(type, option){
+                    var name = option.getName();
+
+                    if(type=="create"){
+                        var type = option.getType();
+
+                        var el;
+                        //create element based on the type of option
+                        switch(type){
+                            case "button":
+                                var el = $("<button></button>")
+                                            .text(option.getText())
+                                            .click(option.triggerClick.bind(option));
+                                //a button's text might change
+                                option.onTextChange(function(text){
+                                    el.text(text);
+                                });
+                                break;
+                            case "label":
+                                var el = $("<div></div>")
+                                            .text(option.getText());
+                                //a label's text might change
+                                option.onTextChange(function(text){
+                                    el.text(text);
+                                });
+                                break;
+                            case "text":
+                                var el = $("<input type=text></input>")
+                                            .val(option.getValue())
+                                            .change(function(){
+                                                option.setValue(el.val());
+                                            });
+                                break;
+                            case "boolean":
+                                var el = $("<input type=checkbox></input>")
+                                            .prop("checked", option.getValue())
+                                            .change(function(){
+                                                option.setValue(el.is(":checked"));
+                                            });
+                                break;
+                            case "number":
+                                var el = $("<input type=number></input>")
+                                            .val(option.getValue())
+                                            .attr("min", option.getMin())
+                                            .attr("max", option.getMax())
+                                            .attr("step", option.getStep())
+                                            .change(function(){
+                                                option.setValue(Number(el.val()));
+                                            });
+                                            break;
+                            case "state":
+                                var el = $("<select>"+option.getOptions().map(function(v){
+                                                return "<option value='"+v+"'>"+v+"</option>";
+                                            }).join("\n")+"</select>")
+                                            .val(option.getValue())
+                                            .change(function(){
+                                                option.setValue(el.val());
+                                            });
+                                break;
+                        }
+
+                        if(el){
+                            //add element to page, and setup an identifier
+                            el.attr("id", areaIdentifier).addClass(name);
+                            area.append(el);
+                        }
+
+                    }else if(type=="delete"){
+                        area.find("."+name).remove();
+                    }
+                });
+            }
+        }
+
+        //setup areas and listen for created options
+        VisualisationHandler.createVisArea("q1", $(".q1"), getOptionsCreateListener($(".q1options")));
+        if($(".q2").length>0)
+            VisualisationHandler.createVisArea("q2", $(".q2"), getOptionsCreateListener($(".q2options")));
+
+        //select visualisation for area
+        var viz = window.location.hash.substr(1) || VisualisationHandler.getVisualisationTypes()[0];
+
+        VisualisationHandler.setVisualisationForArea("q1", viz);
+        if($(".q2").length>0)
+            VisualisationHandler.setVisualisationForArea("q2", viz);
+
+        //load all available visualisations and add buttons to the page
+        var types = VisualisationHandler.getVisualisationTypes();
+        for(var i=0; i<types.length; i++){
+            let type = types[i];
+            var button = $("<button></button>").text(type).click(function(){
+                VisualisationHandler.setVisualisationForArea("q1", type);
+            })
+            $(".visualisationTypes").append(button).append("<br>");
+        }
+    </script>
+</html>
