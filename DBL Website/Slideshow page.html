@@ -5,6 +5,7 @@
   <head>
     <link rel="stylesheet" type="text/css" href="Resources/CSS/Stylesheet.css">
     <link rel="stylesheet" type="text/css" href="Resources/Font Awesome/web-fonts-with-css/css/fontawesome-all.css">
+    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
   </head>
 
   <body>
@@ -35,10 +36,10 @@
          photo stuff
        </div>
         <div class="dot-navigation">
-          <div class="dot" onclick=""></div>
-          <div class="dot" onclick=""></div>
-          <div class="dot" onclick=""></div>
-          <div class="dot" onclick=""></div>
+          <div class="dot" id="0"></div>
+          <div class="dot" id="1"></div>
+          <div class="dot" id="2"></div>
+          <div class="dot" id="3"></div>
         </div>
       </div>
       <div class="vis-name">
@@ -50,4 +51,26 @@
     </div>
   </div>
   </body>
+  <script>
+  var color=["red", "black","gray", "yellow", "blue"];
+  var counter=0;
+
+  $(".fa-chevron-right").click(function(){
+    counter+=1;
+	$('.photo-area').css('background-color', color[counter%color.length]);
+  });
+
+  $(".fa-chevron-left").click(function(){
+    counter-=1;
+    if(counter<0){
+      $('.photo-area').css('background-color', color[color.length+counter%color.length]);
+    }else{
+     $('.photo-area').css('background-color', color[counter%color.length]);
+    }
+  });
+  $(".dot").click(function(){
+  $('.photo-area').css('background-color', color[$(this).attr('id')]);
+  });
+
+  </script>
 </html>
