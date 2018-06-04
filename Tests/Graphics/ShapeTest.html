@@ -1,0 +1,77 @@
+<htmL>
+    <head>
+        <!--<script src="../Classes/Graphics/2d/.Compiled.js"></script>-->
+
+        <!--libraries-->
+        <script src="../../Libraries/jQuery.js"></script>
+        <script src="../../Libraries/pixi.min.js"></script>
+        <script src="../../Libraries/pixiLayers.js"></script>
+        <script src="../../Libraries/stats.js"></script>
+        <script src="../../Libraries/RBush-3d.js"></script>
+
+        <!--resize system-->
+        <script src="../../Classes/GUI/resize.js"></script>
+
+        <!--Alex's tree system-->
+        <script src="../../Classes/Tree/Tree.js"></script>
+        <script src="../../Classes/Tree/TreeNode.js"></script>
+
+        <!--graphics interface-->
+        <script src="../../Classes/Graphics/Utils/XYZ.js"></script>
+        <script src="../../Classes/Graphics/Utils/Vec.js"></script>
+
+        <script src="../../Classes/Graphics/Options/Option.js"></script>
+        <script src="../../Classes/Graphics/Options/Types/Boolean.js"></script>
+        <script src="../../Classes/Graphics/Options/Types/Button.js"></script>
+        <script src="../../Classes/Graphics/Options/Types/Label.js"></script>
+        <script src="../../Classes/Graphics/Options/Types/Number.js"></script>
+        <script src="../../Classes/Graphics/Options/Types/State.js"></script>
+        <script src="../../Classes/Graphics/Options/Types/Text.js"></script>
+        <script src="../../Classes/Graphics/Options/Options.js"></script>
+
+        <script src="../../Classes/Graphics/AbstractCamera.js"></script>
+        <script src="../../Classes/Graphics/AbstractGraphics.js"></script>
+        <script src="../../Classes/Graphics/AbstractShape.js"></script>
+        <script src="../../Classes/Graphics/AbstractVisualisation.js"></script>
+        <script src="../../Classes/Graphics/AbstractNodeShape.js"></script>
+
+        <!--2d graphics api-->
+        <script src="../../Classes/Graphics/2d/Camera.js"></script>
+        <script src="../../Classes/Graphics/2d/Graphics.js"></script>
+        <script src="../../Classes/Graphics/2d/Shape.js"></script>
+        <script src="../../Classes/Graphics/2d/Shapes/Circle.js"></script>
+        <script src="../../Classes/Graphics/2d/Shapes/Line.js"></script>
+        <script src="../../Classes/Graphics/2d/Shapes/TextShape.js"></script>
+        <script src="../../Classes/Graphics/2d/Shapes/ImageShape.js"></script>
+        <script src="../../Classes/Graphics/2d/Shapes/Polygon.js"></script>
+        <script src="../../Classes/Graphics/2d/Shapes/Rectangle.js"></script>
+        <script src="../../Classes/Graphics/2d/Shapes/RoundedRectangle.js"></script>
+        <script src="../../Classes/Graphics/2d/Shapes/Ellipse.js"></script>
+        <script src="../../Classes/Graphics/2d/Shapes/CompoundShape.js"></script>
+        <script src="../../Classes/Graphics/2d/Shapes/ShapeGroup.js"></script>
+        <script src="../../Classes/Graphics/2d/Shapes/NodeShape.js"></script>
+        <script src="../../Classes/Graphics/2d/Shapes/HtmlShape.js"></script>
+        <script src="../../Classes/Graphics/2d/Visualisation.js"></script>
+    </head>
+    <body>
+    </body>
+    <style>
+        html, body{
+            width: 100%;
+            height: 100%;
+            margin: 0px;
+            background-color: #100130;
+        }
+    </style>
+    <script>
+        this.debug = true;
+
+        var graphics = new Graphics2d();
+        var circle = new Circle2d(graphics, 100, 0xff0000);
+        circle.add();
+        circle.onClick(function(){
+            console.log("clicked");
+        })
+
+    </script>
+</html>

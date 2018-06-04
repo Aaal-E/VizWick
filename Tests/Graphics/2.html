@@ -19,7 +19,15 @@
         <!--graphics interface-->
         <script src="../../Classes/Graphics/Utils/XYZ.js"></script>
         <script src="../../Classes/Graphics/Utils/Vec.js"></script>
-        <script src="../../Classes/Graphics/Options.js"></script>
+
+        <script src="../../Classes/Graphics/Options/Option.js"></script>
+        <script src="../../Classes/Graphics/Options/Types/Boolean.js"></script>
+        <script src="../../Classes/Graphics/Options/Types/Button.js"></script>
+        <script src="../../Classes/Graphics/Options/Types/Label.js"></script>
+        <script src="../../Classes/Graphics/Options/Types/Number.js"></script>
+        <script src="../../Classes/Graphics/Options/Types/State.js"></script>
+        <script src="../../Classes/Graphics/Options/Types/Text.js"></script>
+        <script src="../../Classes/Graphics/Options/Options.js"></script>
 
         <script src="../../Classes/Graphics/AbstractCamera.js"></script>
         <script src="../../Classes/Graphics/AbstractGraphics.js"></script>
@@ -165,7 +173,7 @@
                         }
                     }
 
-                    __createNodeShape(node){
+                    __createChildNodeShape(node){
                         //Calculate the scale we want the node shape to have:
                         var size = 1;  //just as a placeholder
 
