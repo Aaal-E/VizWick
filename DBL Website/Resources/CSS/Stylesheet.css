@@ -342,6 +342,12 @@ body#four .four-button {
   background-color: red;
 }
 
+/* get rid of the handle bar line */
+.horizontal>.resizeHandle>.resizeHandleInner>.resizeHandleInnerDisplay,
+.vertical>.resizeHandle>.resizeHandleInner>.resizeHandleInnerDisplay{
+  background: none !important;
+}
+
 body#four .top-layout-part,
 body#four .bottom-layout-part {
   width: 100%;
@@ -354,11 +360,7 @@ body#two .bottom-layout-part {
 
 body#two .top-layout-part {
   width: 100%;
-  height: 100%;
-}
-
-body#four .top-layout-part {
-  margin-bottom: 5px;
+  height: 100% !important;
 }
 
 body#four .top-left,
@@ -366,7 +368,6 @@ body#two .top-left,
 body#four .bottom-left {
   width: calc(50% - 2.5px);
   height: 100%;
-  margin-right: 5px;
 }
 
 body#four .top-right,
@@ -381,7 +382,6 @@ body#four .bottom-left,
 body#four .bottom-right {
   display: inline-block;
   border-radius: 20px;
-  background-color: black;
 }
 
 .top-left,
@@ -391,13 +391,9 @@ body#four .bottom-right {
   display: inline-block;
   width: calc(50% - 2.5px);
   height: 100%;
-  background-color: black;
+  background-color: red;
   border-radius: 20px;
   position: relative;
-}
-
-.bottom-left {
-  margin-right: 5px;
 }
 
 .option-pane {
@@ -419,14 +415,14 @@ body#four .bottom-right {
   transform: translate(0, -50%);
 }
 
-.top-left>.option-pane,
-.top-right>.option-pane {
+.top-left .option-pane,
+.top-right .option-pane {
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
 }
 
-body#four .bottom-left>.option-pane,
-body#four .bottom-right>.option-pane {
+body#four .bottom-left .option-pane,
+body#four .bottom-right .option-pane {
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
   bottom: 0;
@@ -437,6 +433,30 @@ body#four .bottom-right>.option-pane {
   height: 100%;
   background-color: black;
   border-radius: 20px;
+}
+
+body#four .top-left-inner,
+body#four .top-right-inner,
+body#four .bottom-left-inner,
+body#four .bottom-right-inner {
+  width: calc(100% - 2.5px);
+  height: calc(100% - 2.5px);
+}
+
+body#two .top-left-inner,
+body#two .top-right-inner {
+  width: calc(100% - 2.5px);
+  height: 100%;
+}
+
+.top-right-inner,
+.bottom-right-inner {
+  margin-left: 2.5px;
+}
+
+.bottom-left-inner,
+.bottom-right-inner {
+  margin-top: 2.5px;
 }
 
 /*

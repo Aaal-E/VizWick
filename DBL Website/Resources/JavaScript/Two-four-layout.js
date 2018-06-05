@@ -1,6 +1,12 @@
-$(".4x").click(function(){
-  $(".right-section").removeClass(".two-layout").addClass(".four-layout")
-});
-$(".2x").click(function(){
-  $(".right-section").removeClass(".four-layout").addClass(".two-layout")
-});
+$(function(){
+  $(".two-button").click(function(){
+    $("body").attr("id", "two");
+  });
+  $(".four-button").click(function(){
+    $("body").attr("id", "four");
+  });
+
+  //Resizing
+  $(".layout").resizeContainer({vertical:true});
+  $(".top-layout-part, .bottom-layout-part").resizeContainer({vertical:false});
+})
