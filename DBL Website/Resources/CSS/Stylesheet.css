@@ -243,6 +243,10 @@ body#four .four-button {
   box-shadow: inset -2px 2px 5px rgba(0,0,0,0.5);
 }
 
+.two-button, .four-button {
+  cursor: pointer;
+}
+
 .two-four-buttons .text {
   font-weight: bold;
 }
