@@ -577,3 +577,10 @@ background-color: white;
   top: 50%;
   transform: translate(0, -50%);
 }*/
+
+#p1{
+  display: run-in;
+}
+#p2{
+  display: hidden;
+}
