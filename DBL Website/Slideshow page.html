@@ -40,6 +40,7 @@
           <div class="dot" id="1"></div>
           <div class="dot" id="2"></div>
           <div class="dot" id="3"></div>
+          <div class="dot" id="4"></div>
         </div>
       </div>
       <div class="vis-name">
@@ -57,19 +58,26 @@
 
   $(".fa-chevron-right").click(function(){
     counter+=1;
-	$('.photo-area').css('background-color', color[counter%color.length]);
+    if(Math.abs(counter)>=color.length){counter=0;}
+	$('.photo-area').css('background-color', color[counter]);
+    console.log(counter);
   });
 
   $(".fa-chevron-left").click(function(){
     counter-=1;
+    if(Math.abs(counter)>=color.length){counter=0;}
     if(counter<0){
-      $('.photo-area').css('background-color', color[color.length+counter%color.length]);
+      $('.photo-area').css('background-color', color[color.length+counter]);
     }else{
-     $('.photo-area').css('background-color', color[counter%color.length]);
+     $('.photo-area').css('background-color', color[counter]);
     }
+      console.log(counter);
   });
+
   $(".dot").click(function(){
+    counter=$(this).attr('id');
   $('.photo-area').css('background-color', color[$(this).attr('id')]);
+  console.log(counter);
   });
 
   </script>
