@@ -46,8 +46,11 @@ personal todo list:
         //-look into alex's html vibrating
     //-add max node count for createDescendants
 
-    -fix scene hitbox
-    -disable text selection while interacting with visualisation
+    //-fix scene hitbox
+    //-disable text selection while interacting with visualisation
+    -rescale visualisation so it fits nicely in the screen
+    -add fullscreen option
+    -add system to listen for selected node to handler and individual visualisation
 
     -add destroy animation for visualisations
     -add system to create z-index layers
@@ -61,8 +64,8 @@ personal todo list:
     -look into alex's thing not working in edge
     -add generate image system
 
-    -rescale visualisation so it fits nicely in the screen
     -test browser compatibility
+    -add cursor styles to shapes
 
 
     3D visualisation:

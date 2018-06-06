@@ -35,12 +35,26 @@ class Camera3d extends AbstractCamera{
 
     __updateLoc(){
         var vec = new Vec(this.getLoc());
-        vec.add(this.getRot().getLookAt().addYaw(-Math.PI/2).setLength(this.distance/this.getScale()));
+        var dist = this.distance/this.windowSizeScaleFactor/this.getScale();
+        vec.add(this.getRot().getLookAt().addYaw(-Math.PI/2).setLength(dist));
+
+        this.camera.far = dist+5/this.getScale();
+        this.camera.near = Math.max(1e-3/this.getScale(), dist-5/this.getScale());
+        this.camera.updateProjectionMatrix();
+        console.log(this.camera.far, this.camera.near, this.getScale(), dist);
+
         this.camera.position.set(
             vec.getX(),
             vec.getY(),
             vec.getZ(),
         );
+    }
+
+    setWindowSize(width, height){
+        super.setWindowSize(width, height);
+        this.__updateLoc();
+        console.log("detect", width, height);
+        return this;
     }
 
     //distance away from the location (handy for rotating around a point)

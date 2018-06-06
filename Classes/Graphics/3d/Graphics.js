@@ -15,10 +15,10 @@ class Graphics3d extends AbstractGraphics{
             };
             This.renderer.setSize(newSize.width, newSize.height);
             This.camera.camera.aspect = newSize.width/newSize.height;
-            This.camera.camera.updateProjectionMatrix();
 
             This.size = newSize;
 
+            This.camera.setWindowSize(newSize.width, newSize.height);
             // This.camera.__updateLoc();
         });
 
@@ -26,7 +26,7 @@ class Graphics3d extends AbstractGraphics{
         this.scene = new THREE.Scene();
 
         //create a basic perspective camera
-        var camera = new THREE.PerspectiveCamera( 75, this.getWidth()/this.getHeight(), 0.00001, 2 );
+        var camera = new THREE.PerspectiveCamera( 75, this.getWidth()/this.getHeight(), 0.001, 2 );
 
         //create a renderer with Antialiasing
         this.renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
@@ -92,6 +92,7 @@ class Graphics3d extends AbstractGraphics{
 
         //connect a camera and setup VR properties
         this.camera = new Camera3d(this, camera);
+        this.camera.setWindowSize(this.getWidth(), this.getHeight());
         this.VRproperties = {
             enabled: true,
             scale: 1.5,
@@ -175,9 +176,12 @@ class Graphics3d extends AbstractGraphics{
                 });
 
                 var m = This.pointers.mouse;
-                if(!caught && m.x>=0 && m.y>=0 && m.x<=This.getWidth() && m.y<=This.getHeight()){
-                    if(!isMouseDown) This.__triggerClick(event);
-                    This.__triggerMousePress(isMouseDown, event);
+                if(m.x>=0 && m.y>=0 && m.x<=This.getWidth() && m.y<=This.getHeight()){
+                    event.preventDefault();
+                    if(!caught){
+                        if(!isMouseDown) This.__triggerClick(event);
+                        This.__triggerMousePress(isMouseDown, event);
+                    }
                 }
             };
             $(window).on('wheel', this.DOMEventListeners.scroll);
