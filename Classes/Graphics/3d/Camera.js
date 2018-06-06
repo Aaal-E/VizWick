@@ -35,7 +35,7 @@ class Camera3d extends AbstractCamera{
 
     __updateLoc(){
         var vec = new Vec(this.getLoc());
-        var dist = this.distance/this.windowSizeScaleFactor/this.getScale();
+        var dist = this.distance/this.getTotalScale();
         vec.add(this.getRot().getLookAt().addYaw(-Math.PI/2).setLength(dist));
 
         this.camera.far = dist+5/this.getScale();
@@ -52,7 +52,6 @@ class Camera3d extends AbstractCamera{
     setWindowSize(width, height){
         super.setWindowSize(width, height);
         this.__updateLoc();
-        console.log("detect", width, height);
         return this;
     }
 

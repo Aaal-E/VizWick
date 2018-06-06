@@ -149,6 +149,7 @@ class Graphics3d extends AbstractGraphics{
             };
             this.DOMEventListeners.keypress = function(event){
                 This.__resetTransform();
+                event.key = keyNames[event.keyCode] || event.key;
                 if(event.type=="keyup") //remove keys even if released outside of visualisation
                     delete This.pressedKeys[event.key.toLowerCase()];
 

@@ -84,6 +84,7 @@ class AbstractCamera{
     }
     __updateLoc(){}
 
+    //some methods to take care of scaling on window resize
     setWindowSize(width, height){
         var ratio = width/height;
         if(ratio>16/9){
@@ -93,6 +94,9 @@ class AbstractCamera{
         }
         this.setScale(this.getScale());
         return this;
+    }
+    getTotalScale(){
+        return this.scale*this.windowSizeScaleFactor;
     }
 
     //position
