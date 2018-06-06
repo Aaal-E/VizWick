@@ -60,7 +60,6 @@ class AbstractVisualisation extends AbstractGraphics{    //will 'extend' concret
 
         if(type=="focused" && (!shape || !shape.isRendered)){
             shape = this.createNodeShape(node).add();
-            console.log(shape);
             if(!shape.getConnectedNodeShape()){ //shape is not connected with other existing shapes
                 //get rid of all existing shapes, except shape
                 for(var i=this.shapes.root.length-1; i>=0; i--){
@@ -115,7 +114,6 @@ class AbstractVisualisation extends AbstractGraphics{    //will 'extend' concret
         if(shape){  //a node shape already exists, simply return that one
             return shape;
         }else{
-            console.log("create");
             //find closest ancestor for which a shape does exists:
             var path = [node];
             var p = node.getParent();
@@ -144,7 +142,7 @@ class AbstractVisualisation extends AbstractGraphics{    //will 'extend' concret
             This.getCanvas().remove();
             This.pause(true);
             This.options.destroy();
-            
+
             if(callback) callback.call(This);
         };
 

@@ -36,7 +36,7 @@ class Camera3d extends AbstractCamera{
     __updateLoc(){
         var vec = new Vec(this.getLoc());
         var dist = this.distance/this.getTotalScale();
-        vec.add(this.getRot().getLookAt().addYaw(-Math.PI/2).setLength(dist));
+        vec.sub(this.getRot().getLookAt().addYaw(Math.PI/2).setLength(dist));
 
         this.camera.far = dist+5/this.getScale();
         this.camera.near = Math.max(1e-3/this.getScale(), dist-5/this.getScale());

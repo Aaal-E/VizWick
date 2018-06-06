@@ -1,19 +1,24 @@
+/*
+    Tree visualisation by Tar van Krieken
+    Date: 06-06-2018
+ */
 (function(){
     //the visualisation class that you create
     class NodeShape extends VIZ3D.NodeShape{
         //Note an extra 'scale' argument got added to the constructor, this isn't necessary
-        constructor(gfx, node, scale){
+        constructor(gfx, node, scale, isBranch){
             if(!scale) scale = 1; //if scale is abscent, set it to 1
 
             //We forward the it in the constructor, in order to save it as an object field
             super(gfx, node, function(){
                 this.scale = scale //From now on, we can use this.scale
+                this.isBranch = isBranch;
             });
             this.setScale(this.scale); //set the actual scale after set up (its appearance)
 
 
             //A nodeshape doesn't render anything, so we must add shapes to it to display
-            this.circle = new VIZ3D.Sphere(gfx, 0.07, 0xff0000);
+            this.circle = new VIZ3D.Sphere(gfx, 0.1, 0xff0000);
             this.addShape(this.circle);
 
             //Focus on the shape on a click event
@@ -26,42 +31,44 @@
         //In the visualisation
         __createChildNodeShape(node, parent){
             //Calculate the scale we want the node shape to have:
-            var scale = parent.scale/parent.getNode().getChildren().length;
+            // var scale = parent.scale/parent.getNode().getChildren().length;
+            var scale = parent.scale/1.2;
+
+            var children = this.getNode().getChildren();
+            var firstChild = children[children.length-1]==node;
 
             //Create a new instance of your NodeShape and pass the scale
-            return new (this.__getClass())(this.getGraphics(), node, scale);
+            return new (this.__getClass())(this.getGraphics(), node, scale, firstChild && this.isBranch);
         }
 
         __connectParent(parent){
-            if(parent){ //doesn't have a parent if root
-                //Set up the correct location for your node
-                //I will simply devide the space equally
-                var spaceWidth = 1;   //with scale 1, the children have 600 pixels of space
+            if(parent){
+                if(this.isBranch){
+                    this.getLoc().set(parent.getLoc()).add(0, 0.4*parent.getScale(), 0);
+                }else if(parent.isBranch){
+                    var nodeCount = parent.getNode().getChildren().length;
 
-                //Get the number of children of the parent
-                //note parent.getChildren() would return the child shapes,
-                //  and not all children have been created yet
-                var nodeCount = parent.getNode().getChildren().length;
+                    var vec = new VIZ3D.Vec().setLength(0.8*parent.getScale());
+                    var index = this.getIndex();
 
-                //calculate the width for each of the children
-                var widthPerChild = spaceWidth/nodeCount;
+                    vec.setYaw(Math.PI*2*index/nodeCount); //divide circle over children
 
-                //Start at the very left of this space
-                //  (with the space being centered on the parent)
-                var x = -spaceWidth/2;
+                    vec.rotate(parent.getRot());
+                    this.getLoc().set(parent.getLoc()).add(vec);
+                    this.setRot(vec.getRot());
+                }else{
+                    var nodeCount = parent.getNode().getChildren().length+1;
+                    if(parent.isBranch) nodeCount-=2;
 
-                //GetIndex() returns the child index in the parent
-                //So this will move the shape to the right, proportional to the index
-                x += this.getIndex()*widthPerChild;
+                    var vec = new VIZ3D.Vec().setLength(0.8*parent.getScale());
+                    var index = this.getIndex();
 
-                //now we make sure that the node is centered on the space it has available
-                x += widthPerChild*0.5;
+                    vec.setYaw(Math.PI*0.5*(-0.5+(index+1)/nodeCount)); //divide circle over children
 
-                //Finally we make sure the offset is relative to the scale
-                x *= parent.scale;
-
-                //now that we determined an appropriate x coordinate, we can set the location
-                this.setLoc(parent.getX() + x, parent.getY() - 0.3*this.scale);
+                    vec.rotate(parent.getRot());
+                    this.getLoc().set(parent.getLoc()).add(vec);
+                    this.setRot(vec.getRot());
+                }
             }
         }
 
@@ -69,24 +76,7 @@
             if(field=="focused" && val==true){
                 this.getGraphics().getCamera().setTargetLoc(this).setTargetScale(this); //focus on shape on focus
 
-                //When we focus on a node, we might want to show more of its descendants
-                //And perhaps fewer of the parents
-                //Some simple methods are in place to achieve this.
-
-                //We can create 4 levels of descendants with this simple function
-                this.createDescendants(3);
-
-                //We can also make sure that any connected descendants that are below
-                //Those 4 levels, will get destroyed
-                this.destroyDescendants(3);
-
-                //We can then also show 2 levels of parents (without all their children)
-                this.createAncestors(2);
-
-                //And similarly destroy any ancestors that are above those 2 levels
-                //Note that the argument 'true' makes sure that children of the
-                // ancestors are also properly removed, and not left floating around
-                this.destroyAncestors(2, true);
+                this.showFamily(2, 2);
             }
         }
     }
@@ -94,11 +84,14 @@
         constructor(container, tree, options){
             super(container, tree, options);
 
+            this.random = Math.seed(10);
+
             //rotate the camera for fun
             var camera = this.getCamera();
             this.onUpdate(function(){
                 camera.getRot().add(0, 0.04, 0);
             });
+            camera.setXRot(-0.3);
 
             //add light
             var light = new VIZ3D.PointLight(this, 0xffffff).setLoc(0.1, 0.4, 0).add();
@@ -112,7 +105,20 @@
                 This.synchronizeNode("focused", This.getTree().getRoot());
             }));
         }
+        __setupRoot(){
+            var node = this.tree.getRoot();
+            var clas = this.__getNodeShapeClass(Visualisation2d.classes, node);
+            var shape = new clas(this, node, 1, true);
+            return shape.add();
+        }
     }
+
+    //create seedable random number generator: (source: https://stackoverflow.com/a/23304189)
+    Math.seed = function(s){
+        return function(){
+            s = Math.sin(s) * 10000; return s - Math.floor(s);
+        };
+    };
 
     //attach some data to be displayed on the webpage
     Tree.description = {
