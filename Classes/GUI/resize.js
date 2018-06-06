@@ -3,6 +3,7 @@
     Author: Tar van Krieken
     Starting Date: 02/05/2018
 */
+
 (function(){
     //create handle
     function addHandle(container){
@@ -156,7 +157,7 @@
     }
     function triggerResize(content){
         var newSize = {width:content.width(), height:content.height()};
-        var event = new Event("resize");
+        var event = new CustomEvent("resize");
         content.add(content.find(".resizeContainer, canvas")).trigger("resize", {newSize:newSize, oldSize:content.data("size")});
         content.data("size", newSize);
     }

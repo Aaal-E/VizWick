@@ -121,7 +121,7 @@ class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete sha
 
         //remove itself from parent
         parent = this.getParent();
-        if(parent) parent.__removeChild(this);
+        if(parent && parent.__removeChild) parent.__removeChild(this);
 
         //remove fron children
         for(var i=0; i<this.children.length; i++)

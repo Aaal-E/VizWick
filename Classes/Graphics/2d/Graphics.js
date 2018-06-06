@@ -118,6 +118,7 @@ class Graphics2d extends AbstractGraphics{
             };
             this.DOMEventListeners.keypress = function(event){
                 var interactionData = m.getInteractionDataForPointerId(event);
+                event.key = keyNames[event.keyCode];
 
                 if(event.type=="keyup") //remove keys even if released outside of visualisation
                     delete This.pressedKeys[event.key.toLowerCase()];

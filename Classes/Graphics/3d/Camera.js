@@ -41,7 +41,6 @@ class Camera3d extends AbstractCamera{
         this.camera.far = dist+5/this.getScale();
         this.camera.near = Math.max(1e-3/this.getScale(), dist-5/this.getScale());
         this.camera.updateProjectionMatrix();
-        console.log(this.camera.far, this.camera.near, this.getScale(), dist);
 
         this.camera.position.set(
             vec.getX(),
