@@ -103,10 +103,14 @@
                 per += perLeft;
 
             //resize
+            var oldTransition = content.css("transition");
+            content.css("transition", "none");
             if(isVertical)
                 content.height(per+"%");
             else
                 content.width(per+"%");
+            content.css("transition", oldTransition);
+
 
             //send resize events
             var newSize = {width:content.width(), height:content.height()};

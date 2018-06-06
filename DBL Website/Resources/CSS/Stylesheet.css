@@ -280,7 +280,7 @@ body#four .four-button {
   width: 150px;
   /* margin-left: 50px; */
   /* margin-right: 100px; */
-  border-radius: 20px;
+  border-radius: 10px;
   float: right;
 }
 
@@ -316,8 +316,16 @@ body#four .four-button {
 }
 
 .left-section {
-  width: 300px;
   height: calc(100% - 45px);
+  transition: width 0.5s;
+}
+
+.visualization-page#information-appear .left-section {
+  width: 300px;
+}
+
+.visualization-page#information-collapse .left-section {
+  width: 10px;
 }
 
 .information-section {
@@ -325,14 +333,72 @@ body#four .four-button {
   height: 100%;
   margin-bottom: 10px;
   background-color: white;
-  border-top-right-radius: 20px;
-  border-bottom-right-radius: 20px;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  box-sizing: border-box;
+}
+
+.text-part, .collapse-button {
+  display: inline-block;
+}
+
+.text-part {
+  background-color: white;
+  width: calc(100% - 11px);
+  height: 100%;
+}
+
+.visualization-page#information-collapse .text-part {
+  width: 0%;
+  height: 100%;
+}
+
+.visualization-page#information-collapse .collapse-button {
+  width: 10px;
+}
+
+.visualization-page#information-appear .appear,
+.visualization-page#information-collapse .collapse {
+  display: none;
+}
+
+.collapse-button {
+  width: 10px;
+  height: 100%;
+  float: right;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.collapse, .appear {
+  height: 100%;
+}
+
+.fa-chevron-left,
+.fa-chevron-right {
+  position: relative;
+  top: 50%;
+  transform: translate(0, -50%);
+}
+
+.visualization-page#information-appear .collapse-button {
+  border-left: 1px solid gray;
 }
 
 .right-section {
-  width: calc(100% - 315px);
   height: calc(100% - 45px);
   margin-left: 10px;
+  transition: width 0.5s;
+}
+
+.visualization-page#information-appear .right-section {
+  width: calc(100% - 315px);
+}
+
+.visualization-page#information-collapse .right-section {
+  width: calc(100% - 25px);
 }
 
 .left-section, .right-section {
@@ -352,6 +418,10 @@ body#four .four-button {
   background: none !important;
 }
 
+.top-layout-part, .bottom-layout-part {
+  transition: height 0.5s;
+}
+
 body#four .top-layout-part,
 body#four .bottom-layout-part {
   width: 100%;
@@ -359,33 +429,12 @@ body#four .bottom-layout-part {
 }
 
 body#two .bottom-layout-part {
-  display: none;
+  height: 0 !important;
 }
 
 body#two .top-layout-part {
   width: 100%;
   height: 100% !important;
-}
-
-body#four .top-left,
-body#two .top-left,
-body#four .bottom-left {
-  width: calc(50% - 2.5px);
-  height: 100%;
-}
-
-body#four .top-right,
-body#four .bottom-right {
-  width: calc(50% - 2.5px);
-  height: 100%;
-}
-
-body#four .top-left,
-body#four .top-right,
-body#four .bottom-left,
-body#four .bottom-right {
-  display: inline-block;
-  border-radius: 20px;
 }
 
 .top-left,
@@ -396,7 +445,7 @@ body#four .bottom-right {
   width: calc(50% - 2.5px);
   height: 100%;
   background-color: red;
-  border-radius: 20px;
+  border-radius: 10px;
   position: relative;
 }
 
@@ -425,8 +474,8 @@ body#four .bottom-right {
   border-bottom-right-radius: 20px;
 }
 
-body#four .bottom-left .option-pane,
-body#four .bottom-right .option-pane {
+.bottom-left .option-pane,
+.bottom-right .option-pane {
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
   bottom: 0;
@@ -436,13 +485,13 @@ body#four .bottom-right .option-pane {
   width: 100%;
   height: 100%;
   background-color: black;
-  border-radius: 20px;
+  border-radius: 10px;
 }
 
 body#four .top-left-inner,
 body#four .top-right-inner,
-body#four .bottom-left-inner,
-body#four .bottom-right-inner {
+.bottom-left-inner,
+.bottom-right-inner {
   width: calc(100% - 2.5px);
   height: calc(100% - 2.5px);
 }
