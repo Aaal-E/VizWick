@@ -37,6 +37,7 @@ Visualisation2d.classes = window.VIZ2D = {
     //general classes
     XYZ: XYZ,
     Vec: Vec,
+    Color: Color,
 
     //special shapes
     Shape: Shape2d,

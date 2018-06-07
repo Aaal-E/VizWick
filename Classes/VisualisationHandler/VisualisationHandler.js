@@ -38,8 +38,9 @@ new (class VisualisationHandler{
     // returns an array of existing visualisation areas
     getExistingVisAreas(){
         var existingVisAreas = [];
-        for(var i=0; i<this.visAreaCollection.length; i++){
-            var visAreaName = this.visAreaCollection[i];
+        var names = Object.keys(this.visAreaCollection);
+        for(var i=0; i<names.length; i++){
+            var visAreaName = names[i];
             existingVisAreas.push(this.visAreaCollection[visAreaName]);
         };
         return existingVisAreas;

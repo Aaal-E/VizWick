@@ -58,7 +58,7 @@ class AbstractVisualisation extends AbstractGraphics{    //will 'extend' concret
         if(this.shapes.unique[type])
             this.shapes.unique[type].__changeState(type, false);
 
-        if(type=="focused" && (!shape || !shape.isRendered)){
+        if(type=="focused" && node && (!shape || !shape.isRendered)){
             shape = this.createNodeShape(node).add();
             if(!shape.getConnectedNodeShape()){ //shape is not connected with other existing shapes
                 //get rid of all existing shapes, except shape
@@ -117,7 +117,7 @@ class AbstractVisualisation extends AbstractGraphics{    //will 'extend' concret
             //find closest ancestor for which a shape does exists:
             var path = [node];
             var p = node.getParent();
-            while(!p.getShape(UID)){
+            while(p && !p.getShape(UID)){
                 path.unshift(p);
                 p = p.getParent();
             }
@@ -125,7 +125,8 @@ class AbstractVisualisation extends AbstractGraphics{    //will 'extend' concret
             //create entire path from parent to node
             for(var i=0; i<path.length; i++){
                 var node = path[i];
-                var parentShape = node.getParent().getShape(UID);
+                var parent = node.getParent();
+                var parentShape = parent.getShape(UID);
                 var nodeShape = parentShape.createChild(node, true);
                 // nodeShape.add().remove();   //connect the shape, but stop rendering immediately after
                 path.splice(i, 1, nodeShape); //replace node with nodeShape in path

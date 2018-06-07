@@ -45,8 +45,12 @@ class Line3d extends Shape3d{
         this.prevTransform.endPoint = new XYZ(this.endPoint);
     }
     __createShape(){
-        this.geometry = new THREE.CylinderGeometry(1, this.widthRatio, 1, 32); //32 is accuracy of sorts
-        this.geometry.translate(0, 0.5, 0); //shift line upwards
+        if(Line3d.geometry[this.widthRatio])
+            this.geometry = Line3d.geometry[this.widthRatio];
+        else{
+            this.geometry = Line3d.geometry[this.widthRatio] = new THREE.CylinderGeometry(1, this.widthRatio, 1, 32); //32 is accuracy of sorts
+            this.geometry.translate(0, 0.5, 0); //shift line upwards
+        }
     }
 
 
@@ -186,3 +190,4 @@ class Line3d extends Shape3d{
         this.setWidth(this.getWidth());
     }
 }
+Line3d.geometry = {};
