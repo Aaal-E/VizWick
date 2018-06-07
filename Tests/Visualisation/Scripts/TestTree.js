@@ -2,7 +2,7 @@
 // var obj = makeTreeObj(data);
 
 var createTree = function(name, height, width){
-    width = width||3;
+    width = width==null?3:width;
     var children = [];
     if(height>0){
         var childCount = Math.floor(Math.random()*width)+1;

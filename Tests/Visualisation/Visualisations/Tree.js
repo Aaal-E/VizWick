@@ -13,18 +13,37 @@
             super(gfx, node, function(){
                 this.scale = scale //From now on, we can use this.scale
                 this.isBranch = isBranch;
+
+                this.leafColor = new VIZ3D.Color(0, 255, 0)
+                                .setValue(0.3+node.getDepth()/gfx.getTree().getHeight()*0.7)
+                                .getInt();
+                this.circle = new VIZ3D.Sphere(gfx, 0.1, this.leafColor);
+                this.branch = new VIZ3D.Line(gfx, null, null, 0.03, 0xD2691E);
             });
             this.setScale(this.scale); //set the actual scale after set up (its appearance)
 
 
             //A nodeshape doesn't render anything, so we must add shapes to it to display
-            this.circle = new VIZ3D.Sphere(gfx, 0.1, 0xff0000);
             this.addShape(this.circle);
+            this.addShape(this.branch);
 
             //Focus on the shape on a click event
             this.onClick(function(data){
                 this.focus();
             });
+            this.onHover(function(over){
+                if(over)    this.highlight();
+                else        this.dehighlight();
+            });
+
+            //allow for physics
+            this.__registerUpdateListener();
+            this.storeInSpatialTree = true;
+            this.__updateAABB();
+        }
+        __onUpdate(time){
+            if(!this.state.dragged){
+            }
         }
 
         //This method gets called when either a parent or child node is created
@@ -32,7 +51,8 @@
         __createChildNodeShape(node, parent){
             //Calculate the scale we want the node shape to have:
             // var scale = parent.scale/parent.getNode().getChildren().length;
-            var scale = parent.scale/1.2;
+            var parentDescCount = (node.getParent() && node.getParent().getSubtreeNodeCount()) || node.getSubtreeNodeCount();
+            var scale = parent.scale/(1+1.3*Math.pow(1-node.getSubtreeNodeCount()/parentDescCount, 1));
 
             var children = this.getNode().getChildren();
             var firstChild = children[children.length-1]==node;
@@ -42,33 +62,30 @@
         }
 
         __connectParent(parent){
+            var length = 0.4;
             if(parent){
-                if(this.isBranch){
-                    this.getLoc().set(parent.getLoc()).add(0, 0.4*parent.getScale(), 0);
-                }else if(parent.isBranch){
-                    var nodeCount = parent.getNode().getChildren().length;
 
-                    var vec = new VIZ3D.Vec().setLength(0.8*parent.getScale());
-                    var index = this.getIndex();
+                var nodeCount = parent.getNode().getChildren().length;
 
-                    vec.setYaw(Math.PI*2*index/nodeCount); //divide circle over children
+                this.setLoc(parent.getLoc());
 
-                    vec.rotate(parent.getRot());
-                    this.getLoc().set(parent.getLoc()).add(vec);
-                    this.setRot(vec.getRot());
-                }else{
-                    var nodeCount = parent.getNode().getChildren().length+1;
-                    if(parent.isBranch) nodeCount-=2;
+                var f = parent.getScale();
+                var vec = new VIZ3D.Vec().setLength(length*f*Math.sqrt(1+nodeCount/40));
+                vec.setYaw(Math.PI*2*(this.getIndex()+0.5)/nodeCount+parent.getRot().getY())
+                    .setPitch(0.3).add(0, length*0.2*f*Math.sqrt(nodeCount/60), 0);
 
-                    var vec = new VIZ3D.Vec().setLength(0.8*parent.getScale());
-                    var index = this.getIndex();
+                // options:
+                vec.setLength(vec.getLength()*(1+1*this.getIndex()/nodeCount));
+                // vec.setLength(vec.getLength()*(1+1*this.getIndex()%4/4));
 
-                    vec.setYaw(Math.PI*0.5*(-0.5+(index+1)/nodeCount)); //divide circle over children
+                if(nodeCount==1) vec.setX(0).setZ(0);
 
-                    vec.rotate(parent.getRot());
-                    this.getLoc().set(parent.getLoc()).add(vec);
-                    this.setRot(vec.getRot());
-                }
+                this.getLoc().add(vec);
+                this.getRot().set(vec.getRot());
+
+                this.branch.setEndPoint(parent.getWorldLoc());
+            }else{
+                this.branch.setEndPoint(new VIZ3D.XYZ(0, -length, 0));
             }
         }
 
@@ -76,8 +93,10 @@
             if(field=="focused" && val==true){
                 this.getGraphics().getCamera().setTargetLoc(this).setTargetScale(this); //focus on shape on focus
 
-                this.showFamily(2, 2);
+                this.showFamily(Infinity, 4);
             }
+
+            this.circle.setColor(this.state.highlighted?0x88ff88:this.state.expanded?this.leafColor:0x55ff55);
         }
     }
     class Tree extends VIZ3D.Visualisation{
@@ -89,12 +108,17 @@
             //rotate the camera for fun
             var camera = this.getCamera();
             this.onUpdate(function(){
-                camera.getRot().add(0, 0.04, 0);
+                camera.getRot().add(0, options.getValue("rotation")/30, 0);
             });
-            camera.setXRot(-0.3);
+            camera.setXRot(-0.5);
+
+            this.maxNodeCount = 200;
 
             //add light
-            var light = new VIZ3D.PointLight(this, 0xffffff).setLoc(0.1, 0.4, 0).add();
+            var light = new VIZ3D.PointLight(this, 0xffffff).setLoc(0.7, 0.4, 0).add();
+
+            //focus on root
+            this.getShapesRoot()[0].focus();
         }
         __getNodeShapeClass(){
             return NodeShape;
@@ -104,6 +128,9 @@
             options.add(new Options.Button("center").onClick(function(){
                 This.synchronizeNode("focused", This.getTree().getRoot());
             }));
+
+            //add rotation speed option
+            options.add(new Options.Number("rotation", 0.5));
         }
         __setupRoot(){
             var node = this.tree.getRoot();
