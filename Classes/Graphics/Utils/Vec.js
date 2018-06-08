@@ -106,7 +106,9 @@ class Vec extends XYZ{
 
     //length
     setLength(length){
-        return this.mul(length/this.getLength());
+        var yaw = this.getYaw();
+        var pitch = this.getPitch();
+        return this.setPYL(pitch, yaw, length);
     }
     getLength(){
         return Math.sqrt(this.x*this.x + this.y*this.y + this.z*this.z);
@@ -131,6 +133,6 @@ class Vec extends XYZ{
         return new Vec(0, this.getYaw(), this.getPitch());
     }
     getLookAt(){
-        return new Vec(1, 0, 0).setPitch(this.getZ()).setYaw(this.getY());
+        return new Vec(1, 0, 0).setPitch(this.getX()).setYaw(this.getY());
     }
 }

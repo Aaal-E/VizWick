@@ -22,7 +22,7 @@ class Graphics2d extends AbstractGraphics{
             This.app.renderer.resize(newSize.width, newSize.height);
 
             This.size = newSize;
-            This.stage.hitArea = new PIXI.Rectangle(-This.getWidth()/2, -This.getHeight()/2, This.getWidth(), This.getHeight()); //update hitbox for mouse interaction
+            This.camera.setWindowSize(newSize.width, newSize.height);
 
             This.camera.__updateLoc();
         });
@@ -53,7 +53,9 @@ class Graphics2d extends AbstractGraphics{
 
         this.group = new PIXI.display.Group(1, true);
         this.stage = new PIXI.display.Layer(this.group);
-        this.stage.hitArea = new PIXI.Rectangle(-this.getWidth()/2, -this.getHeight()/2, this.getWidth(), this.getHeight()); //setup hitbox for mouse interaction
+        var bigNumber = Math.pow(10, 10); //dirty fix
+        this.stage.hitArea = new PIXI.Rectangle(-bigNumber/2, -bigNumber/2, bigNumber, bigNumber); //setup hitbox for mouse interaction
+        // this.stage.hitArea = new PIXI.Rectangle(-this.getWidth()/2, -this.getHeight()/2, this.getWidth(), this.getHeight()); //setup hitbox for mouse interaction
         this.app.stage.addChild(this.stage);
 
         //add event handlers
@@ -69,6 +71,7 @@ class Graphics2d extends AbstractGraphics{
             var mouseDown = function(data){
                 This.mouse.pressed = true;
                 This.__triggerMousePress(true, data);
+                data.data.originalEvent.preventDefault();
             };
             var mouseUp = function(data){
                 This.mouse.pressed = false;
@@ -115,6 +118,7 @@ class Graphics2d extends AbstractGraphics{
             };
             this.DOMEventListeners.keypress = function(event){
                 var interactionData = m.getInteractionDataForPointerId(event);
+                event.key = keyNames[event.keyCode] || event.key;
 
                 if(event.type=="keyup") //remove keys even if released outside of visualisation
                     delete This.pressedKeys[event.key.toLowerCase()];
@@ -141,6 +145,7 @@ class Graphics2d extends AbstractGraphics{
 
         //connect a camera
         this.camera = new Camera2d(this);
+        this.camera.setWindowSize(this.getWidth(), this.getHeight());
     }
 
     getCanvas(){

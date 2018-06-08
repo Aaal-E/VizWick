@@ -19,8 +19,6 @@ class VisualisationArea{
 
     // given a viusalisation class set an instance of it to this area
     setVisualisation(visualisationClass){
-        this.displayed
-
         this.deleteVisualisation(); //first remove any existing viusalisation from this area
         this.visualisationClass = visualisationClass;
         var tree = VisualisationHandler.getTree();
@@ -58,6 +56,7 @@ class VisualisationArea{
         if(this.visualisation){
             this.wasInVR = this.visualisation.isInVR && this.visualisation.isInVR();
             this.visualisation.destroy();
+            this.visualisation = null;
         }
         return this;
     }

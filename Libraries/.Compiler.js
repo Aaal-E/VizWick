@@ -1,6 +1,7 @@
 var Compiler = require("../Compiler/Compiler.js");
 Compiler.compile([
     "raw:Three/three.min.js",
+    "Polyfills.js",
     "jQuery.js",
     "Three/VRController.js",
     "pixi.min.js",

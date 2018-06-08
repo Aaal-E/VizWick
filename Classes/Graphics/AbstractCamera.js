@@ -79,8 +79,25 @@ class AbstractCamera{
             if(Math.abs(This.scaleVelo)>1e-5)
                 This.setScale(This.scale + This.scaleVelo*time * This.speed.scale);
         });
+
+        this.windowSizeScaleFactor = 1; //some scaling factor that depands on the visualisation area size
     }
     __updateLoc(){}
+
+    //some methods to take care of scaling on window resize
+    setWindowSize(width, height){
+        var ratio = width/height;
+        if(ratio>16/9){
+            this.windowSizeScaleFactor = height/1080;
+        }else{
+            this.windowSizeScaleFactor = width/1920;
+        }
+        this.setScale(this.getScale());
+        return this;
+    }
+    getTotalScale(){
+        return this.scale*this.windowSizeScaleFactor;
+    }
 
     //position
     setX(x){

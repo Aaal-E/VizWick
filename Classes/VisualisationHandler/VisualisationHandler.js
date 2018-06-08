@@ -38,7 +38,9 @@ new (class VisualisationHandler{
     // returns an array of existing visualisation areas
     getExistingVisAreas(){
         var existingVisAreas = [];
-        for(var visAreaName in this.visAreaCollection){
+        var names = Object.keys(this.visAreaCollection);
+        for(var i=0; i<names.length; i++){
+            var visAreaName = names[i];
             existingVisAreas.push(this.visAreaCollection[visAreaName]);
         };
         return existingVisAreas;
@@ -46,11 +48,13 @@ new (class VisualisationHandler{
     // returns an array of visualisation currently assigned to the visualisation areas (= shown on screen)
     getExistingVisualisations(){
         var existingVisualisations = [];
-        for(var visArea of this.getExistingVisAreas()){
+        var areas = this.getExistingVisAreas();
+        for(var i=0; i<areas.length; i++){
+            var visArea = areas[i];
             /*check if the visualisation area has a visualisation assigned to it
             and if so it gets that visualisation and pushes it in the array that
             is ultimately returnd */
-           visArea.visualisation && existingVisualisations.push(visArea.visualisation);
+            visArea.visualisation && existingVisualisations.push(visArea.visualisation);
         }
         return existingVisualisations;
     }
@@ -78,7 +82,9 @@ new (class VisualisationHandler{
     // set the tree, and also refreshes the visualisation areas accordingly
     setTree(tree){
         this.tree = tree;
-        for(var visArea of this.getExistingVisAreas()){
+        var areas = this.getExistingVisAreas();
+        for(var i=0; i<areas.length; i++){
+            var visArea = areas[i];
             visArea.refreshVisualisation();
         }
         return this;
@@ -120,9 +126,12 @@ new (class VisualisationHandler{
 
     synchronizeNode(type, node, sourceViz){
         this.synchronisationData[type] = node;
-        for(var vis of this.getExistingVisualisations())
+        var visualisations = this.getExistingVisualisations();
+        for(var i=0; i<visualisations.length; i++){
+            var vis = visualisations[i];
             if(vis!=sourceViz)  //don't forward to the visualisation that triggered the synchronisation
                 vis.synchronizeNode(type, node, true);
+        }
     }
     getSynchronisationData(){
         return this.synchronisationData;

@@ -1,5 +1,5 @@
 /*
-    23 Visualisation class
+    3d Visualisation class
     Author: Tar van Krieken
     Starting Date: 31/05/2018
 */
@@ -57,13 +57,13 @@ class Visualisation3d extends Graphics3d{
     __onUpdate(deltaTime){
         if(this.shapes.unique.dragging){
             if(this.shapes.unique.dragging.mouse)
-            this.shapes.unique.dragging.mouse.__onDrag(this.getMouseLoc());
+            this.shapes.unique.dragging.mouse.__onDrag(this.getMouseLoc(), "mouse");
 
             if(this.shapes.unique.dragging.hand1 && this.pointers.hand1)
-            this.shapes.unique.dragging.hand1.__onDrag(this.pointers.hand1);
+            this.shapes.unique.dragging.hand1.__onDrag(this.pointers.hand1, "hand1");
 
             if(this.shapes.unique.dragging.hand2 && this.pointers.hand2)
-            this.shapes.unique.dragging.hand2.__onDrag(this.pointers.hand2);
+            this.shapes.unique.dragging.hand2.__onDrag(this.pointers.hand2, "hand2");
         }
 
         super.__onUpdate(deltaTime);
@@ -84,6 +84,7 @@ Visualisation3d.classes = window.VIZ3D = {
     //general classes
     XYZ: XYZ,
     Vec: Vec,
+    Color: Color,
 
     //special shapes
     Shape: Shape3d,
