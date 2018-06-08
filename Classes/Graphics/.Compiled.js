@@ -394,17 +394,25 @@ this.gfx.hitArea=new PIXI.Circle(0,0,circlePrecision)}},{key:"setScale",value:fu
         Mara Miulescu
 
     Starting Date: 3/06/2018
-*/var RadialBand2d=function(_Shape2d5){_inherits(RadialBand2d,_Shape2d5);function RadialBand2d(graphics,inRadius,startAngle,thickness,size,color,preInit){_classCallCheck(this,RadialBand2d);var _this18=_possibleConstructorReturn(this,(RadialBand2d.__proto__||Object.getPrototypeOf(RadialBand2d)).call(this,graphics,color,preInit));_this18.setSize(size);_this18.setInRadius(inRadius);_this18.setStartAngle(startAngle);_this18.setThickness(thickness);return _this18}//the draw method
-_createClass(RadialBand2d,[{key:"__redraw",value:function __redraw(){//draw the shape
+*/var RadialBand2d=function(_Shape2d5){_inherits(RadialBand2d,_Shape2d5);//
+function RadialBand2d(graphics,inRadius,thickness,startAngle,size,color){_classCallCheck(this,RadialBand2d);var _this18=_possibleConstructorReturn(this,(RadialBand2d.__proto__||Object.getPrototypeOf(RadialBand2d)).call(this,graphics,color));_this18.setSize(size);_this18.setInRadius(inRadius);_this18.setStartAngle(startAngle);_this18.setThickness(thickness);return _this18}//checks if all properties are set and only then calls the redraw method
+_createClass(RadialBand2d,[{key:"masterRedraw",value:function masterRedraw(){if(this.inRadius!=null&&this.thickness!=null&&this.startAngle!=null&&this.size!=null&&this.color!=null){this.__redraw()}return this}//the draw method
+},{key:"__redraw",value:function __redraw(){if(this.thickness!=null){//draw the shape
 this.gfx.clear();this.gfx.beginFill(this.color);// draw the inner arc:
-this.gfx.arc(this.centerX,this.centerY,this.inRadius,this.startAngle,this.endAngle,false);// draw the outer arc along with one of the side edges
-this.gfx.arc(this.centerX,this.centerY,this.getOutRadius(),this.endAngle,this.startAngle,true);// reverse the order of angles to create one edge
+this.gfx.arc(0,0,this.inRadius,this.startAngle,this.getEndAngle(),false);// draw the outer arc along with one of the side edges
+this.gfx.arc(0,0,this.getOutRadius(),this.getEndAngle(),this.startAngle,true);// reverse the order of angles to create one edge
 // draw the other edge:
-this.gfx.lineTo(this.centerX+this.radius*Math.cos(this.startAngle),this.centerX+this.radius*Math.sin(this.endAngle));this.gfx.endFill()}},{key:"setStartAngle",value:function setStartAngle(angle){this.startAngle=angle;this.endAngle=this.startAngle+this.size;//
-this.__redraw();return this}//the radius of the radial band; defined as the radius of the inner arc
-},{key:"setInRadius",value:function setInRadius(radius){this.inRadius=radius;this.__redraw();return this}},{key:"setThickness",value:function setThickness(thickness){this.thickness=thickness;this.setEndAngle(this.startAngle+this.size);this.__redraw();return this}},{key:"setSize",value:function setSize(size){this.size=size;this.__redraw();return this}//the inner radius
-},{key:"getInRadius",value:function getInRadius(){return this.inRadius}//the outer radius
-},{key:"getOutRadius",value:function getOutRadius(){return this.thickness+this.getInRadius()}},{key:"getEndAngle",value:function getEndAngle(){return this.startAngle+this.size}}]);return RadialBand2d}(Shape2d);/*
+this.gfx.lineTo(0+this.inRadius*Math.cos(this.startAngle),0+this.inRadius*Math.sin(this.startAngle));this.gfx.endFill()}}//sets the starting angle
+},{key:"setStartAngle",value:function setStartAngle(angle){this.startAngle=angle;this.masterRedraw()}//reruns the start angle
+},{key:"getStartAngle",value:function getStartAngle(){return this.startAngle}//set the inner radius
+},{key:"setInRadius",value:function setInRadius(inRadius){this.inRadius=inRadius;this.masterRedraw()}//returns the inner radius
+},{key:"getInRadius",value:function getInRadius(){return this.inRadius}// set the thickness of the radial band
+},{key:"setThickness",value:function setThickness(thickness){this.thickness=thickness;this.masterRedraw()}//returns the thickness of the band
+},{key:"getThickness",value:function getThickness(){return this.thickness}// set size in radian, aka "delta theta"
+},{key:"setSize",value:function setSize(size){this.size=size;this.masterRedraw()}//returns size in radian
+},{key:"getSize",value:function getSize(){return this.size}//returns the outer radius
+},{key:"getOutRadius",value:function getOutRadius(){return this.thickness+this.inRadius}//returns the end angle
+},{key:"getEndAngle",value:function getEndAngle(){return this.startAngle+this.size}}]);return RadialBand2d}(Shape2d);/*
     Author: Mara Miulescu
     Date:   08/05/2018
 */var Line2d=function(_Shape2d6){_inherits(Line2d,_Shape2d6);function Line2d(graphics,startPoint,endPoint,width,color){_classCallCheck(this,Line2d);var _this19=_possibleConstructorReturn(this,(Line2d.__proto__||Object.getPrototypeOf(Line2d)).call(this,graphics,color));_this19.setWidth(width);_this19.startPoint=_this19.getLoc();_this19.endPoint=new XYZ(0,0,0);var This=_this19;_this19.startPoint.onChange(function(){This.__redraw()});_this19.getRot().onChange(function(){This.__redraw()});_this19.setStartPoint(startPoint);_this19.endPoint.onChange(function(){This.__redraw()});_this19.setEndPoint(endPoint);return _this19}//redraw method
@@ -443,7 +451,8 @@ if(this.width>=this.height){return this.width}return this.height}}]);return Elli
     Starting Date: 08/05/2018
 */var Visualisation2d=function(_Graphics2d){_inherits(Visualisation2d,_Graphics2d);function Visualisation2d(container,tree,options,preInit){_classCallCheck(this,Visualisation2d);var _this26=_possibleConstructorReturn(this,(Visualisation2d.__proto__||Object.getPrototypeOf(Visualisation2d)).call(this,null,null,container,preInit));_this26.__setupVisualisation(tree,options);return _this26}//disposal, starts the removing of shapes, and removes the entire vis when done
 _createClass(Visualisation2d,[{key:"destroy",value:function destroy(callback){this.__destroy(callback);_get(Visualisation2d.prototype.__proto__||Object.getPrototypeOf(Visualisation2d.prototype),"destroy",this).call(this)}//setup
-},{key:"__setupRoot",value:function __setupRoot(){var node=this.tree.getRoot();var clas=this.__getNodeShapeClass(Visualisation2d.classes,node);var shape=new clas(this,node);return shape.add()}}]);return Visualisation2d}(Graphics2d);//copy methods of abstractVisualisation
+},{key:"__setupRoot",value:function __setupRoot(){var node=this.tree.getRoot();var clas=this.__getNodeShapeClass(Visualisation2d.classes,node);var shape=new clas(this,node);//calc the sixze of your child layer
+return shape.add()}}]);return Visualisation2d}(Graphics2d);//copy methods of abstractVisualisation
 var keys=Object.getOwnPropertyNames(AbstractVisualisation.prototype);for(var i=0;i<keys.length;i++){Visualisation2d.prototype[keys[i]]=AbstractVisualisation.prototype[keys[i]]}//make the visualisation system public
 window.Visualisation2d=Visualisation2d;Visualisation2d.classes=window.VIZ2D={Visualisation:Visualisation2d,//general classes
 XYZ:XYZ,Vec:Vec,//special shapes
