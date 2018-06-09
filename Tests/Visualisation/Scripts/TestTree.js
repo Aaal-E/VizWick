@@ -18,6 +18,15 @@ var createTree = function(name, height, width){
 
 obj = createTree("tree", 9, 6);
 VisualisationHandler.setTree(new Tree(obj));
+
+// VisualisationHandler.setTree(new Tree({
+//     children: [{
+//         children: []
+//     }, {
+//         children: []
+//     }]
+// }));
+
 // VisualisationHandler.setTree(new Tree({
 //     children: [{
 //         children: [{
