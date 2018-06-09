@@ -25,9 +25,12 @@ class AbstractVisualisation extends AbstractGraphics{    //will 'extend' concret
         this.__setupRoot();
         this.__setupOptions(options);
 
-        this.DOMEventListeners.mouseUp = (function(){
-            if(this.shapes.unique.dragging)
+        this.DOMEventListeners.mouseUp = (function(event){
+            if(this.shapes.unique.dragging){
                 this.shapes.unique.dragging.__changeState("dragged", false);
+                event.preventDefault();
+                event.stopImmediatePropagation();
+            }
             this.shapes.unique.dragging = null;
         }).bind(this);
         $(document).on("mouseup", this.DOMEventListeners.mouseUp);
@@ -85,6 +88,9 @@ class AbstractVisualisation extends AbstractGraphics{    //will 'extend' concret
         var node = shape && shape.getNode && shape.getNode();
         this.synchronizeNode(type, node);
         return this;
+    }
+    getShape(state){
+        return this.shapes.unique[state];
     }
 
     //dragging (not synchronized)

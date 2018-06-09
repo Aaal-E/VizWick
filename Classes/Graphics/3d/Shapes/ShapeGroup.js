@@ -64,7 +64,7 @@ class ShapeGroup3d extends Shape3d{
         }
     }
     __getRadius(){
-        return this.radius*this.getScale();
+        return this.radius;
     }
 
 

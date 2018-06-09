@@ -72,7 +72,7 @@ class AbstractCamera{
             This.rotVelo.mul(1-This.targetFriction.rot);
             This.scaleVelo *= 1-This.targetFriction.scale;
 
-            if(This.velo.getLength()>1e-3/This.getScale())
+            if(This.velo.getLength()>1e-6/This.getScale())
                 This.loc.add(new Vec(This.velo).mul(time * This.speed.loc));
             if(This.rotVelo.getLength()>1e-6)
                 This.rot.add(new Vec(This.rotVelo).mul(time * This.speed.rot));

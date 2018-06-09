@@ -17,13 +17,23 @@ class Visualisation3d extends Graphics3d{
         this.maxNodeCount = 500;
 
         $(document).off("mouseup", this.DOMEventListeners.mouseUp);
-        this.DOMEventListeners.mouseUp = (function(){
-            if(this.shapes.unique.dragging.mouse)
+        this.DOMEventListeners.mouseUp = (function(event){
+            if(this.shapes.unique.dragging.mouse){
                 this.shapes.unique.dragging.mouse.__changeState("dragged", false);
+                event.preventDefault();
+                event.stopImmediatePropagation();
+            }
             this.shapes.unique.dragging.mouse = null;
         }).bind(this);
         $(document).on("mouseup", this.DOMEventListeners.mouseUp);
 
+    }
+
+
+    getShape(state, pointer){
+        var s = this.shapes.unique[state];
+        if(state=="dragging") s = s[pointer];
+        return s;
     }
 
     //disposal, starts the removing of shapes, and removes the entire vis when done

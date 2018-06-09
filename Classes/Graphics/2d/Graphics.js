@@ -12,7 +12,7 @@ class Graphics2d extends AbstractGraphics{
 
         //add graphics to the screen
         var This = this;
-        $(this.app.view).addClass("pixi");
+        $(this.app.view).addClass("pixi").attr("oncontextmenu","return false;");
         this.container.append(this.app.view);
         this.container.on("finishResize", function(event, size){
             var newSize = {

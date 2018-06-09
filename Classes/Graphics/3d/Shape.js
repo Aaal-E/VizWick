@@ -153,6 +153,7 @@ class Shape3d extends AbstractShape{
         this.graphics.__getScene().add(this.mesh);
         this.mesh.updateMatrixWorld();
         this.updateTransform(); //don't interpolate
+        this.__updateAABB();
         return this;
     }
     __delete(){
@@ -163,6 +164,12 @@ class Shape3d extends AbstractShape{
         super.__setParentShape(parent);
         this.mesh.updateMatrixWorld();
         this.updateTransform(); //don't interpolate
+        return this;
+    }
+
+    //whether we can interact with the shape in VR
+    setVRhitboxEnabled(enabled){
+        this.mesh.userData.ignore = !enabled;
         return this;
     }
 }

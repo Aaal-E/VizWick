@@ -13,6 +13,9 @@ class Color{
     static fromHSV(hue, saturation, value, alpha){
         return new Color(0,0,0).setHSV([hue, saturation, value]).setAlpha(alpha==undefined?1:alpha);
     }
+    static fromInt(color){
+        return new Color(0,0,0).setInt(color);
+    }
 
     //getter/setters
     a(alpha){
@@ -88,6 +91,13 @@ class Color{
     }
     setHSV(hsv){
         return this.setRGB(hsvToRgb(hsv));
+    }
+
+    setInt(color){
+        this.red = (color>>16)%256;
+        this.green = (color>>8)%256;
+        this.blue = (color)%256;
+        return this;
     }
 
     //retrieve color methods

@@ -8,10 +8,10 @@ class HtmlShape3d extends ImageShape3d{
         super(gfx, null, 0, 0.2, function(){
             this.element = $(
                 "<div class=HTMLshape style=display:inline-block;position:absolute;z-index:1000>"+
-                    "<span class=HTMLshapeContent style=color:white>"+
+                    "<span class=HTMLshapeContent style=display:inline-block;color:white>"+
                     "</span>"+
                 "</div>"
-            );
+            ).offset({left:-1000, top:-1000});
             this.visCont = gfx.getCanvas();
             var This = this;
             this.vrOffset = new XYZ(0, 0, 0).onChange(function(){
@@ -38,11 +38,12 @@ class HtmlShape3d extends ImageShape3d{
     refresh(){ //generate a image containing the text
         var This = this;
 
-        var el = $("<span></span>").append(this.getElement().children().first().clone())[0];
-        $("body").append(el);
+        var el = this.getElement().children().first().clone();
+        $(".HtmlShapeTextureCreator").append(el);
+        // el.hide();
 
-        html2canvas(el, {
-            scale: 10,
+        html2canvas(el[0], {
+            scale: 6,
             onrendered: function(canvas){
                 var dataUrl = canvas.toDataURL();
                 This.ratio = canvas.width/canvas.height;
@@ -170,7 +171,12 @@ class HtmlShape3d extends ImageShape3d{
 
     //method to keep the html element in the correct location
     __updateLoc(){
-        var loc = this.getGraphics().getCamera().translateWorldToScreenLoc(this.getWorldLoc().sub(this.vrOffset));
+        var loc = this.getGraphics().getCamera().translateWorldToScreenLoc(
+            this.getWorldLoc().sub(
+                new Vec(this.vrOffset)
+                    .mul((this.parentShape?this.parentShape.getWorldScale():1)*this.getScale())
+            )
+        );
 
         var o = this.visCont.offset();
         // var c = this.getContainer().offset();
@@ -181,3 +187,4 @@ class HtmlShape3d extends ImageShape3d{
         return this;
     }
 }
+$("html").append("<div class=HtmlShapeTextureCreator style=height:0;overflow:hidden;></div>");
