@@ -173,9 +173,6 @@ class Graphics3d extends AbstractGraphics{
                 This.__resetTransform();
                 var isMouseDown = event.type=="mousedown";
 
-                if(isMouseDown)
-                    startedIn = true;
-
                 if($(event.target).is("canvas"))
                     event.preventDefault();
 
@@ -192,6 +189,8 @@ class Graphics3d extends AbstractGraphics{
                         if(!isMouseDown) This.__triggerClick(event);
                         This.__triggerMousePress(isMouseDown, event);
                     }
+
+                    startedIn = isMouseDown;
                 }
             };
             $(window).on('wheel', this.DOMEventListeners.scroll);
