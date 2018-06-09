@@ -78,6 +78,7 @@ class RadialBand2d extends Shape2d{
     setStartAngle(angle){
         this.startAngle = angle;
         this.masterRedraw();
+        return this;
     }
 
     //reruns the start angle
@@ -89,6 +90,7 @@ class RadialBand2d extends Shape2d{
     setInRadius(inRadius){
         this.inRadius = inRadius;
         this.masterRedraw();
+        return this;
     }
 
     //returns the inner radius
@@ -100,6 +102,7 @@ class RadialBand2d extends Shape2d{
     setThickness(thickness){
         this.thickness = thickness;
         this.masterRedraw();
+        return this;
     }
 
     //returns the thickness of the band
@@ -111,6 +114,7 @@ class RadialBand2d extends Shape2d{
     setSize(size){
         this.size = size;
         this.masterRedraw();
+        return this;
     }
 
     //returns size in radian
@@ -126,5 +130,15 @@ class RadialBand2d extends Shape2d{
     //returns the end angle
     getEndAngle(){
         return this.startAngle + this.size;
+    }
+
+    //resets the properties of the radial band
+    resetProperties(){
+        this.setInRadius(null);
+        this.setSize(null);
+        this.setStartAngle(null);
+        this.setThickness(null);
+        // return this
+        return this;
     }
 }

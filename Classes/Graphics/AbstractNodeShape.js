@@ -86,28 +86,27 @@ class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete sha
 
     //adding/removing
     __addNode(){
-        if(this.children.length==0){    //otherwise it is already added
-            //register shape as root and leave, as no parent or children are set up yet
-            this.graphics.__registerShapeLeave(this);
-            this.graphics.__registerShapeRoot(this);
-            if(this.__getChildNodes().length!=this.children.length)
+        //register shape as root and leave, as no parent or children are set up yet
+        this.graphics.__registerShapeLeave(this);
+        this.graphics.__registerShapeRoot(this);
+        if(this.__getChildNodes().length!=this.children.length)
             this.graphics.__registerShapeCollapsed(this);
 
-            //initially a node is never expanded upon creation
-            this.__changeState("expanded", this.node.getChildren().length==0);
+        //initially a node is never expanded upon creation
+        this.__changeState("expanded", this.node.getChildren().length==0);
 
-            //connect the parent and child nodes
-            var parent = this.__getParentFromNode(true);
-            if(parent) this.__setParent(parent);
+        //connect the parent and child nodes
+        var parent = this.__getParentFromNode(true);
+        if(parent) this.__setParent(parent);
 
-            var children = this.__getChildrenFromNode(true);
-            for(var i=0; i<children.length; i++)
+        var children = this.__getChildrenFromNode(true);
+        for(var i=0; i<children.length; i++)
             this.__addChild(children[i]);
 
-            //update visuals for the state
-            this.__stateChanged(null, null, this.state);
-            this.__show();
-        }
+        //update visuals for the state
+        this.__stateChanged(null, null, this.state);
+        this.__show();
+
         return this;
     }
     __removeNode(){
