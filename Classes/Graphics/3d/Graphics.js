@@ -168,10 +168,16 @@ class Graphics3d extends AbstractGraphics{
                 if(!caught && m.x>=0 && m.y>=0 && m.x<=This.getWidth() && m.y<=This.getHeight())
                     This.__triggerKeyPress(isKeyDown, keyCode, event);
             };
+            var startedIn = false;  //if mousepress started in visualisation
             this.DOMEventListeners.mousepress = function(event){
                 This.__resetTransform();
                 var isMouseDown = event.type=="mousedown";
-                event.preventDefault();
+
+                if(isMouseDown)
+                    startedIn = true;
+
+                if($(event.target).is("canvas"))
+                    event.preventDefault();
 
                 //send event to shapes
                 var caught = This.__dispatchEvent(function(){
@@ -180,7 +186,7 @@ class Graphics3d extends AbstractGraphics{
                 });
 
                 var m = This.pointers.mouse;
-                if(m.x>=0 && m.y>=0 && m.x<=This.getWidth() && m.y<=This.getHeight()){
+                if((m.x>=0 && m.y>=0 && m.x<=This.getWidth() && m.y<=This.getHeight()) || startedIn){
                     event.preventDefault();
                     if(!caught){
                         if(!isMouseDown) This.__triggerClick(event);
