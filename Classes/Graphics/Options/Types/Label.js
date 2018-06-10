@@ -4,8 +4,8 @@
     Starting Date: 02/06/2018
 */
 class LabelOption extends Option{
-    constructor(name, text){
-        super(name, "label", text instanceof Object? text.text: text);
+    constructor(name){
+        super(name, "label");
     }
 
     getText(){

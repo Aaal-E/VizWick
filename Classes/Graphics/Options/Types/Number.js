@@ -4,22 +4,11 @@
     Starting Date: 02/06/2018
 */
 class NumberOption extends Option{
-    constructor(name, value){
-        super(name, "number", null);
-        var min = -Infinity;
-        var step = 0.0001;
-        var max = Infinity;
-        if(value instanceof Object){
-            if(value.min) min = value.min;
-            if(value.step) step = value.step;
-            if(value.max) max = value.max;
-            value = value.value;
-        }
-
-        this.value = value;
-        this.min = min;
-        this.step = step;
-        this.max = max;
+    constructor(name, step, min, max){
+        super(name, "number");
+        this.step = step||0.0001;
+        this.min = min||-Infinity;
+        this.max = max||Infinity;
     }
 
     //get properties

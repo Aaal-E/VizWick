@@ -4,36 +4,37 @@
     Starting Date: 02/06/2018
 */
 class Option{
-    constructor(name, type, value){
+    constructor(name, type){
         this.name = name;
-        this.text = name;
         this.type = type;
-        this.value = value;
+        this.description = "";
         this.listeners = [];
     }
+
+    //getters
     getName(){
         return this.name;
     }
     getType(){
         return this.type;
     }
-    getText(){
-        return this.text;
+    getDescription(){
+        return this.description;
     }
-    setText(text){
-        this.text = text;
-        return this;
+    getValue(){
+        return this.value;
     }
 
-    //setters and getters
+    //setters
+    setDescription(description){
+        this.description = description;
+        return this;
+    }
     setValue(value){
         var oldValue = this.value;
         this.value = value;
         this.__triggerChange(oldValue);
         return this;
-    }
-    getValue(){
-        return this.value;
     }
 
     //change listeners

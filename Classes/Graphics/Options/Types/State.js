@@ -4,13 +4,9 @@
     Starting Date: 02/06/2018
 */
 class StateOption extends Option{
-    constructor(name, value){
-        super(name, "state", null);
-        if(value instanceof Object){
-            this.options = value.options;
-            this.value = value.value;
-        }else
-            throw Error("Object expected");
+    constructor(name, options){
+        super(name, "state");
+        this.options = options;
     }
 
     //get properties
