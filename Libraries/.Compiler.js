@@ -4,6 +4,7 @@ Compiler.compile([
     "Polyfills.js",
     "html2canvas.js",
     "jQuery.js",
+    "jQueryColorTransition.js",
     "Three/VRController.js",
     "pixi.min.js",
     "pixiLayers.js",
