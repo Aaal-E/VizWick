@@ -5,6 +5,15 @@ html, body {
   margin: 0;
   overflow: hidden;
 }
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+}
 
 /*
     Welcome page
@@ -203,7 +212,7 @@ background-color: white;
   margin-top: 5px;
 }
 
-.home-button, .slideshow-button, .upload-button, .visualization-button, .last-visualization-button, .two-button, .four-button {
+.home-button, .slideshow-button, .upload-button, .visualization-button, .last-visualization-button, .reset-button, .two-button, .four-button {
   height: 30px;
   background-color: white;
   border-radius: 10px;
@@ -214,8 +223,7 @@ background-color: white;
   display: inline-block;
 }
 
-body#four .two-button,
-body#two .two-button {
+.two-button {
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
   border-right: 1px solid gray;
@@ -224,20 +232,18 @@ body#two .two-button {
 
 body#two .two-button {
   box-shadow: inset 2px 2px 5px rgba(0,0,0,0.5);
+  width: 50px;
 }
 
-body#four .four-button,
-body#two .four-button {
+.four-button {
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
-}
-
-body#two .four-button {
   width: 40px;
 }
 
 body#four .four-button {
   box-shadow: inset -2px 2px 5px rgba(0,0,0,0.5);
+  width: 50px;
 }
 
 .two-button, .four-button {
@@ -275,10 +281,9 @@ body#four .four-button {
 .upload-button {
   background-color: #4DADF7;
   width: 150px;
-  /* margin-left: 50px; */
-  /* margin-right: 100px; */
   border-radius: 10px;
   float: right;
+  cursor: pointer;
 }
 
 .upload {
@@ -286,13 +291,21 @@ body#four .four-button {
   font-size: 18px;
 }
 
-.fa-download, .upload {
+.fa-upload, .upload {
   display: inline-block;
   font-weight: bold;
 }
 
-.fa-download {
+.fa-upload {
   margin-right: 10px;
+}
+
+.reset-button {
+  width: 40px;
+  float: right;
+  margin-right: 10px;
+  margin-top: 5px;
+  cursor: pointer;
 }
 
 .two-four-buttons {
@@ -306,15 +319,24 @@ body#four .four-button {
   margin-right: 5px;
 }
 
-.text {
+.center {
   position: relative;
   top: 50%;
   transform: translate(0, -50%);
+  text-align: center;
 }
 
 .left-section {
   height: calc(100% - 45px);
   transition: width 0.5s;
+  position: relative;
+}
+.left-section-inner{
+  height: 100%;
+  width: 300px;
+  position: absolute;
+  top: 0;
+  right: 0;
 }
 
 .visualization-page#information-appear .left-section {
@@ -344,11 +366,27 @@ body#four .four-button {
   background-color: white;
   width: calc(100% - 11px);
   height: 100%;
+  padding: 5px;
+  box-sizing: border-box;
 }
 
-.visualization-page#information-collapse .text-part {
-  width: 0%;
-  height: 100%;
+.title {
+  width: 100%;
+  height: 30px;
+  font-weight: bold;
+  font-size: 30px;
+  border-bottom: 1px solid #80808057;
+}
+
+.title>.text {
+  text-align: left;
+  padding-bottom: 5px;
+}
+
+.information-text {
+  width: 100%;
+  height: calc(100% - 30px);
+  padding: 5px;
 }
 
 .visualization-page#information-collapse .collapse-button {
@@ -450,37 +488,131 @@ body#two .top-layout-part {
   position: absolute;
 }
 
-.top-layout-part .option-pane#notch,
-.bottom-layout-part .option-pane#notch {
-  height: 30px;
-}
-
-.top-layout-part .option-pane#options,
-.bottom-layout-part .option-pane#options {
-    height: 180px;
-}
-
 .bottom-layout-part .option-pane {
   bottom: 0;
 }
 
-.top-layout-part .inner-option-pane,
+/* .top-layout-part .inner-option-pane,
 .bottom-layout-part .inner-option-pane {
   width: 100%;
   height: 100%;
   position: absolute;
-}
+} */
 
+
+.option-pane{
+  position: relative;
+  height: 30px;
+  overflow: hidden;
+}
+.inner-option-pane{
+  position: absolute;
+  width: 100%;
+  left: 0;
+}
 .top-layout-part .inner-option-pane {
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
   bottom: 0;
 }
-
-.top-left .option-pane,
-.top-left .inner-option-pane {
+.bottom-layout-part .inner-option-pane{
   border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
+  top: 0;
 }
 
-.top-right .option-pane,
+.option-pane .no-options{
+  height: 70px;
+  text-align: center
+}
+.option-pane .option-columns{
+  -webkit-column-width: 200px; /* Chrome, Safari, Opera */
+  -moz-column-width: 200px; /* Firefox */
+  column-width: 200px;
+
+  -webkit-column-gap: 10px; /* Chrome, Safari, Opera */
+  -moz-column-gap: 10px; /* Firefox */
+  column-gap: 10px;
+
+  -webkit-column-rule: 1px solid #80808057; /* Chrome, Safari, Opera */
+  -moz-column-rule: 1px solid #80808057; /* Firefox */
+  column-rule: 1px solid #80808057;
+}
+
+.option{
+  /* width: 250px;*/
+  width: 100%;
+  height: 34px;
+  line-height: 50px;
+  box-sizing: border-box;
+  background-color: white;
+  border-bottom: 1px solid #dddcdf;
+  border-radius: 10px;
+}
+.option .option-name{
+  float: left;
+  height: 34px;
+  line-height: 34px;
+}
+.option .option-value{
+  margin-top: 5px;
+  float: right;
+  height: 24px;
+}
+
+/* option types */
+.option.button-type{
+  border-radius: 5px;
+  background: none;
+  text-align: center;
+  border: 1px solid rgb(0, 0, 0, 0.5);
+  border-bottom-width: 3px;
+}
+.option.button-type .option-name{
+  /* background-color: white;
+  width: 100%;
+  height: 28px; */
+  /* box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5); */
+}
+
+.option.toggle-type .toggle{
+  width: 50px;
+  height: 24px;
+  box-sizing: border-box;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.option.toggle-type .toggle#off {
+  border: 2px solid #80808057;
+  background-color: white;
+}
+
+.option.toggle-type .toggle#on {
+  border: 2px solid #48CE5E;
+  background-color: #48CE5E;
+}
+
+.option.toggle-type .toggle .circle {
+  height: 20px;
+  width: 20px;
+  border-radius: 10px;
+  transition: margin-left 0.3s;
+  background-color: white;
+}
+
+.option.toggle-type .toggle#off .circle {
+  box-shadow: 1px 1px 3px gray;
+  margin-left: 0.5px;
+}
+
+.option.toggle-type .toggle#on .circle {
+  margin-left: calc(100% - 20.5px);
+  background-color: white;
+}
+
+/* .top-right .option-pane,
 .top-right .inner-option-pane {
   border-top-left-radius: 10px;
 }
@@ -493,27 +625,28 @@ body#two .top-layout-part {
 .bottom-right .option-pane,
 .bottom-right .inner-option-pane {
   border-bottom-left-radius: 10px;
-}
+} */
 
 .options {
   border-radius: 10px;
+  padding: 5px;
+  padding-top: 7px;
+  box-sizing: border-box;
 }
 
 .top-layout-part .options,
 .bottom-layout-part .options {
   width: 100%;
-  background-color: white;
+  background-color: #f0eff4;
 }
 
-.top-layout-part .option-pane#notch .options
-.bottom-layout-part .option-pane#notch .options {
+/* .option-pane#notch .options {
   height: 0;
 }
 
-.top-layout-part .option-pane#options .options,
-.bottom-layout-part .option-pane#options .options {
+.option-pane#options .options {
   height: 150px;
-}
+} */
 
 .notch {
   position: absolute;
@@ -525,6 +658,60 @@ body#two .top-layout-part {
   text-align: center;
   margin-left: 50%;
   transform: translateX(-50%);
+  cursor: pointer
+}
+
+.left-pane, .right-pane {
+  width: calc(50% - 75px);
+  height: 30px;
+  float: left;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.left-pane {
+  padding-left: 5px;
+}
+
+.show-visualization {
+  width: auto;
+  height: 100%;
+  float: left;
+  border: 2px solid gray;
+  padding: 5px;
+  box-sizing: border-box;
+  border-radius: 20px;
+  color: gray;
+}
+
+.right-pane {
+  margin-left: 150px;
+  padding-right: 5px;
+}
+
+.top-layout-part .left-pane,
+.top-layout-part .right-pane {
+  padding-top: 3px;
+}
+
+.bottom-layout-part .left-pane,
+.bottom-layout-part .right-pane {
+  padding-bottom: 3px;
+}
+
+.VR-button, .full-screen-button {
+  width: 40px;
+  height: 100%;
+  float: right;
+  border: 2px solid gray;
+  box-sizing: border-box;
+  border-radius: 20px;
+  color: gray;
+  cursor: pointer;
+}
+
+.VR-button {
+  margin-right: 5px;
 }
 
 .top-layout-part .option-pane#options .notch {
@@ -558,10 +745,8 @@ body#two .top-layout-part {
   cursor: pointer;
 }
 
-.top-layout-part .option-pane#notch .upper-arrow,
-.bottom-layout-part .option-pane#notch .lower-arrow,
-.top-layout-part .option-pane#options .lower-arrow,
-.bottom-layout-part .option-pane#options .upper-arrow {
+.option-pane#notch .hide-arrow,
+.option-pane#options .show-arrow {
   display: none;
 }
 

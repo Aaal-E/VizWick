@@ -23,37 +23,47 @@ $(function(){
     $("body").attr("id", "four");
   });
 
-  //Collapsing and appearing the options
-  //top-left visualization area
-  $(".top-left .lower-arrow").click(function(){
-    $(".top-left .option-pane").attr("id", "options");
-  });
-  $(".top-left .upper-arrow").click(function(){
-    $(".top-left .option-pane").attr("id", "notch");
-  });
-
-  //top-right visualization area
-  $(".top-right .lower-arrow").click(function(){
-    $(".top-right .option-pane").attr("id", "options");
-  });
-  $(".top-right .upper-arrow").click(function(){
-    $(".top-right .option-pane").attr("id", "notch");
+  //Collapsing and appearing of the option panes
+  $(".notch").click(function(){
+    var optionPane = $(this).closest(".option-pane");
+    var innerOptionPane = optionPane.find(".inner-option-pane");
+    if(optionPane.is("#notch")){
+      optionPane.animate({height:Math.floor(innerOptionPane.outerHeight(true))-1}, 500);
+      optionPane.attr("id", "options");
+    }else{
+      optionPane.animate({height:$(this).outerHeight(true)}, 500);
+      optionPane.attr("id", "notch");
+    }
   });
 
-  //bottom-left visualization area
-  $(".bottom-left .upper-arrow").click(function(){
-    $(".bottom-left .option-pane").attr("id", "options");
-  });
-  $(".bottom-left .lower-arrow").click(function(){
-    $(".bottom-left .option-pane").attr("id", "notch");
-  });
-
-  //bottom-right visualization area
-  $(".bottom-right .upper-arrow").click(function(){
-    $(".bottom-right .option-pane").attr("id", "options");
-  });
-  $(".bottom-right .lower-arrow").click(function(){
-    $(".bottom-right .option-pane").attr("id", "notch");
+  //Drag and drop
+  $(".visualizations").children().each(function(){
+    $(this).attr("draggable", true);
+    this.ondragstart = function(ev){
+      ev.dataTransfer.setData("text", ev.target.id);
+    };
   });
 
+  //create some options for testing purposes
+  var options = new Options();
+  var container = $(".top-left .options");
+  attachOptions(options, container);
+
+  var button = new Options.Button("center").onClick(function(){
+    console.log("detect");
+  });
+  options.add(button);
 });
+
+//options handling
+function attachOptions(options, container){
+  options.onOptionsChange(function(type, option){
+    var name = option.getName();
+
+    if(type=="create"){
+      container.find(".no-options").hide();
+    }else if(type=="delete"){
+
+    }
+  });
+}
