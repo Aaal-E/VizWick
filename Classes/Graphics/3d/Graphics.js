@@ -33,7 +33,7 @@ class Graphics3d extends AbstractGraphics{
         this.renderer.setClearColor("#000000", 0);
         this.renderer.setSize(this.getWidth(), this.getHeight());
         // this.renderer.vr.enabled = true;
-        this.container.append($(this.renderer.domElement).addClass("three"));
+        this.container.append($(this.renderer.domElement).addClass("three").attr("oncontextmenu","return false;"));
 
         //render Loop
         var This = this;
@@ -73,9 +73,11 @@ class Graphics3d extends AbstractGraphics{
             }else{                                 //render new interpolated frame
                 // create interpolated frame
 
-                This.__resetTransform();
-                This.__interpolate();
-                This.renderer.render(This.scene, camera);
+                /*
+                    This.__resetTransform();
+                    This.__interpolate();
+                    This.renderer.render(This.scene, camera);
+                */
             }
             This.lastRender = now;
         };
@@ -121,7 +123,7 @@ class Graphics3d extends AbstractGraphics{
                 This.pointers.mouse.x = event.pageX - offset.left;
                 This.pointers.mouse.y = event.pageY - offset.top;
 
-                var pos = new Vec(This.mouse);
+                var pos = new Vec(This.pointers.mouse);
 
                 //send event to shapes
                 This.__dispatchEvent(function(){
@@ -149,6 +151,7 @@ class Graphics3d extends AbstractGraphics{
             };
             this.DOMEventListeners.keypress = function(event){
                 This.__resetTransform();
+                event.key = keyNames[event.keyCode] || event.key;
                 if(event.type=="keyup") //remove keys even if released outside of visualisation
                     delete This.pressedKeys[event.key.toLowerCase()];
 
@@ -165,9 +168,13 @@ class Graphics3d extends AbstractGraphics{
                 if(!caught && m.x>=0 && m.y>=0 && m.x<=This.getWidth() && m.y<=This.getHeight())
                     This.__triggerKeyPress(isKeyDown, keyCode, event);
             };
+            var startedIn = false;  //if mousepress started in visualisation
             this.DOMEventListeners.mousepress = function(event){
                 This.__resetTransform();
                 var isMouseDown = event.type=="mousedown";
+
+                if($(event.target).is("canvas"))
+                    event.preventDefault();
 
                 //send event to shapes
                 var caught = This.__dispatchEvent(function(){
@@ -176,12 +183,14 @@ class Graphics3d extends AbstractGraphics{
                 });
 
                 var m = This.pointers.mouse;
-                if(m.x>=0 && m.y>=0 && m.x<=This.getWidth() && m.y<=This.getHeight()){
+                if((m.x>=0 && m.y>=0 && m.x<=This.getWidth() && m.y<=This.getHeight()) || startedIn){
                     event.preventDefault();
                     if(!caught){
                         if(!isMouseDown) This.__triggerClick(event);
                         This.__triggerMousePress(isMouseDown, event);
                     }
+
+                    startedIn = isMouseDown;
                 }
             };
             $(window).on('wheel', this.DOMEventListeners.scroll);
@@ -278,11 +287,11 @@ class Graphics3d extends AbstractGraphics{
         }
 
         while(que.length>0){
-            var shape = que.pop();
+            var shape = que.shift();
 
             var parentShape = shape.getParentShape();
             if(parentShape)
-                que.push(parentShape);
+                que.unshift(parentShape);
 
             //execute event
             if(!shape.interactionsDisabled && func.call(shape))

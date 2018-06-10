@@ -25,9 +25,12 @@ class AbstractVisualisation extends AbstractGraphics{    //will 'extend' concret
         this.__setupRoot();
         this.__setupOptions(options);
 
-        this.DOMEventListeners.mouseUp = (function(){
-            if(this.shapes.unique.dragging)
+        this.DOMEventListeners.mouseUp = (function(event){
+            if(this.shapes.unique.dragging){
                 this.shapes.unique.dragging.__changeState("dragged", false);
+                event.preventDefault();
+                event.stopImmediatePropagation();
+            }
             this.shapes.unique.dragging = null;
         }).bind(this);
         $(document).on("mouseup", this.DOMEventListeners.mouseUp);
@@ -58,9 +61,8 @@ class AbstractVisualisation extends AbstractGraphics{    //will 'extend' concret
         if(this.shapes.unique[type])
             this.shapes.unique[type].__changeState(type, false);
 
-        if(type=="focused" && (!shape || !shape.isRendered)){
+        if(type=="focused" && node && (!shape || !shape.isRendered)){
             shape = this.createNodeShape(node).add();
-            console.log(shape);
             if(!shape.getConnectedNodeShape()){ //shape is not connected with other existing shapes
                 //get rid of all existing shapes, except shape
                 for(var i=this.shapes.root.length-1; i>=0; i--){
@@ -86,6 +88,9 @@ class AbstractVisualisation extends AbstractGraphics{    //will 'extend' concret
         var node = shape && shape.getNode && shape.getNode();
         this.synchronizeNode(type, node);
         return this;
+    }
+    getShape(state){
+        return this.shapes.unique[state];
     }
 
     //dragging (not synchronized)
@@ -115,11 +120,10 @@ class AbstractVisualisation extends AbstractGraphics{    //will 'extend' concret
         if(shape){  //a node shape already exists, simply return that one
             return shape;
         }else{
-            console.log("create");
             //find closest ancestor for which a shape does exists:
             var path = [node];
             var p = node.getParent();
-            while(!p.getShape(UID)){
+            while(p && !p.getShape(UID)){
                 path.unshift(p);
                 p = p.getParent();
             }
@@ -127,7 +131,8 @@ class AbstractVisualisation extends AbstractGraphics{    //will 'extend' concret
             //create entire path from parent to node
             for(var i=0; i<path.length; i++){
                 var node = path[i];
-                var parentShape = node.getParent().getShape(UID);
+                var parent = node.getParent();
+                var parentShape = parent.getShape(UID);
                 var nodeShape = parentShape.createChild(node, true);
                 // nodeShape.add().remove();   //connect the shape, but stop rendering immediately after
                 path.splice(i, 1, nodeShape); //replace node with nodeShape in path
@@ -144,7 +149,7 @@ class AbstractVisualisation extends AbstractGraphics{    //will 'extend' concret
             This.getCanvas().remove();
             This.pause(true);
             This.options.destroy();
-            
+
             if(callback) callback.call(This);
         };
 

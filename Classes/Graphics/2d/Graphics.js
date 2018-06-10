@@ -12,7 +12,7 @@ class Graphics2d extends AbstractGraphics{
 
         //add graphics to the screen
         var This = this;
-        $(this.app.view).addClass("pixi");
+        $(this.app.view).addClass("pixi").attr("oncontextmenu","return false;");
         this.container.append(this.app.view);
         this.container.on("finishResize", function(event, size){
             var newSize = {
@@ -118,6 +118,7 @@ class Graphics2d extends AbstractGraphics{
             };
             this.DOMEventListeners.keypress = function(event){
                 var interactionData = m.getInteractionDataForPointerId(event);
+                event.key = keyNames[event.keyCode] || event.key;
 
                 if(event.type=="keyup") //remove keys even if released outside of visualisation
                     delete This.pressedKeys[event.key.toLowerCase()];

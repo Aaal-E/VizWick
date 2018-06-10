@@ -1,5 +1,5 @@
 /*
-    global static VR camera class
+    global static VR camera class (became quite a mess, requires refactoring to proper classes and methods)
     Author: Tar van Krieken
     Starting Date: 16/05/2018
 */
@@ -246,6 +246,8 @@ window.VRCamera = new
 		    grip: false
 		};
         controller.userData.scroll = 0;
+        controller.userData.movePointer = 0;
+        controller.userData.length = this.defaultPointerDist;
 
     	//events
     	//TODO make sure these event handlers don't remain on controller disconnect
@@ -280,7 +282,8 @@ window.VRCamera = new
 
         var scroll = function(event){
             // console.log(event.axes[1]);
-            controller.userData.scroll = event.axes[1];
+            controller.userData.scroll = event.axes[0];
+            controller.userData.movePointer = event.axes[1];
         };
         controller.addEventListener('thumbstick axes changed', scroll);
         // THREE.VRController.verbosity = 1;
@@ -336,6 +339,9 @@ window.VRCamera = new
     }
     __render(){
         if(this.hasVRSupport()){
+            var now = Date.now();
+            var delta = (now-this.lastRender)/1000;
+
             //transform world
             if(this.visualisation){
                 this.visualisation.__resetTransform() //make sure the transform doesn't mess with interpolation
@@ -381,34 +387,46 @@ window.VRCamera = new
 
             for(var i=0; i<controllers.length; i++){
                 var controller = controllers[i];
-                if(!controller.userData.anchor && !controller.userData.dragging){ //don't do world interaction if transforming
-                    var line = controller.userData.line;
-                    var pointer = controller.userData.pointer;
-                    var colors = controller.userData.colors;
+                var ud = controller.userData;
 
-                    tempMatrix.identity().extractRotation(controller.matrixWorld);
-                    this.rayCaster.ray.origin.setFromMatrixPosition(controller.matrixWorld);
-                    this.rayCaster.ray.direction.set(0, 0, -1).applyMatrix4(tempMatrix);
+                var line = ud.line;
+                var pointer = ud.pointer;
 
-                    var intersects = this.rayCaster.intersectObjects(this.rayCastGroup.children, true);
+                if(ud.movePointer!=0){
+                    var prop = ud.anchor||ud.dragging?"dragLength":"length"
+
+                    var newLength = ud[prop] - ud.movePointer*delta*1.0;
+                    newLength = Math.max(this.defaultPointerDist, Math.min(4, newLength));
+                    ud[prop] = newLength;
+
+                    //update pointer appearance
+                    line.scale.z = newLength;
+                    pointer.position.z = -newLength;
+                }
+
+                if(!ud.anchor && !ud.dragging){ //don't do world interaction if transforming
+                    var intersects = this.__getControllerIntersects(controller);
                     var intersection = intersects.shift();
                     var object = intersection && intersection.object;
                     while(object && object.userData.ignore){
                         intersection = intersects.shift();
                         object = intersection && intersection.object;
                     }
-                    if(intersection){
+
+                    // console.log((interection && intersection.distance), ud.length);
+                    if(intersection && intersection.distance<ud.length){
                         this.__setHover(controller, object);
 
                         //update pointer appearance
+                        ud.dragLength = intersection.distance;
                         line.scale.z = intersection.distance;
                         pointer.position.z = -intersection.distance;
                     }else{
                         this.__setHover(controller, null);
 
                         //update pointer appearance
-                        line.scale.z = this.defaultPointerDist;
-                        pointer.position.z = -this.defaultPointerDist;
+                        line.scale.z = ud.length;
+                        pointer.position.z = -ud.length;
                     }
                 }
             }
@@ -464,6 +482,8 @@ window.VRCamera = new
             //rendering
             this.__updateTransform();
             this.renderer.render(this.scene, this.camera);
+
+            this.lastRender = now;
         }
     }
     __update(){
@@ -557,6 +577,13 @@ window.VRCamera = new
     }
 
     //manage controller interactions
+    __getControllerIntersects(controller){
+        tempMatrix.identity().extractRotation(controller.matrixWorld);
+        this.rayCaster.ray.origin.setFromMatrixPosition(controller.matrixWorld);
+        this.rayCaster.ray.direction.set(0, 0, -1).applyMatrix4(tempMatrix);
+
+        return this.rayCaster.intersectObjects(this.rayCastGroup.children, true);
+    }
     __setHover(controller, object){
         if(controller.userData.hover!=object){
            var oldHover = controller.userData.hover;
@@ -608,6 +635,7 @@ window.VRCamera = new
                             .sub(this.__getWorldPosition(controller.userData.pointer))
                             .getLength();
 
+                controller.userData.dragLength = dist;
                 controller.userData.line.scale.z += dist;
                 controller.userData.pointer.position.z -= dist;
             }

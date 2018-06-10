@@ -48,7 +48,9 @@ personal todo list:
 
     //-fix scene hitbox
     //-disable text selection while interacting with visualisation
-    -rescale visualisation so it fits nicely in the screen
+    //-look into alex's thing not working in edge
+
+    // -rescale visualisation so it fits nicely in the screen
     -add fullscreen option
     -add system to listen for selected node to handler and individual visualisation
 
@@ -57,15 +59,13 @@ personal todo list:
     -Add default options:
         -synchronisation
         -antialisasing
-    -Add cursor system; idk what this is anymore...
     -options:
         -Accommodate button 'options' showing a certain text
         -Accommodate text 'options' to just show some status text
-    -look into alex's thing not working in edge
     -add generate image system
 
     -test browser compatibility
-    -add cursor styles to shapes
+    -add cursor styles to shapes, such that you can change the cursor icon on hover
 
 
     3D visualisation:

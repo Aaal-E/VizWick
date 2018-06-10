@@ -1,6 +1,8 @@
 var Compiler = require("../Compiler/Compiler.js");
 Compiler.compile([
     "raw:Three/three.min.js",
+    "Polyfills.js",
+    "html2canvas.js",
     "jQuery.js",
     "Three/VRController.js",
     "pixi.min.js",

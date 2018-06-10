@@ -20,6 +20,7 @@ class Camera3d extends AbstractCamera{
             This.__updateLoc();
         });
         this.getRot().onChange(function(){
+            this.x = Math.max(-Math.PI/2, Math.min(Math.PI/2, this.x));
             This.camera.rotation.set(
                 This.getXRot(),
                 This.getYRot(),
@@ -35,13 +36,13 @@ class Camera3d extends AbstractCamera{
 
     __updateLoc(){
         var vec = new Vec(this.getLoc());
-        var dist = this.distance/this.windowSizeScaleFactor/this.getScale();
-        vec.add(this.getRot().getLookAt().addYaw(-Math.PI/2).setLength(dist));
+        var dist = this.distance/this.getTotalScale();
+        vec.sub(this.getRot().getLookAt().addYaw(Math.PI/2).setLength(dist));
 
-        this.camera.far = dist+5/this.getScale();
-        this.camera.near = Math.max(1e-3/this.getScale(), dist-5/this.getScale());
+        var n = 10; //half the range to focus on
+        this.camera.far = dist+n/this.getScale();
+        this.camera.near = Math.max(1e-3/this.getScale(), dist-n/this.getScale());
         this.camera.updateProjectionMatrix();
-        console.log(this.camera.far, this.camera.near, this.getScale(), dist);
 
         this.camera.position.set(
             vec.getX(),
@@ -53,13 +54,14 @@ class Camera3d extends AbstractCamera{
     setWindowSize(width, height){
         super.setWindowSize(width, height);
         this.__updateLoc();
-        console.log("detect", width, height);
         return this;
     }
 
     //distance away from the location (handy for rotating around a point)
     setDistance(distance){
         this.distance = distance;
+        this.__updateLoc();
+        this.graphics.__updateHtmlShapesLoc();
         return this;
     }
     getDistance(){
@@ -70,6 +72,7 @@ class Camera3d extends AbstractCamera{
     setScale(scale){
         var ret = super.setScale(scale);
         this.__updateLoc();
+        this.graphics.__updateHtmlShapesLoc();
         return ret;
     }
 
@@ -125,7 +128,8 @@ class Camera3d extends AbstractCamera{
 
         this.rayCaster.setFromCamera(vec2, this.camera);
         var vector = new THREE.Vector3();
-        this.rayCaster.ray.at((vec.getZ()+this.distance), vector);
+        this.rayCaster.ray.at(vec.getZ()-this.distance/this.getTotalScale(), vector);
+        // this.rayCaster.ray.at((vec.getZ()), vector);
 
         return new Vec(vector);
     }
@@ -136,6 +140,7 @@ class Camera3d extends AbstractCamera{
         var vector = new THREE.Vector3(vec.getX(), vec.getY(), vec.getZ());
         vector.project(this.camera);
 
-        return new Vec((vector.x*0.5+0.5)*size.getX(), (-vector.y*0.5+0.5)*size.getY(), 0);
+        var depth = vec.sub(this.camera.position).getLength();
+        return new Vec((vector.x*0.5+0.5)*size.getX(), (-vector.y*0.5+0.5)*size.getY(), depth+this.distance/this.getTotalScale());
     }
 }

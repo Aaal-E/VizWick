@@ -6,10 +6,10 @@
 class PointLight3d extends Shape3d{
     constructor(graphics, color, intensity, distance, decay, preInit){
         super(graphics, color, function(){
-            this.color = typeof(color)=="Number"?color:0xffffff;
-            this.intensity = typeof(intensity)=="Number"?intensity:1;
-            this.distance = typeof(distance)=="Number"?distance:500;
-            this.decay = typeof(decay)=="Number"?decay:1;
+            this.color = typeof(color)=="number"?color:0xffffff;
+            this.intensity = typeof(intensity)=="number"?intensity:1;
+            this.distance = typeof(distance)=="number"?distance:5;
+            this.decay = typeof(decay)=="number"?decay:1;
 
             if(color && color.call) color.call(this);
             if(intensity && intensity.call) intensity.call(this);

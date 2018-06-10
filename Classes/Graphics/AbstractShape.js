@@ -428,6 +428,18 @@ class AbstractShape{
     __setParentShape(parent){
         this.parentShape = parent;
         this.__triggerRenderChange();
+
+
+        var tree = this.__getTree();
+        if(parent){
+            this.__updateAABB();
+            if(tree && this.storeInSpatialTree)
+                tree.insert(this);
+        }else{
+            if(tree && this.storeInSpatialTree)
+                tree.remove(this);
+        }
+
         return this;
     }
     getParentShape(){
@@ -453,7 +465,7 @@ class AbstractShape{
 
         var tree = this.__getTree();
         if(tree && this.storeInSpatialTree)
-        tree.insert(this);
+            tree.insert(this);
 
         this.isRendered = true;
         this.isAlive = true;
@@ -473,7 +485,7 @@ class AbstractShape{
 
             var tree = this.__getTree();
             if(tree && this.storeInSpatialTree)
-            tree.remove(this);
+                tree.remove(this);
 
             this.isRendered = false;
             this.__triggerRenderChange();
@@ -499,8 +511,12 @@ class AbstractShape{
         return this;
     }
     __triggerRenderChange(){
-        if(this.parentShape)
+        if(this.parentShape){
             this.isRendered = this.parentShape.isRendered;
+            this.isAlive = this.isRendered;
+        }
+        if(window.debug==2)    //show AABB iff rendering now
+            this.__updateAABB();
         for(var i=0; i<this.isRenderedListeners.length; i++){
             this.isRenderedListeners[i].call(this, this.isRendered);
         }
@@ -552,6 +568,36 @@ class AbstractShape{
 
                 //reinsert the data into the tree
                 if(tree) tree.insert(this);
+            }
+
+            //just visualize the aabb for debugging
+            if(window.debug==2){
+                if(!this.aabbCube){
+                    if(this instanceof Shape3d)
+                        this.aabbCube = new Cuboid3d(this.graphics, 0, 0, 0, 0x0000ff).setAlpha(0.15);
+                    if(this instanceof Shape2d)
+                        this.aabbCube = new Rectangle2d(this.graphics, 0, 0, 0x0000ff).setAlpha(0.15);
+                }
+
+                if(this instanceof Shape3d)
+                    this.aabbCube.setSize(
+                        this.aabb.maxX-this.aabb.minX,
+                        this.aabb.maxY-this.aabb.minY,
+                        this.aabb.maxZ-this.aabb.minZ
+                    ).setLoc(
+                        (this.aabb.maxX+this.aabb.minX)/2,
+                        (this.aabb.maxY+this.aabb.minY)/2,
+                        (this.aabb.maxZ+this.aabb.minZ)/2
+                    ).updateTransform();
+                // if(this instanceof Shape2d)
+
+                //visualize aabb
+                if(this instanceof Shape3d){
+                    if(!this.aabbCube.isRendered && this.isRendered)
+                        this.graphics.__getScene().add(this.aabbCube.mesh);
+                    if(this.aabbCube.isRendered && !this.isRendered)
+                        this.graphics.__getScene().remove(this.aabbCube.mesh);
+                }
             }
         }
         return this;

@@ -91,7 +91,7 @@ class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete sha
             this.graphics.__registerShapeLeave(this);
             this.graphics.__registerShapeRoot(this);
             if(this.__getChildNodes().length!=this.children.length)
-            this.graphics.__registerShapeCollapsed(this);
+                this.graphics.__registerShapeCollapsed(this);
 
             //initially a node is never expanded upon creation
             this.__changeState("expanded", this.node.getChildren().length==0);
@@ -102,12 +102,13 @@ class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete sha
 
             var children = this.__getChildrenFromNode(true);
             for(var i=0; i<children.length; i++)
-            this.__addChild(children[i]);
+                this.__addChild(children[i]);
 
             //update visuals for the state
             this.__stateChanged(null, null, this.state);
             this.__show();
         }
+
         return this;
     }
     __removeNode(){
@@ -121,7 +122,7 @@ class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete sha
 
         //remove itself from parent
         parent = this.getParent();
-        if(parent) parent.__removeChild(this);
+        if(parent && parent.__removeChild) parent.__removeChild(this);
 
         //remove fron children
         for(var i=0; i<this.children.length; i++)
@@ -221,7 +222,7 @@ class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete sha
         var p = this.getParent(onlyAlive);
         if(p){
             ret.push(p);
-            ret.push.apply(p, p.getAncestors(depth-1));
+            ret.push.apply(ret, p.getAncestors(depth-1));
         }
         return ret;
     }
@@ -230,7 +231,7 @@ class AbstractNodeShape extends AbstractShape{    //will 'extend' a concrete sha
         var p = this.getParent();
         if(p && p!=shape){
             ret.push(p);
-            ret.push.apply(p, p.getAncestors(depth-1));
+            ret.push.apply(ret, p.getAncestors(depth-1));
         }
         return ret;
     }

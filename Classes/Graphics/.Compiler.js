@@ -13,6 +13,7 @@ Compiler.compile([
     //general visualisation classes
     "Utils/XYZ.js",
     "Utils/Vec.js",
+    "Utils/Color.js",
     "AbstractCamera.js",
     "AbstractGraphics.js",
     "AbstractShape.js",

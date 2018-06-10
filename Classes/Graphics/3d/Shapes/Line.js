@@ -32,6 +32,7 @@ class Line3d extends Shape3d{
         });
         this.endPoint.onChange(function(){
             This.__markDirty();
+            This.__updateAABB();
         });
 
 
@@ -45,8 +46,12 @@ class Line3d extends Shape3d{
         this.prevTransform.endPoint = new XYZ(this.endPoint);
     }
     __createShape(){
-        this.geometry = new THREE.CylinderGeometry(1, this.widthRatio, 1, 32); //32 is accuracy of sorts
-        this.geometry.translate(0, 0.5, 0); //shift line upwards
+        if(Line3d.geometry[this.widthRatio])
+            this.geometry = Line3d.geometry[this.widthRatio];
+        else{
+            this.geometry = Line3d.geometry[this.widthRatio] = new THREE.CylinderGeometry(1, this.widthRatio, 1, 32); //32 is accuracy of sorts
+            this.geometry.translate(0, 0.5, 0); //shift line upwards
+        }
     }
 
 
@@ -70,6 +75,7 @@ class Line3d extends Shape3d{
         // this.__setEndPoint(0);
         this.__setPoints(0);
         this.__setMeshScale(0);
+        this.__updateAABB();
         return this;
     }
 
@@ -132,9 +138,8 @@ class Line3d extends Shape3d{
 
     //update line when rendering state changes
     __setParentShape(parent){
-        super.__setParentShape(parent);
-
         this.isRendered = parent.isRendered;
+        super.__setParentShape(parent);
         this.__triggerRenderChange();
 
         return this;
@@ -185,4 +190,69 @@ class Line3d extends Shape3d{
         super.__triggerScaleChange();
         this.setWidth(this.getWidth());
     }
+
+    //aabb fffor line
+
+    __getRadiusPadding(){
+        return this.getWidth()*this.getWorldScale();
+    }
+    __updateAABB(){
+        if(this.storeInSpatialTree){
+            var minRad = this.__getRadius() * this.getWorldScale();
+            var loc = this.getWorldLoc();
+            var loc2 = this.getEndPoint();
+
+            //check whether the shape moved outside of the loose bounding box
+            if( this.aabb.minX > Math.min(loc.getX(), loc2.getX())||
+                this.aabb.minY > Math.min(loc.getY(), loc2.getY())||
+                this.aabb.minZ > Math.min(loc.getZ(), loc2.getZ())||
+                this.aabb.maxX < Math.max(loc.getX(), loc2.getX())||
+                this.aabb.maxY < Math.max(loc.getY(), loc2.getY())||
+                this.aabb.maxZ < Math.max(loc.getZ(), loc2.getZ())){
+
+                //remove data from the tree
+                var tree = this.__getTree();
+                if(tree) tree.remove(this);
+
+                //update the bounding box
+                var padding = this.__getRadiusPadding();
+                this.aabb = {
+                    minX: Math.min(loc.getX(), loc2.getX()) - padding,
+                    minY: Math.min(loc.getY(), loc2.getY()) - padding,
+                    minZ: Math.min(loc.getZ(), loc2.getZ()) - padding,
+                    maxX: Math.max(loc.getX(), loc2.getX()) + padding,
+                    maxY: Math.max(loc.getY(), loc2.getY()) + padding,
+                    maxZ: Math.max(loc.getZ(), loc2.getZ()) + padding,
+                };
+
+                //reinsert the data into the tree
+                if(tree) tree.insert(this);
+            }
+
+
+            if(window.debug==2){
+                if(!this.aabbCube){
+                    this.aabbCube = new Cuboid3d(this.graphics, 0, 0, 0, 0xff0000).setAlpha(0.15);
+                }
+
+                this.aabbCube.setSize(
+                    this.aabb.maxX-this.aabb.minX,
+                    this.aabb.maxY-this.aabb.minY,
+                    this.aabb.maxZ-this.aabb.minZ
+                ).setLoc(
+                    (this.aabb.maxX+this.aabb.minX)/2,
+                    (this.aabb.maxY+this.aabb.minY)/2,
+                    (this.aabb.maxZ+this.aabb.minZ)/2
+                ).updateTransform();
+
+                //visualize aabb
+                if(!this.aabbCube.isRendered && this.isRendered)
+                    this.graphics.__getScene().add(this.aabbCube.mesh);
+                if(this.aabbCube.isRendered && !this.isRendered)
+                    this.graphics.__getScene().remove(this.aabbCube.mesh);
+            }
+        }
+        return this;
+    }
 }
+Line3d.geometry = {};

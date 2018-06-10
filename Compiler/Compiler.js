@@ -23,20 +23,39 @@ exports.compile = function(data, outputFiles){
         if(raw) file = raw[1];
 
         var filePath = path.join(process.cwd(), file);
+        var name = path.basename(filePath);
 
-        var fileContent = fs.readFileSync(filePath, 'utf8');
-        if(typeof(fileContent)!="string"){
-            throw Error("File "+file+" couldn't be found");
-            return;
+        var files = [];
+        if(name=="*"){
+            var dir = path.dirname(filePath);
+            var children = fs.readdirSync(dir);
+            for(var j=0; j<children.length; j++){
+                var child = children[j];
+                if(child[0]!=".")
+                    files.push(path.join(dir, child));
+            }
+        }else{
+            files.push(filePath);
         }
 
-        if(raw){
-            nonCompiled += fileContent+";\n";
-        }else{
-            concatenated += fileContent;
+        for(var j=0; j<files.length; j++){
+            var file = files[j];
+
+            var fileContent = fs.readFileSync(file, 'utf8');
+            if(typeof(fileContent)!="string"){
+                throw Error("File "+file+" couldn't be found");
+                return;
+            }
+
+            fileContent = fileContent.trim();
+            if(raw){
+                nonCompiled += fileContent+";\n";
+            }else{
+                concatenated += fileContent+";\n";
+            }
         }
     }
-    var compiled = babel.transform(concatenated, {filename:outputFile, presets:["env"], minified:true}).code;
+    var compiled = babel.transform(concatenated.trim(), {filename:outputFile, presets:["env"], minified:true, comments:false, plugins: ["transform-remove-strict-mode"]}).code;
     compiled = nonCompiled+compiled;
 
     var finishedCount = 0;
