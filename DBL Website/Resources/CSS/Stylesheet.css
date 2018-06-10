@@ -212,7 +212,7 @@ background-color: white;
   margin-top: 5px;
 }
 
-.home-button, .slideshow-button, .upload-button, .visualization-button, .last-visualization-button, .reset-button, .two-button, .four-button {
+.home-button, .slideshow-button, .upload-button, .visualization-button, .reset-button, .two-button, .four-button {
   height: 30px;
   background-color: white;
   border-radius: 10px;
@@ -221,6 +221,7 @@ background-color: white;
   box-sizing: border-box;
   text-align: center;
   display: inline-block;
+  cursor: pointer;
 }
 
 .two-button {
@@ -315,10 +316,6 @@ body#four .four-button {
   margin-right: 5px;
 }
 
-.visualization-button {
-  margin-right: 5px;
-}
-
 .center {
   position: relative;
   top: 50%;
@@ -378,7 +375,7 @@ body#four .four-button {
   border-bottom: 1px solid #80808057;
 }
 
-.title>.text {
+.title>.center{
   text-align: left;
   padding-bottom: 5px;
 }
@@ -386,6 +383,7 @@ body#four .four-button {
 .information-text {
   width: 100%;
   height: calc(100% - 30px);
+  box-sizing: border-box;
   padding: 5px;
 }
 
@@ -473,7 +471,7 @@ body#two .top-layout-part {
 .top-left,
 .top-right,
 .bottom-left,
-.bottom-right {
+.bottom-right{
   display: inline-block;
   width: calc(50% - 2.5px);
   height: 100%;
@@ -481,10 +479,16 @@ body#two .top-layout-part {
   border-radius: 10px;
   position: relative;
 }
+.top-left-inner,
+.top-right-inner,
+.bottom-left-inner,
+.bottom-right-inner{
+  position: relative;
+}
 
 .top-layout-part .option-pane,
 .bottom-layout-part .option-pane {
-  width: calc(100% - 2.5px);
+  width: 100%;
   position: absolute;
 }
 
@@ -504,23 +508,42 @@ body#two .top-layout-part {
   position: relative;
   height: 30px;
   overflow: hidden;
+
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+.top-layout-part .option-pane{
+  -webkit-box-align: end;
+  -webkit-align-items: flex-end;
+  -ms-flex-align: end;
+  align-items: flex-end;
+}
+.bottom-layout-part .option-pane{
+  -webkit-box-align: start;
+  -webkit-align-items: flex-start;
+  -ms-flex-align: start;
+  align-items: flex-start;
 }
 .inner-option-pane{
-  position: absolute;
   width: 100%;
-  left: 0;
 }
 .top-layout-part .inner-option-pane {
   border-top-right-radius: 10px;
   border-top-left-radius: 10px;
-  bottom: 0;
 }
 .bottom-layout-part .inner-option-pane{
   border-top-right-radius: 10px;
   border-top-left-radius: 10px;
-  top: 0;
 }
 
+.option-pane .options {
+  border-radius: 10px;
+  padding: 5px;
+  /* padding-top: 7px; */
+  box-sizing: border-box;
+}
 .option-pane .no-options{
   height: 70px;
   text-align: center
@@ -539,15 +562,27 @@ body#two .top-layout-part {
   column-rule: 1px solid #80808057;
 }
 
+.option-outer{
+  width: 100%;
+  height: 34px;
+  line-height: 34px;
+  overflow: hidden;
+
+  text-indent: 0em; /* To show paragraph starts. */
+  page-break-inside: avoid; /* For Firefox. */
+  -webkit-column-break-inside: avoid; /* For Chrome & friends. */
+  break-inside: avoid; /* For standard browsers like IE. :-) */
+}
 .option{
   /* width: 250px;*/
   width: 100%;
-  height: 34px;
-  line-height: 50px;
+  height: 100%;
   box-sizing: border-box;
   background-color: white;
-  border-bottom: 1px solid #dddcdf;
+  border-bottom: 2px solid #dddcdf;
   border-radius: 10px;
+  padding-left: 5px;
+  padding-right: 5px;
 }
 .option .option-name{
   float: left;
@@ -562,17 +597,18 @@ body#two .top-layout-part {
 
 /* option types */
 .option.button-type{
-  border-radius: 5px;
-  background: none;
   text-align: center;
   border: 1px solid rgb(0, 0, 0, 0.5);
   border-bottom-width: 3px;
 }
+.option.button-type:active{
+  margin-top: 2px;
+  height: calc(100% - 2px);
+  border-bottom-width: 1px;
+}
 .option.button-type .option-name{
-  /* background-color: white;
-  width: 100%;
-  height: 28px; */
-  /* box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5); */
+  float: none;
+  cursor: pointer;
 }
 
 .option.toggle-type .toggle{
@@ -627,12 +663,6 @@ body#two .top-layout-part {
   border-bottom-left-radius: 10px;
 } */
 
-.options {
-  border-radius: 10px;
-  padding: 5px;
-  padding-top: 7px;
-  box-sizing: border-box;
-}
 
 .top-layout-part .options,
 .bottom-layout-part .options {
@@ -658,21 +688,28 @@ body#two .top-layout-part {
   text-align: center;
   margin-left: 50%;
   transform: translateX(-50%);
-  cursor: pointer
+  cursor: pointer;
+  z-index: 500;
+}
+.top-layout-part .option-pane .notch {
+    border-top: 1px solid #80808057;
+}
+.bottom-layout-part .option-pane .notch {
+    border-bottom: 1px solid #80808057;
 }
 
 .left-pane, .right-pane {
-  width: calc(50% - 75px);
-  height: 30px;
+  width: 50%;
+  height: 27px;
   float: left;
   box-sizing: border-box;
   text-align: center;
+  overflow: hidden;
 }
 
 .left-pane {
   padding-left: 5px;
 }
-
 .show-visualization {
   width: auto;
   height: 100%;
@@ -683,23 +720,23 @@ body#two .top-layout-part {
   border-radius: 20px;
   color: gray;
 }
-
 .right-pane {
-  margin-left: 150px;
   padding-right: 5px;
 }
 
+
 .top-layout-part .left-pane,
 .top-layout-part .right-pane {
-  padding-top: 3px;
+  margin-top: 3px;
 }
 
 .bottom-layout-part .left-pane,
 .bottom-layout-part .right-pane {
-  padding-bottom: 3px;
+  margin-bottom: 3px;
 }
 
-.VR-button, .full-screen-button {
+
+.VR-button, .full-screen-button, .option-button-icon-type{
   width: 40px;
   height: 100%;
   float: right;
@@ -708,24 +745,16 @@ body#two .top-layout-part {
   border-radius: 20px;
   color: gray;
   cursor: pointer;
+  margin-left: 5px;
+}
+.frequent-buttons{
+  height: 100%;
 }
 
-.VR-button {
-  margin-right: 5px;
-}
-
-.top-layout-part .option-pane#options .notch {
-    border-top: 1px solid #80808057;
-}
-
-.bottom-layout-part .option-pane#options .notch {
-    border-bottom: 1px solid #80808057;
-}
-
-.top-layout-part .inner-option-pane,
+/* .top-layout-part .inner-option-pane,
 .top-layout-part .visible-part {
   bottom: 0;
-}
+} */
 
 .visible-part {
   width: 100%;
@@ -771,6 +800,35 @@ body#two .top-layout-part {
   width: 100%;
   height: 100%;
   background-color: black;
+  border-radius: 10px;
+}
+.drop-indicator {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+
+  opacity: 0;
+  transition: opacity 0.5s;
+
+  padding: 10px;
+  box-sizing: border-box;
+  pointer-events: none;
+}
+.dragging .drop-indicator{
+  opacity: 0.5;
+}
+.dropHover .drop-indicator{
+  opacity: 1;
+}
+.drop-indicator-inner{
+  margin-top: 30px;
+  border: 3px dashed white;
+  color: white;
+  height: calc(100% - 30px);
+  width: 100%;
+  box-sizing: border-box;
   border-radius: 10px;
 }
 

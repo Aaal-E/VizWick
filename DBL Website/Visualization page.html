@@ -14,6 +14,7 @@
     <script type="text/javascript" src="../Classes/GUI/resize.js"></script>
     <script type="text/javascript" src="Resources/JavaScript/Visualization page.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Contrail+One" rel="stylesheet">
+
   </head>
 
   <body id="two">
@@ -44,19 +45,19 @@
             </div>
           </div>
         </div><div class="visualizations">
-          <div class="visualization-button">
+          <div class="visualization-button noselect">
             <div class="center">Diamond Tree</div>
-          </div><div class="visualization-button">
+          </div><div class="visualization-button noselect">
             <div class="center">Froth</div>
-          </div><div class="visualization-button">
+          </div><div class="visualization-button noselect">
             <div class="center">Career Tree</div>
-          </div><div class="visualization-button">
+          </div><div class="visualization-button noselect">
             <div class="center">Pythagoras</div>
-          </div><div class="visualization-button">
+          </div><div class="visualization-button noselect">
             <div class="center">OneZoom</div>
-          </div><div class="visualization-button">
+          </div><div class="visualization-button noselect">
             <div class="center">Self Adapting Sunburst</div>
-          </div><div class="last-visualization-button">
+          </div><div class="visualization-button noselect">
             <div class="center">Orthographic Treemap</div>
           </div>
         </div><div class="two-four-buttons">
@@ -93,65 +94,17 @@
       </div><div class="right-section">
         <div class="layout">
           <div class="top-layout-part">
-            <div class="top-left">
+            <div class="top-left quadrant">
               <div class="top-left-inner">
                 <div class="option-pane" id="notch">
                   <div class="inner-option-pane">
                     <div class="options">
-                      <div class=no-options>
-                        <div class=text>
+                      <div class="no-options">
+                        <div class="center">
                           No options are available
                         </div>
                       </div>
                       <div class="option-columns">
-
-
-                        <div class="option button-type">
-                          <div class="option-name">
-                            test
-                          </div>
-                        </div>
-
-                        <!-- <div class="option toggle-type">
-                          <div class="option-name">
-                            test
-                          </div>
-                          <div class="option-value">
-                            <div class="toggle" id="off">
-                              <div class="center">
-                                <div class="circle">
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="option toggle-type">
-                          <div class="option-name">
-                            test2
-                          </div>
-                          <div class="option-value">
-                            <div class="toggle" id="off">
-                              <div class="center">
-                                <div class="circle">
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div> -->
-
-                        <script>
-                          $(function(){
-                            $(".toggle").click(function(){
-                              if ($(this).is("#on")) {
-                                $(this).attr("id", "off")
-                              } else {
-                                $(this).attr("id", "on")
-                              }
-                            });
-                          });
-                        </script>
-
-
                       </div>
                     </div>
                     <div class="visible-part">
@@ -162,7 +115,7 @@
                           </div>
                         </div>
                       </div>
-                      <div class="notch noselect">
+                      <div class="notch noselect" title="Open the options for this visualization">
                         <div class="center">
                           <div class="word">
                             Options
@@ -176,28 +129,34 @@
                         </div>
                       </div>
                       <div class="right-pane">
-                        <div class="frequent-buttons">
-                          <div class="center">
-                          </div>
-                        </div>
-                        <div class="full-screen-button">
+                        <div class="full-screen-button" title="View this visualization in fullscreen">
                           <div class="center">
                             <div class="fa fa-expand"></div>
                           </div>
                         </div>
-                        <div class="VR-button">
+                        <div class="VR-button" title="View this visualization in VR">
                           <div class="center">
                             VR
                           </div>
+                        </div>
+                        <div class="frequent-buttons">
+
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
                 <div class="visualization-area"></div>
+                <div class="drop-indicator">
+                  <div class="drop-indicator-inner">
+                    <div class="center">
+                      Drop
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-            <div class="top-right">
+            <div class="top-right quadrant">
               <div class="top-right-inner"></div>
               <script>
                 $(".top-right-inner").replaceWith(
@@ -208,7 +167,7 @@
               </script>
             </div>
           </div><div class="bottom-layout-part">
-            <div class="bottom-left">
+            <div class="bottom-left quadrant">
               <div class="bottom-left-inner">
                 <div class="visualization-area">
                 </div><div class="option-pane" id="notch">
@@ -260,7 +219,7 @@
                 </div>
               </div>
             </div>
-            <div class="bottom-right">
+            <div class="bottom-right quadrant">
               <div class="bottom-right-inner"></div>
               <script>
                 $(".bottom-right-inner").replaceWith(
