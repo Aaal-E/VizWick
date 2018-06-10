@@ -368,7 +368,7 @@ body#four .four-button {
   border-bottom-right-radius: 10px;
   text-align: center;
   cursor: pointer;
-  border-left: 1px solid gray;
+  border-left: 1px solid #80808057;
 }
 
 .collapse, .appear {
@@ -380,9 +380,6 @@ body#four .four-button {
   position: relative;
   top: 50%;
   transform: translate(0, -50%);
-}
-
-.visualization-page#information-collapse .collapse-button {
 }
 
 .right-section {
@@ -450,9 +447,17 @@ body#two .top-layout-part {
 .top-layout-part .option-pane,
 .bottom-layout-part .option-pane {
   width: calc(100% - 2.5px);
-  height: 180px;
-  background-color: green;
   position: absolute;
+}
+
+.top-layout-part .option-pane#notch,
+.bottom-layout-part .option-pane#notch {
+  height: 30px;
+}
+
+.top-layout-part .option-pane#options,
+.bottom-layout-part .option-pane#options {
+    height: 180px;
 }
 
 .bottom-layout-part .option-pane {
@@ -463,43 +468,51 @@ body#two .top-layout-part {
 .bottom-layout-part .inner-option-pane {
   width: 100%;
   height: 100%;
-  background-color: blue;
   position: absolute;
 }
 
+.top-layout-part .inner-option-pane {
+  bottom: 0;
+}
+
 .top-left .option-pane,
-.top-left .inner-option-pane,
-.top-left .options {
+.top-left .inner-option-pane {
   border-top-right-radius: 10px;
 }
 
 .top-right .option-pane,
-.top-right .inner-option-pane,
-.top-right .options {
+.top-right .inner-option-pane {
   border-top-left-radius: 10px;
 }
 
 .bottom-left .option-pane,
-.bottom-left .inner-option-pane,
-.bottom-left .options {
+.bottom-left .inner-option-pane {
   border-bottom-right-radius: 10px;
 }
 
 .bottom-right .option-pane,
-.bottom-right .inner-option-pane,
-.bottom-right .options {
+.bottom-right .inner-option-pane {
   border-bottom-left-radius: 10px;
+}
+
+.options {
+  border-radius: 10px;
 }
 
 .top-layout-part .options,
 .bottom-layout-part .options {
   width: 100%;
-  height: 150px;
-  background-color: yellow;
+  background-color: white;
 }
 
-.bottom-layout-part .options {
-  margin-top: 30px;
+.top-layout-part .option-pane#notch .options
+.bottom-layout-part .option-pane#notch .options {
+  height: 0;
+}
+
+.top-layout-part .option-pane#options .options,
+.bottom-layout-part .option-pane#options .options {
+  height: 150px;
 }
 
 .notch {
@@ -514,8 +527,42 @@ body#two .top-layout-part {
   transform: translateX(-50%);
 }
 
+.top-layout-part .option-pane#options .notch {
+    border-top: 1px solid #80808057;
+}
+
+.bottom-layout-part .option-pane#options .notch {
+    border-bottom: 1px solid #80808057;
+}
+
+.top-layout-part .inner-option-pane,
+.top-layout-part .visible-part {
+  bottom: 0;
+}
+
+.visible-part {
+  width: 100%;
+  height: 30px;
+}
+
 .word, .lower-arrow, .upper-arrow {
   display: inline-block;
+}
+
+.lower-arrow, .upper-arrow {
+  width: 20px;
+}
+
+.fa-caret-down, .fa-caret-up {
+  width: 100%;
+  cursor: pointer;
+}
+
+.top-layout-part .option-pane#notch .upper-arrow,
+.bottom-layout-part .option-pane#notch .lower-arrow,
+.top-layout-part .option-pane#options .lower-arrow,
+.bottom-layout-part .option-pane#options .upper-arrow {
+  display: none;
 }
 
 .word {
