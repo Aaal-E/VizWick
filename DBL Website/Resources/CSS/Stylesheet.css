@@ -823,13 +823,15 @@ body#two .top-layout-part {
   opacity: 1;
 }
 .drop-indicator-inner{
-  margin-top: 30px;
   border: 3px dashed white;
   color: white;
   height: calc(100% - 30px);
   width: 100%;
   box-sizing: border-box;
   border-radius: 10px;
+}
+.top-layout-part .drop-indicator-inner{
+  margin-top: 30px;
 }
 
 body#four .top-left-inner,
@@ -844,6 +846,10 @@ body#two .top-left-inner,
 body#two .top-right-inner {
   width: calc(100% - 2.5px);
   height: 100%;
+}
+body#two .resizeContainer.vertical>.resizeHandle{
+  /* remove the vertical resize arrow if you can't resize */
+  display: none;
 }
 
 .top-right-inner,
