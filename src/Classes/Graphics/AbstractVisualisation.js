@@ -26,6 +26,7 @@ class AbstractVisualisation extends AbstractGraphics{    //will 'extend' concret
         this.__setupOptions(options);
 
         this.DOMEventListeners.mouseUp = (function(event){
+            // console.log("detect");
             if(this.shapes.unique.dragging){
                 this.shapes.unique.dragging.__changeState("dragged", false);
                 event.preventDefault();

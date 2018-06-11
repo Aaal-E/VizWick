@@ -10,4 +10,4 @@ Compiler.compile([
     "pixiLayers.js",
     "stats.js",
     "RBush-3d.js",
-], [".Compiled.js", "../Tests/Visualisation/Scripts/Libraries.js"]);
+], [".Compiled.js", "../../Tests/Visualisation/Scripts/Libraries.js", "../../Resources/Scripts/Libraries.js"]);

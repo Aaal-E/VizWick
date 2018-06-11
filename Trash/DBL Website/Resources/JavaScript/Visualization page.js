@@ -16,9 +16,17 @@ $(function(){
   //Collapsing and appearing the information section
   $(".collapse").click(function(){
     $(".visualization-page").attr("id", "information-collapse");
+    $(".left-section").animate({width:10}, 500);
+    $(".right-section").animate({width:$(window).width()-25}, {duration:500, complete:function(){
+      $(this).width("calc(100% - 25px)");
+    }});
   });
   $(".appear").click(function(){
     $(".visualization-page").attr("id", "information-appear");
+    $(".left-section").animate({width:300}, 500);
+    $(".right-section").animate({width:$(window).width()-315}, {duration:500, complete:function(){
+      $(this).width("calc(100% - 315px)");
+    }});
   });
 
   //Going from two to four visualization areas and vice versa
@@ -140,8 +148,11 @@ $(function(){
           var properties = ["color", "background-color", "border-radius", "border-color", "border-width", "height", "font-size", "font"];
           for(var i=0; i<properties.length; i++){
             var prop = properties[i];
-            data[prop] = visAreaName.css(prop);
+            var val = visAreaName.css(prop);
+            if(val)
+              data[prop] = val;
           }
+          console.log(data);
 
           //perform the animations
           element.css({borderStyle:"solid"}).animate(data, {duration:duration, complete:function(){

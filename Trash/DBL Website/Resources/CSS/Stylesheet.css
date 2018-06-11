@@ -329,8 +329,9 @@ body#four .four-button {
 
 .left-section {
   height: calc(100% - 45px);
-  transition: width 0.5s, height 0.5s;
+  transition: height 0.5s;
   position: relative;
+    width: 300px;
 }
 .left-section-inner{
   height: 100%;
@@ -338,15 +339,6 @@ body#four .four-button {
   position: absolute;
   top: 0;
   right: 0;
-}
-
-.visualization-page#information-appear .left-section {
-  width: 300px;
-}
-
-.visualization-page#information-collapse .left-section {
-  width: 11px;
-  margin-left: -1px;
 }
 
 .information-section {
@@ -425,16 +417,13 @@ body#four .four-button {
 .right-section {
   height: calc(100% - 45px);
   margin-left: 10px;
-  transition: width 0.5s, height 0.5s;
-}
-
-.visualization-page#information-appear .right-section {
+  transition: height 0.5s;
   width: calc(100% - 315px);
 }
 
-.visualization-page#information-collapse .right-section {
+/* .visualization-page#information-collapse .right-section {
   width: calc(100% - 25px);
-}
+} */
 
 .left-section, .right-section {
   display: inline-block;

@@ -71,7 +71,6 @@ class Graphics2d extends AbstractGraphics{
             var mouseDown = function(data){
                 This.mouse.pressed = true;
                 This.__triggerMousePress(true, data);
-                data.data.originalEvent.preventDefault();
             };
             var mouseUp = function(data){
                 This.mouse.pressed = false;
@@ -138,9 +137,21 @@ class Graphics2d extends AbstractGraphics{
                     }
                 }, true);
             };
+            this.DOMEventListeners.mousedown = function(event){
+                //don't permit text selection while dragging
+                event.clientX = This.mouse.clientX;
+                event.clientY = This.mouse.clientY;
+                var offset = This.getCanvas().offset();
+                if(event.clientX<offset.left || event.clientX>offset.left+This.getWidth() ||
+                    event.clientY<offset.top || event.clientY>offset.top+This.getHeight())
+                    return;
+
+                event.preventDefault();
+            };
             $(window).on('mousewheel', this.DOMEventListeners.scroll);
             $(window).on('keydown', this.DOMEventListeners.keypress);
             $(window).on('keyup', this.DOMEventListeners.keypress);
+            $(window).on('mousedown', this.DOMEventListeners.mousedown);
         }
 
         //connect a camera
@@ -157,6 +168,7 @@ class Graphics2d extends AbstractGraphics{
         $(window).off('mousewheel', this.DOMEventListeners.scroll);
         $(window).off('keydown', this.DOMEventListeners.keypress);
         $(window).off('keyup', this.DOMEventListeners.keypress);
+        $(window).off('mousedown', this.DOMEventListeners.mousedown);
         super.destroy();
     }
 

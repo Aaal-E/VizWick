@@ -68,4 +68,4 @@ Compiler.compile([
 
         //all 3d visualisation data coming together
         "3d/Visualisation.js",
-], [".Compiled.js", "../../Tests/Visualisation/Scripts/Visualisation.js"]);
+], [".Compiled.js", "../../../Tests/Visualisation/Scripts/Graphics.js", "../../../Resources/Scripts/Graphics.js"]);
