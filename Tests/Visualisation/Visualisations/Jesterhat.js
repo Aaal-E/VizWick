@@ -14,18 +14,18 @@
             this.lit = new VIZ2D.Circle(gfx, 36, 0xffff00);
             this.circle = new VIZ2D.Circle(gfx, 30, 0xff0000);
             this.addShape(this.circle);
-            this.label = new VIZ2D.Circle(gfx, 10, 0x70ff00ff);
-            this.label.setLoc(20, 20,0);
             this.text = new VIZ2D.HtmlShape(gfx, '<p style="background-color:orange">' + node.getName() + "</p>", 0x000000);
             this.text.setScale(2);
+			
 
             this.setZ(-this.getNode().getDepth());
 
             this.onHover(
                 function(enter){
-                    if(enter)
+                    if(enter){
+						this.text.setLoc(0,-40/(this.getGraphics().getCamera().scale*this.getWorldScale()),0);
                         this.addShape(this.text);
-                    else{
+					}else{
                         this.removeShape(this.text);
                     }
             });
@@ -109,6 +109,7 @@
         }
 
         highlight(){
+			this.text.setLoc(0,-40/(this.getGraphics().getCamera().scale*this.getWorldScale()),0);
             this.addShape(this.lit);
             this.lit.setZ(-100);
             this.addShape(this.text);
@@ -173,7 +174,7 @@
     //attach some data to be displayed on the webpage
     Jesterhat.description = {
         name: "Jesterhat",
-        description: "",
+        description: "a recursive tree visualisation, remotely based on pythagoras trees",
         image: ""   //should contain some image path relative to the page
     };
 
