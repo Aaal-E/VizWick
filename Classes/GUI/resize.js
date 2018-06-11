@@ -2,6 +2,8 @@
     A jQuery plugin to make resizable areas
     Author: Tar van Krieken
     Starting Date: 02/05/2018
+
+    for the future: remove hidden data 'sizes'
 */
 
 (function(){
