@@ -6,6 +6,12 @@ $(function(){
   //Resizing of the visualization areas
   $(".layout").resizeContainer({vertical:true});
   $(".top-layout-part, .bottom-layout-part").resizeContainer({vertical:false});
+  //skip transition
+  var quadrants = $(".top-layout-part, .bottom-layout-part").find(".quadrant");
+  quadrants.css("transition","none");
+  setTimeout(function(){
+    quadrants.css("transition","");
+  });
 
   //Collapsing and appearing the information section
   $(".collapse").click(function(){
@@ -39,11 +45,33 @@ $(function(){
     }
   });
 
+  //fullscreen buttons
+  $(".full-screen-button").click(function(){
+    var body = $("body");
+    if(body.is(".fullscreen")){
+      body.attr("class", body.attr("class").replace(/fullscreen.*/g, ""));
+    }else{
+      body.addClass("fullscreen")
+          .addClass("fullscreen-"+$(this).closest(".quadrant").attr("class").split(" ")[0]);
+    }
+  });
+
+  //reset grid code
+  $(".reset-button").click(function(){
+    $(".top-layout-part, .bottom-layout-part").height("50%");
+    $(".top-left, .top-right, .bottom-left, .bottom-right").width("50%");
+    //set the associated data
+    $(".layout, .top-layout-part, .bottom-layout-part").each(function(){
+      this.sizes = [0.5, 0.5];
+    });
+  });
+
   //Drag and drop
   {
     var dragging = null;
     $(".visualizations").children().each(function(){
       $(this).mousedown(function(event){
+        event.preventDefault();
         var This = $(this);
 
         var offset = This.offset();
@@ -59,9 +87,14 @@ $(function(){
           }
         };
 
-        $("body").addClass("dragging");
-        event.preventDefault();
+        //hide the default visualization text
         This.css("opacity", 0);
+
+        //indicate that we are now selecting a visualization
+        $("body").addClass("dragging");
+        $(".quadrant").each(function(){ //make sure teh dropzone sizes are correct
+          $(this).find(".drop-indicator").height("calc(100% - "+$(this).find(".option-pane").height()+"px)")
+        });
       });
     });
     $(window).mousemove(function(event){
@@ -87,7 +120,7 @@ $(function(){
             vPos.top<offset.top+size.height &&
             vPos.left+vSize.width>offset.left &&
             vPos.top+vSize.height>offset.top){
-            dragging.overArea = visualisationArea.closest(".quadrant").addClass("dropHover");
+            var a = dragging.overArea = visualisationArea.closest(".quadrant").addClass("dropHover");
             break;
           }
         }
