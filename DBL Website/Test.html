@@ -95,7 +95,7 @@ $(".fa-chevron-right").click(function(){
   counter+=1;
   if(Math.abs(counter)>=color.length){counter=0;}
 $('.photo-area').css('background-color', color[counter]);
-  console.log(counter);
+
 });
 
 $(".fa-chevron-left").click(function(){
@@ -106,7 +106,7 @@ $(".fa-chevron-left").click(function(){
   }else{
    $('.photo-area').css('background-color', color[counter]);
   }
-    console.log(counter);
+
 });
 
 $(".dot").click(function(){
