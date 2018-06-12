@@ -720,5 +720,9 @@ window.VRCamera = new
                 this.selectedVisualisation = visualisation;
             }
         }
+        return this;
+    }
+    getVisualisation(){
+        return this.visualisation;
     }
 })();

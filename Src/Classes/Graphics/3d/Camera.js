@@ -54,8 +54,7 @@ class Camera3d extends AbstractCamera{
     setWindowSize(width, height){
         super.setWindowSize(width, height);
 
-        this.windowSizeScaleFactor /=  width/1920;
-        this.setScale(this.getScale());
+        this.windowSizeScaleFactor /= width/1920;
 
         this.width = width;
         this.height = height;
@@ -63,6 +62,7 @@ class Camera3d extends AbstractCamera{
         this.camera.aspect = width/height;
 
         this.__updateLoc();
+        this.setScale(this.getScale());
         return this;
     }
 

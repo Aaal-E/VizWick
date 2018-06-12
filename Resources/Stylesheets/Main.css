@@ -381,6 +381,23 @@ body#four .four-button {
   height: calc(100% - 30px);
   box-sizing: border-box;
   padding: 5px;
+  overflow: auto;
+}
+.information-text .stat:after{
+  content: " ";
+  clear: both;
+  display: block;
+}
+.information-text .stat-title{
+  float: left;
+  width: 50%;
+}
+.information-text .stat-title:after{
+  content: ":";
+}
+.information-text .stat-value{
+  float: left;
+  width: 50%;
 }
 
 .visualization-page#information-collapse .collapse-button {

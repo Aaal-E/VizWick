@@ -30,6 +30,11 @@
     <script src=Tests/Visualisation/Visualisations/Tree.js></script>
 
     <script src=Tests/Visualisation/Scripts/TestTree.js></script>
+    <script>
+      $(function(){
+        VisualisationHandler.setTree(VisualisationHandler.getTree());
+      })
+    </script>
 
 
   </head>
@@ -64,12 +69,12 @@
         </div><div class="visualizations">
           <!-- will be filled in by the script -->
         </div><div class="two-four-buttons">
-          <div class="two-button">
+          <div class="two-button" title="Show 2 visualizations at once">
             <div class="center">2X</div>
-          </div><div class="four-button">
+          </div><div class="four-button" title="Show 4 visualizations at once">
             <div class="center">4X</div>
           </div>
-        </div><div class="reset-button">
+        </div><div class="reset-button" title="Reset sizes of visualizations">
           <div class="center">
             <div class="fa fa-th-large"></div>
           </div>
@@ -82,7 +87,72 @@
                 <div class="center">Statistics</div>
               </div>
               <div class="information-text">
-
+                <div class="node-stats">
+                  <div class="node-stats-title">
+                    Selected Node
+                  </div>
+                  <div class="name stat">
+                    <div class="stat-title">Name</div>
+                    <div class="stat-value"></div>
+                  </div>
+                  <Div class="path stat">
+                    <div class="stat-title">Path</div>
+                    <div class="stat-value"></div>
+                  </div>
+                  <Div class="parent stat">
+                    <div class="stat-title">Parent</div>
+                    <div class="stat-value"></div>
+                  </div>
+                  <Div class="children stat">
+                    <div class="stat-title">Children</div>
+                    <div class="stat-value"></div>
+                  </div>
+                  <Div class="child-count stat">
+                    <div class="stat-title">Child count</div>
+                    <div class="stat-value"></div>
+                  </div>
+                  <Div class="depth stat">
+                    <div class="stat-title">Depth</div>
+                    <div class="stat-value"></div>
+                  </div>
+                  <Div class="height stat">
+                    <div class="stat-title">Height</div>
+                    <div class="stat-value"></div>
+                  </div>
+                  <Div class="descendant-count stat">
+                    <div class="stat-title">Descendant count</div>
+                    <div class="stat-value"></div>
+                  </div>
+                </div>
+                <div class="general-stats">
+                  <div class="general-stats-title">
+                    General
+                  </div>
+                  <Div class="general-name stat">
+                    <div class="stat-title">Name</div>
+                    <div class="stat-value"></div>
+                  </div>
+                  <Div class="general-size stat">
+                    <div class="stat-title">Size</div>
+                    <div class="stat-value"></div>
+                  </div>
+                  <Div class="general-height stat">
+                    <div class="stat-title">Height</div>
+                    <div class="stat-value"></div>
+                  </div>
+                  <Div class="general-node-count stat">
+                    <div class="stat-title">Node count</div>
+                    <div class="stat-value"></div>
+                  </div>
+                  <Div class="general-average-child-count stat">
+                    <div class="stat-title">Average child count</div>
+                    <div class="stat-value"></div>
+                  </div>
+                  <Div class="general-leave-count stat">
+                    <div class="stat-title">Leaf count</div>
+                    <div class="stat-value"></div>
+                  </div>
+                </div>
               </div>
             </div><div class="collapse-button">
               <div class="collapse">
@@ -114,7 +184,7 @@
                       <div class="left-pane">
                         <div class="show-visualization">
                           <div class="center">
-
+                            None
                           </div>
                         </div>
                       </div>
@@ -137,7 +207,7 @@
                             <div class="fa fa-expand"></div>
                           </div>
                         </div>
-                        <div class="VR-button" title="View this visualization in VR">
+                        <div class="VR-button" title="View this visualization in VR" style=display:none>
                           <div class="center">
                             VR
                           </div>
@@ -188,11 +258,11 @@
                       <div class="left-pane">
                         <div class="show-visualization">
                           <div class="center">
-
+                            None
                           </div>
                         </div>
                       </div>
-                      <div class="notch noselect">
+                      <div class="notch noselect" title="Open the options for this visualization">
                         <div class="center">
                           <div class="word">
                             Options
@@ -206,12 +276,12 @@
                         </div>
                       </div>
                       <div class="right-pane">
-                        <div class="full-screen-button">
+                        <div class="full-screen-button" title="View this visualization in fullscreen">
                           <div class="center">
                             <div class="fa fa-expand"></div>
                           </div>
                         </div>
-                        <div class="VR-button">
+                        <div class="VR-button" title="View this visualization in VR" style=display:none>
                           <div class="center">
                             VR
                           </div>
