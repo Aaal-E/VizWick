@@ -232,7 +232,7 @@
     }
     class Tree extends VIZ3D.Visualisation{
         constructor(container, tree, options){
-            // window.debug = true;//for testing
+            // window.debugging = true;//for testing
             super(container, tree, options);
 
             this.random = Math.seed(10);
@@ -245,7 +245,7 @@
                     camera.getRot().add(0, options.getValue("rotation")/30, 0);
             });
             camera.setXRot(-0.6).setYRot(0.5*Math.PI);
-            camera.setDistance(0.8);
+            camera.setDistance(1.2);
             var This = this;
             This.dragging = false;
             this.onMousePress(function(down, event){
@@ -311,7 +311,8 @@
 
 
             //focus on root
-            this.getShapesRoot()[0].focus();
+            var focused = VisualisationHandler.getSynchronisationData().focused||this.getShapesRoot()[0].getNode();
+            this.synchronizeNode("focused", focused);
 
             window.vis = this;//for debugging
         }
@@ -325,7 +326,7 @@
             }));
 
             //add rotation speed option
-            options.add(new Options.Number("rotation", 0.5));
+            options.add(new Options.Number("rotation").setValue(0.5));
         }
         __setupRoot(){
             var node = this.tree.getRoot();

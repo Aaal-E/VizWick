@@ -1,4 +1,8 @@
 (function(){
+	var colors = {
+        labelBG: 0xD2691E,
+        labelBorder: 0x5b2b09,
+    }
     //from: https://stackoverflow.com/a/17243070
     function HSVtoInt(h, s, v){
         var r, g, b, i, f, p, q, t;
@@ -34,8 +38,18 @@
             this.color = HSVtoInt(this.getDepth()/6, 1, 1);
             this.circle = new VIZ2D.Circle(gfx, 30, this.color);
             this.addShape(this.circle);
-            this.text = new VIZ2D.HtmlShape(gfx, '<p style="background-color:orange">' + node.getName() + "</p>", 0x000000);
-            this.text.setScale(2);
+			var bg = colors.labelBG.toString(16);
+            var border = colors.labelBorder.toString(16);
+            this.text = new VIZ2D.HtmlShape(gfx, "<span style='"+
+                    "background-color: #"+bg+";"+
+                    "padding: 5px;"+
+                    "display: inline-block;"+
+                    "border: 2px solid #"+border+";"+
+                    "border-radius: 10px;"+
+                    "'>"+
+                    this.getNode().getName()+
+                "</span>");
+            this.text.setScale(1);
 
             //this.onClick(function(){
             //    this.focus();
@@ -133,6 +147,7 @@
             return NodeShape;
         }
 
+        
         //update the current state of the screen
         updateScreen(){
             this.shapes.root[0].destroyDescendants(1);
@@ -146,7 +161,7 @@
                     this.loadShape(shape.getChildren()[i]);
                 }
             }
-        }
+		}
     }
 
     //attach some data to be displayed on the webpage
