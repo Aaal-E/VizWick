@@ -38,24 +38,103 @@
 
 
   </head>
+  <body>
 
+<!-- Welcome run-in page -->
+    <div class="welcome-page pactive" id="p1">
+      <div class="text-subpart">
+        <div class="text-align">
+        <div class="main-text">Welcome</div>
+        <div class="description">
+          <div class="parenthesis"><div class="fa fa-quote-left"></div></div>
+          <div class="description-text">The webpage that aims to visualize hierarchical data in the most interactive and simple way possible.</div>
+          <div class="parenthesis"><div class="fa fa-quote-right"></div></div>
+        </div>
+        <div class="group-members">
+          <div class="member-name">Adrian Vramulet</div>
+          <div class="member-name">Alex Thieme</div>
+          <div class="member-name">Alina Vorobiova</div>
+          <div class="member-name">Denis Shehu</div>
+          <div class="member-name">Mara Miulescu</div>
+          <div class="member-name">Mehrdad Farsadyar</div>
+          <div class="member-name">Tar van Krieken</div>
+        </div>
+      </div>
+        <div class="go-to">
+          <div class="left-part" >
+            <div class="go_to_page">Go to preview page</div>
+            <div class="go_to_icon nav" id="2"><div class="fa fa-chevron-down"></div></div>
+          </div>
+          <div class="right-part">
+            <div class="go_to_page">Go to the visualization page</div>
+            <div class="go_to_icon nav" id="3"><div class="fa fa-chevron-down"></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="video-subpart">
+         <video width="100%" type="video/mov" src="./Resources/Media/IPhone 8 Ad.mov" controls>
+         </video>
+      </div>
+    </div>
+
+    <!-- Slideshow page-->
+        <div class="slideshow-page" id="p2">
+        <div class="navigation-subpart">
+          <div class="go-to-welcome-page nav" id="1">
+            <div class="go-to-arrow">
+            <div class="fa fa-chevron-up"></div>
+          </div>
+          <div class="arrow-description">Welcome page</div>
+          </div>
+          <div class="go-to-visualization-page nav" id="3">
+            <div class="arrow-description">Visualizations</div>
+            <div class="go-to-arrow">
+            <div class="fa fa-chevron-down"></div>
+          </div>
+          </div>
+        </div>
+        <div class="slideshow-subpart">
+          <div class="slideshow-area">
+            <div class="left-arrow">
+          <div class="fa fa-chevron-left"></div>
+            </div>
+            <div class="right-arrow">
+            <div class="fa fa-chevron-right"></div>
+            </div>
+            <div class="photo-area">
+             photo stuff
+           </div>
+            <div class="dot-navigation">
+              <div class="dot" id="0"></div>
+              <div class="dot" id="1"></div>
+              <div class="dot" id="2"></div>
+              <div class="dot" id="3"></div>
+              <div class="dot" id="4"></div>
+            </div>
+          </div>
+          <div class="vis-name">
+            Some name
+          </div>
+          <div class="vis-description">
+            A big description
+          </div>
+         </div>
+        </div>
+
+
+
+<!-- Visualization page-->
   <body id="two">
-
-    <div class="visualization-page" id="information-appear">
-
+    <div class="visualization-page" id="information-appear p3">
       <div class="top-section">
         <div class="buttons">
-          <div class="home-button">
+          <div class="home-button nav" id="1">
             <div class="center">
-              <a href="Welcome page.html">
                 <div class="fa fa-home"></div>
-              </a>
             </div>
-          </div><div class="slideshow-button">
-            <div class="center">
-              <a href="Slideshow page.html">
+          </div><div class="slideshow-button nav" id="2">
+            <div class="nav center">
                 <div class="fa fa-info"></div>
-              </a>
             </div>
           </div><div class="upload-button">
             <div class="center">
@@ -318,7 +397,48 @@
         </div>
       </div>
     </div>
+ </body>
+</body>
 
-  </body>
+<script>
+
+var color=["red", "black","gray", "yellow", "blue"];
+var counter=0;
+
+$(".fa-chevron-right").click(function(){
+  counter+=1;
+  if(Math.abs(counter)>=color.length){counter=0;}
+$('.photo-area').css('background-color', color[counter]);
+
+});
+
+$(".fa-chevron-left").click(function(){
+  counter-=1;
+  if(Math.abs(counter)>=color.length){counter=0;}
+  if(counter<0){
+    $('.photo-area').css('background-color', color[color.length+counter]);
+  }else{
+   $('.photo-area').css('background-color', color[counter]);
+  }
+
+});
+
+$(".dot").click(function(){
+  counter=$(this).attr('id');
+$('.photo-area').css('background-color', color[$(this).attr('id')]);
+});
+
+
+$(".nav").click(function () {
+  $(".active").removeClass("active");
+  $(this).addClass("active");
+  $(".pactive").fadeOut(200,function () {
+      $(this).removeClass("pactive");
+  });
+    $("#p" + this.id).fadeIn(200, function () {
+        $(this).addClass("pactive");
+    });
+});
+</script>
 
 </html>
