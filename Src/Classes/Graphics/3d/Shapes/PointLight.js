@@ -18,7 +18,7 @@ class PointLight3d extends Shape3d{
             if(preInit && preInit.call) preInit.call(this);
         });
 
-        if(window.debug){
+        if(window.debugging){
             var geometry = new THREE.SphereGeometry(0.005, 32, 32);
             var material = new THREE.MeshBasicMaterial(0xffffff);
             var sphere = new THREE.Mesh(geometry, material);

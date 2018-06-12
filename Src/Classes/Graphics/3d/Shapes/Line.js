@@ -230,7 +230,7 @@ class Line3d extends Shape3d{
             }
 
 
-            if(window.debug==2){
+            if(window.debugging==2){
                 if(!this.aabbCube){
                     this.aabbCube = new Cuboid3d(this.graphics, 0, 0, 0, 0xff0000).setAlpha(0.15);
                 }

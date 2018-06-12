@@ -53,6 +53,15 @@ class Camera3d extends AbstractCamera{
 
     setWindowSize(width, height){
         super.setWindowSize(width, height);
+
+        this.windowSizeScaleFactor /=  width/1920;
+        this.setScale(this.getScale());
+
+        this.width = width;
+        this.height = height;
+        this.setFOV(this.getFOV());
+        this.camera.aspect = width/height;
+
         this.__updateLoc();
         return this;
     }
@@ -79,7 +88,9 @@ class Camera3d extends AbstractCamera{
     //FOV
     setFOV(fov){
         this.fov = fov;
-        this.camera.fov = fov;
+        //from: https://stackoverflow.com/a/25922919/3080469
+        var tanFOV = Math.tan( ( ( Math.PI / 180 ) * this.fov / 2 ));
+        this.camera.fov = (360 / Math.PI) * Math.atan(tanFOV * (this.height / this.width));
         this.camera.updateProjectionMatrix();
         return this;
     }

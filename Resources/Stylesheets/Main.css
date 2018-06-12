@@ -501,6 +501,7 @@ body#two .top-layout-part {
   position: relative;
   height: 30px;
   overflow: hidden;
+  z-index: 1000;
 
   display: -webkit-box;
   display: -webkit-flex;
@@ -794,7 +795,16 @@ body#two .top-layout-part {
   height: 100%;
   background-color: black;
   border-radius: 10px;
+  overflow: hidden;
 }
+.visualization-area canvas.three,
+.visualization-area canvas.pixi{
+  position: relative;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
 .drop-indicator {
   position: absolute;
   left: 0px;

@@ -8,17 +8,17 @@ class Graphics3d extends AbstractGraphics{
         super(width, height, container);
 
         //resize listener
-        this.container.on("finishResize", function(event, size){
+        this.container.on("finishResize, resize", function(event, size){
             var newSize = {
                 width:This.container.width(),
                 height:This.container.height()
             };
-            This.renderer.setSize(newSize.width, newSize.height);
-            This.camera.camera.aspect = newSize.width/newSize.height;
 
             This.size = newSize;
 
             This.camera.setWindowSize(newSize.width, newSize.height);
+
+            This.renderer.setSize(newSize.width, newSize.height);
             // This.camera.__updateLoc();
         });
 

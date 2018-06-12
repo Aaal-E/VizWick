@@ -14,7 +14,7 @@ class Graphics2d extends AbstractGraphics{
         var This = this;
         $(this.app.view).addClass("pixi").attr("oncontextmenu","return false;");
         this.container.append(this.app.view);
-        this.container.on("finishResize", function(event, size){
+        this.container.on("finishResize, resize", function(event, size){
             var newSize = {
                 width:This.container.width(),
                 height:This.container.height()

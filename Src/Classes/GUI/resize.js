@@ -15,7 +15,7 @@
                 "</div>"+
             "</div>");
         var isVertical = container.is(".vertical");
-        handle.mousedown(function(){
+        handle.mousedown(function(e){
             var This = $(this);
             var handleIndex = Math.floor(This.index()/2);
             moveFunc = function(x, y){
@@ -32,6 +32,7 @@
                 triggerFinishResize(next);
                 triggerFinishResize(prev);
             }
+            e.stopImmediatePropagation();
         })
         container.append(handle);
     }
@@ -159,7 +160,6 @@
     }
     function triggerResize(content){
         var newSize = {width:content.width(), height:content.height()};
-        var event = new CustomEvent("resize");
         content.add(content.find(".resizeContainer, canvas")).trigger("resize", {newSize:newSize, oldSize:content.data("size")});
         content.data("size", newSize);
     }
@@ -272,10 +272,12 @@
     //add drag listeners
     var moveFunc;
     var releaseFunc;
-    $(document).mouseup(function(){
-        if(releaseFunc)
+    $(document).mouseup(function(e){
+        if(releaseFunc){
             releaseFunc();
-        releaseFuc = null;
+            e.stopImmediatePropagation();
+        }
+        releaseFunc = null;
         moveFunc = null;
     }).mousemove(function(e){
         if(moveFunc){

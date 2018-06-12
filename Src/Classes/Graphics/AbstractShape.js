@@ -515,7 +515,7 @@ class AbstractShape{
             this.isRendered = this.parentShape.isRendered;
             this.isAlive = this.isRendered;
         }
-        if(window.debug==2)    //show AABB iff rendering now
+        if(window.debugging==2)    //show AABB iff rendering now
             this.__updateAABB();
         for(var i=0; i<this.isRenderedListeners.length; i++){
             this.isRenderedListeners[i].call(this, this.isRendered);
@@ -571,7 +571,7 @@ class AbstractShape{
             }
 
             //just visualize the aabb for debugging
-            if(window.debug==2){
+            if(window.debugging==2){
                 if(!this.aabbCube){
                     if(this instanceof Shape3d)
                         this.aabbCube = new Cuboid3d(this.graphics, 0, 0, 0, 0x0000ff).setAlpha(0.15);

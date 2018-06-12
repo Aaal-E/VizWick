@@ -52,7 +52,7 @@ class AbstractGraphics{
         this.UID = Math.floor(Math.random()*Math.pow(10, 10));
 
 
-        if(window.debug) this.__setupFpsCounter();
+        if(window.debuggingging) this.__setupFpsCounter();
     }
     getCamera(){
         return this.camera;

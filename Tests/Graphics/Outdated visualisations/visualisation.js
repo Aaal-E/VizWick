@@ -64,7 +64,7 @@ active:[],//shapes that receive update events
 html:[]//html shapes that aren't part of pixi
 };this.maxNodeCount=12;//the max number of nodes that can be visible at any point
 this.spatialTree=new rbush3d(16,[".aabb.minX",".aabb.minY",".aabb.minZ",".aabb.maxX",".aabb.maxY",".aabb.maxZ"]);;//create an UID to be used when searching for shapes in the tree
-this.UID=Math.floor(Math.random()*Math.pow(10,10));if(window.debug)this.__setupFpsCounter()}_createClass(AbstractGraphics,[{key:"getCamera",value:function getCamera(){return this.camera}},{key:"getSpatialTree",value:function getSpatialTree(){return this.spatialTree}},{key:"getUID",value:function getUID(){return this.UID}},{key:"__setupFpsCounter",value:function __setupFpsCounter(){var stats=this.stats=new Stats;this.stats.showPanel(0);// 0: fps, 1: ms, 2: mb, 3+: custom
+this.UID=Math.floor(Math.random()*Math.pow(10,10));if(window.debugging)this.__setupFpsCounter()}_createClass(AbstractGraphics,[{key:"getCamera",value:function getCamera(){return this.camera}},{key:"getSpatialTree",value:function getSpatialTree(){return this.spatialTree}},{key:"getUID",value:function getUID(){return this.UID}},{key:"__setupFpsCounter",value:function __setupFpsCounter(){var stats=this.stats=new Stats;this.stats.showPanel(0);// 0: fps, 1: ms, 2: mb, 3+: custom
 this.getContainer().append(stats.domElement);$(stats.domElement).css("position","absolute")}//tree search
 },{key:"search",value:function search(loc,radius,filter){var tree=this.getSpatialTree();if(tree){//search the tree
 var results=tree.search({minX:loc.getX()-radius,minY:loc.getY()-radius,minZ:loc.getZ()-radius,maxX:loc.getX()+radius,maxY:loc.getY()+radius,maxZ:loc.getZ()+radius});if(filter)//apply the filter and make sure to not include 'this'

@@ -15,40 +15,49 @@ $(function(){
 
   //Collapsing and appearing the information section
   $(".collapse").click(function(){
+    var duration = 500;
     $(".visualization-page").attr("id", "information-collapse");
-    $(".left-section").animate({width:10}, 500);
-    $(".right-section").animate({width:$(window).width()-25}, {duration:500, complete:function(){
+    $(".left-section").animate({width:10}, duration);
+    $(".right-section").animate({width:$(window).width()-25}, {duration:duration, complete:function(){
       $(this).width("calc(100% - 25px)");
     }});
+    updateVisualizationAreaSizes(duration);
   });
   $(".appear").click(function(){
+    var duration = 500;
     $(".visualization-page").attr("id", "information-appear");
-    $(".left-section").animate({width:300}, 500);
-    $(".right-section").animate({width:$(window).width()-315}, {duration:500, complete:function(){
+    $(".left-section").animate({width:300}, duration);
+    $(".right-section").animate({width:$(window).width()-315}, {duration:duration, complete:function(){
       $(this).width("calc(100% - 315px)");
     }});
+    updateVisualizationAreaSizes(duration);
   });
 
   //Going from two to four visualization areas and vice versa
   $(".two-button").click(function(){
     $("body").attr("id", "two");
+
+    updateVisualizationAreaSizes(500);
   });
   $(".four-button").click(function(){
     $("body").attr("id", "four");
+
+    updateVisualizationAreaSizes(500);
   });
 
   //Collapsing and appearing of the option panes
   $(".notch").click(function(){
     var optionPane = $(this).closest(".option-pane");
     var innerOptionPane = optionPane.find(".inner-option-pane");
+    var duration = 500;
     if(optionPane.is("#notch")){
       optionPane.animate({height:Math.floor(innerOptionPane.outerHeight(true))-1},
-        {duration:500, complete:function(){
+        {duration:duration, complete:function(){
         $(this).height("auto");
       }});
       optionPane.attr("id", "options");
     }else{
-      optionPane.animate({height:$(this).outerHeight(true)}, 500);
+      optionPane.animate({height:$(this).outerHeight(true)}, duration);
       optionPane.attr("id", "notch");
     }
   });
@@ -62,6 +71,8 @@ $(function(){
       body.addClass("fullscreen")
           .addClass("fullscreen-"+$(this).closest(".quadrant").attr("class").split(" ")[0]);
     }
+
+    updateVisualizationAreaSizes(500);
   });
 
   //reset grid code
@@ -72,7 +83,33 @@ $(function(){
     $(".layout, .top-layout-part, .bottom-layout-part").each(function(){
       this.sizes = [0.5, 0.5];
     });
+
+    updateVisualizationAreaSizes(500);
   });
+
+
+  //setup visualization areas
+  var areaNames = ["top-left", "top-right", "bottom-left", "bottom-right"];
+  for(var i=0; i<areaNames.length; i++){
+      let areaName = areaNames[i];
+      VisualisationHandler.createVisArea(areaName, $("."+areaName+" .visualization-area"), function(options){
+          attachOptions(options, $("."+areaName));
+      });
+  }
+
+  //setup available visualizations
+  var types = VisualisationHandler.getVisualisationTypes();
+  for(var i=0; i<types.length; i++){
+    var type = types[i].replace(/(^|\s)(.)/g, function(m, g1, g2){
+      return g1+g2.toUpperCase();
+    });
+    $(".visualizations").append(
+      "<div class='visualization-button noselect' vizID='"+type+"'>"+
+        "<div class='center'>"+type+"</div>"+
+      "</div>"
+    );
+  }
+
 
   //Drag and drop
   {
@@ -161,6 +198,12 @@ $(function(){
           }});
           visAreaName.animate({opacity:0}, duration);
           dragging.original.animate({opacity:1}, duration);
+
+          //show the actual vizualisation
+          var areaID = dragging.overArea.closest(".quadrant").attr("class").split(" ")[0];
+          setTimeout(function(){
+            VisualisationHandler.setVisualisationForArea(areaID, element.attr("vizID"));
+          }, duration);
         }else{
           var original = dragging.original;
           var orPos = original.offset();
@@ -175,22 +218,33 @@ $(function(){
     });
   }
 
-  //create some options for testing purposes
-  var options = new Options();
-  var container = $(".top-left");
-  attachOptions(options, container);
-
-  var button = new Options.Button("center").onClick(function(){
-    console.log("detect");
-  });
-  var buttonIcon = new Options.Button("parent").setIcon("arrow-circle-up").onClick(function(){
-    console.log("detect icon");
-  }).setDescription("Go to the parent of the current node");
-  var boolean = new Options.Boolean("rotate tree").onChange(function(value){
-    console.log(value);
-  });
-  options.add(button).add(buttonIcon).add(boolean);
+  // //create some options for testing purposes
+  // var options = new Options();
+  // var container = $(".top-left");
+  // attachOptions(options, container);
+  //
+  // var button = new Options.Button("center").onClick(function(){
+  //   console.log("detect");
+  // });
+  // var buttonIcon = new Options.Button("parent").setIcon("arrow-circle-up").onClick(function(){
+  //   console.log("detect icon");
+  // }).setDescription("Go to the parent of the current node");
+  // var boolean = new Options.Boolean("rotate tree").onChange(function(value){
+  //   console.log(value);
+  // });
+  // options.add(button).add(buttonIcon).add(boolean);
 });
+function updateVisualizationAreaSizes(duration){
+  var intervalID = setInterval(function(){
+    $(".visualization-area").each(function(){
+      var newSize = {width:$(this).width(), height:$(this).height()};
+      $(this).trigger("resize", newSize);
+    });
+  });
+  setTimeout(function(){
+    clearInterval(intervalID);
+  }, duration);
+}
 
 //options handling
 var optionTemplates = {
@@ -278,6 +332,8 @@ function attachOptions(options, container){
             });
           }
           break;
+        default:
+          return;
       }
 
       //add option to container
