@@ -284,9 +284,15 @@ $(function(){
     $(".stat.descendant-count .stat-value").text(node.getSubtreeNodeCount());
   });
   VisualisationHandler.addTreeListener(function(tree){
-    console.log("Detect");
     $(".stat.general-height .stat-value").text(tree.getRoot().getHeight());
     $(".stat.general-node-count .stat-value").text(tree.getRoot().getSubtreeNodeCount()+1);
+  });
+
+  //upload button
+  $(".upload-button input").change(function(){
+    var blob = this.files[0];
+    VisualisationHandler.readBlob(blob);
+    $(this).replace("<input type=file>");
   });
 });
 function updateVisualizationAreaSizes(duration){
