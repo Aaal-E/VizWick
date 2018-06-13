@@ -16,14 +16,40 @@ var createTree = function(name, height, width){
     };
 }
 
-obj = createTree("tree", 9, 6);
+obj = createTree("tree", 9, 2);
 VisualisationHandler.setTree(new Tree(obj));
 
+
+
 // VisualisationHandler.setTree(new Tree({
+//     name: "R",
 //     children: [{
-//         children: []
+//       name: "A",
+//         children: [{
+//           name: "C",
+//           children: []
+//         }, {
+//           name: "D",
+//           children: []
+//         }, {
+//           name: "F",
+//           children: []
+//         }, {
+//           name: "G",
+//           children: []
+//         }]
 //     }, {
-//         children: []
+//         name: "B",
+//         children: [{
+//           name: "E",
+//           children:[]
+//         }]
+//     }, {
+//         name: "H",
+//         children: [{
+//           name: "I",
+//           children:[]
+//         }]
 //     }]
 // }));
 
