@@ -145,7 +145,7 @@ background-color: white;
 
 
 .photo-area{
-  background-color: white;
+  background-color: red;
   width: 700px;
   height: 500px;
   margin-left: calc((100% - 700px)/2);
@@ -191,7 +191,13 @@ background-color: white;
   border-radius: 15px;
   border: 2px solid black;
 }
+#p1 {
+  display: run-in;
+}
 
+ #p2, #p3 {
+  display: none;
+}
 /*
     Visualization page
 */

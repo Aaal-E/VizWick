@@ -101,30 +101,30 @@
                         var el;
                         //create element based on the type of option
                         switch(type){
-                            case "button":
-                                var el = $("<button></button>")
-                                            .text(option.getText())
-                                            .click(option.triggerClick.bind(option));
-                                //a button's text might change
-                                option.onTextChange(function(text){
-                                    el.text(text);
-                                });
-                                break;
-                            case "label":
-                                var el = $("<div></div>")
-                                            .text(option.getText());
-                                //a label's text might change
-                                option.onTextChange(function(text){
-                                    el.text(text);
-                                });
-                                break;
-                            case "text":
-                                var el = $("<input type=text></input>")
-                                            .val(option.getValue())
-                                            .change(function(){
-                                                option.setValue(el.val());
-                                            });
-                                break;
+                          case "button":
+                              var el = $("<button></button>")
+                                          .text(option.getText())
+                                          .click(option.triggerClick.bind(option));
+                              //a button's text might change
+                              option.onTextChange(function(text){
+                                  el.text(text);
+                              });
+                              break;
+                          case "label":
+                              var el = $("<div></div>")
+                                          .text(option.getText());
+                              //a label's text might change
+                              option.onTextChange(function(text){
+                                  el.text(text);
+                              });
+                              break;
+                          case "text":
+                              var el = $("<input type=text></input>")
+                                          .val(option.getValue())
+                                          .change(function(){
+                                              option.setValue(el.val());
+                                          });
+                              break;
                             case "boolean":
                                 var el = $("<input type=checkbox></input>")
                                             .prop("checked", option.getValue())
