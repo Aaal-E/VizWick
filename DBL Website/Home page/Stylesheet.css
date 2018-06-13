@@ -1,0 +1,159 @@
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+.home-page {
+  width: 100%;
+  height: 100%;
+  background-color: red;
+}
+
+.text-section, .video-section {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.text-section {
+  width: 60%;
+  height: calc(100% - 50px);
+  margin-top: 25px;
+  margin-left: 25px;
+  background-color: red;
+}
+
+.video-section {
+  width: calc(40% - 75px);
+  height: 300px;
+  margin-left: 25px;
+  background-color: #FFFFFF;
+}
+
+.upper-text-subpart {
+  width: 100%;
+  height: 75%;
+  margin-bottom: 25px;
+  border-radius: 25px;
+  background-color: #FFFFFF;
+}
+
+.lower-text-subpart {
+  width: 100%;
+  height: calc(25% - 25px);
+  background-color: red;
+}
+
+.other-pages {
+  width: 100%;
+  height: calc(100% - 45px);
+  border-radius: 15px;
+  background-color: red;
+}
+
+.left-lower-part, .right-lower-part {
+  width: calc(50% - 5px);
+  height: 100%;
+  display: inline-block;
+  padding: 15px;
+  box-sizing: border-box;
+}
+
+.left-lower-part {
+  margin-right: 10px;
+  border-radius: 15px;
+  background-color: #FFFFFF;
+}
+
+.right-lower-part {
+  border-radius: 15px;
+  background-color: #FFFFFF;
+}
+
+.inner-container {
+  width: 100%;
+  height: 100%;
+  /* background-color: blue; */
+}
+
+.content {
+  width: 400px;
+  height: 70px;
+  /* background-color: yellow; */
+  position: relative;
+  top: 50%;
+  transform: translate(0, -50%);
+  margin-left: calc(50% - 200px);
+}
+
+.page-icon {
+  width: 70px;
+  height: 100%;
+  text-align: center;
+  /* background-color: green; */
+}
+
+.fa-info, .fa-th-large {
+  position: relative;
+  top: 50%;
+  transform: translate(0, -50%);
+  font-size: 50px;
+}
+
+.page-icon, .go-to {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.go-to {
+  width: calc(100% - 70px);
+  height: 100%;
+  /* background-color: red; */
+}
+
+.go-to-text {
+  width: 100%;
+  height: 20px;
+  /* background-color: blue; */
+}
+
+.preview-page-name, .visualization-page-name {
+  width: 100%;
+  height: 30px;
+  /* background-color: gray; */
+  font-style: italic;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.go-to-icon {
+  width: 100%;
+  height: 20px;
+  /* background-color: orange; */
+}
+
+.GitHub-link {
+  width: 100%;
+  height: 30px;
+  margin-top: 15px;
+  padding-left: 15px;
+  padding-right: 15px;
+  box-sizing: border-box;
+  border-radius: 15px;
+  background-color: #FFFFFF;
+}
+
+.GitHub-icon {
+  width: 50px;
+  height: 100%;
+  background-color: gray;
+}
+
+.center {
+  /* !!!!! */
+  position: relative;
+  top: 50%;
+  transform: translate(0, -50%);
+  text-align: center;
+}
