@@ -86,6 +86,218 @@
     </div>
    </div>
  </div>
+
+ <!-- Visualization page-->
+   <body id="two">
+     <div class="visualization-page" id="information-appear p3">
+       <div class="top-section">
+         <div class="buttons">
+           <div class="home-button nav">
+             <div class="center" id="1">
+                 <div class="fa fa-home"></div>
+             </div>
+           </div><div class="slideshow-button nav">
+             <div class="nav center" id="2">
+                 <div class="fa fa-info"></div>
+             </div>
+           </div><div class="upload-button">
+             <div class="center">
+               <div class="fa fa-upload">
+               </div>
+               <div class="upload">
+                 Upload
+               </div>
+             </div>
+           </div>
+         </div><div class="visualizations">
+           <!-- will be filled in by the script -->
+         </div><div class="two-four-buttons">
+           <div class="two-button">
+             <div class="center">2X</div>
+           </div><div class="four-button">
+             <div class="center">4X</div>
+           </div>
+         </div><div class="reset-button">
+           <div class="center">
+             <div class="fa fa-th-large"></div>
+           </div>
+         </div>
+       </div><div class="left-section">
+         <div class="left-section-inner">
+           <div class="information-section">
+             <div class="text-part">
+               <div class="title">
+                 <div class="center">Statistics</div>
+               </div>
+               <div class="information-text">
+
+               </div>
+             </div><div class="collapse-button">
+               <div class="collapse">
+                 <div class="fa fa-chevron-left"></div>
+               </div>
+               <div class="appear">
+                 <div class="fa fa-chevron-right"></div>
+               </div>
+             </div>
+           </div>
+         </div>
+       </div><div class="right-section">
+         <div class="layout">
+           <div class="top-layout-part">
+             <div class="top-left quadrant">
+               <div class="top-left-inner">
+                 <div class="option-pane" id="notch">
+                   <div class="inner-option-pane">
+                     <div class="options">
+                       <div class="no-options">
+                         <div class="center">
+                           No options are available
+                         </div>
+                       </div>
+                       <div class="option-columns">
+                       </div>
+                     </div>
+                     <div class="visible-part">
+                       <div class="left-pane">
+                         <div class="show-visualization">
+                           <div class="center">
+
+                           </div>
+                         </div>
+                       </div>
+                       <div class="notch noselect" title="Open the options for this visualization">
+                         <div class="center">
+                           <div class="word">
+                             Options
+                           </div>
+                           <div class="lower-arrow show-arrow">
+                             <div class="fa fa-caret-down"></div>
+                           </div>
+                           <div class="upper-arrow hide-arrow">
+                             <div class="fa fa-caret-up"></div>
+                           </div>
+                         </div>
+                       </div>
+                       <div class="right-pane">
+                         <div class="full-screen-button" title="View this visualization in fullscreen">
+                           <div class="center">
+                             <div class="fa fa-expand"></div>
+                           </div>
+                         </div>
+                         <div class="VR-button" title="View this visualization in VR">
+                           <div class="center">
+                             VR
+                           </div>
+                         </div>
+                         <div class="frequent-buttons">
+
+                         </div>
+                       </div>
+                     </div>
+                   </div>
+                 </div>
+                 <div class="visualization-area"></div>
+                 <div class="drop-indicator">
+                   <div class="drop-indicator-inner">
+                     <div class="center">
+                       Drop
+                     </div>
+                   </div>
+                 </div>
+               </div>
+             </div>
+             <div class="top-right quadrant">
+               <div class="top-right-inner"></div>
+               <script>
+                 $(".top-right-inner").replaceWith(
+                   $(".top-left-inner").clone()
+                     .removeClass("top-left-inner")
+                     .addClass("top-right-inner")
+                 );
+               </script>
+             </div>
+           </div><div class="bottom-layout-part">
+             <div class="bottom-left quadrant">
+               <div class="bottom-left-inner">
+                 <div class="visualization-area">
+
+                 </div>
+                 <div class="drop-indicator">
+                   <div class="drop-indicator-inner">
+                     <div class="center">
+                       Drop
+                     </div>
+                   </div>
+                 </div>
+                 <div class="option-pane" id="notch">
+                   <div class="inner-option-pane">
+                     <div class="visible-part">
+                       <div class="left-pane">
+                         <div class="show-visualization">
+                           <div class="center">
+
+                           </div>
+                         </div>
+                       </div>
+                       <div class="notch noselect">
+                         <div class="center">
+                           <div class="word">
+                             Options
+                           </div>
+                           <div class="lower-arrow show-arrow">
+                             <div class="fa fa-caret-down"></div>
+                           </div>
+                           <div class="upper-arrow hide-arrow">
+                             <div class="fa fa-caret-up"></div>
+                           </div>
+                         </div>
+                       </div>
+                       <div class="right-pane">
+                         <div class="full-screen-button">
+                           <div class="center">
+                             <div class="fa fa-expand"></div>
+                           </div>
+                         </div>
+                         <div class="VR-button">
+                           <div class="center">
+                             VR
+                           </div>
+                         </div>
+                         <div class="frequent-buttons">
+
+                         </div>
+                       </div>
+                     </div>
+                     <div class="options">
+                       <div class="no-options">
+                         <div class="center">
+                           No options are available
+                         </div>
+                       </div>
+                       <div class="option-columns">
+                       </div>
+                     </div>
+                   </div>
+                 </div>
+               </div>
+             </div>
+             <div class="bottom-right quadrant">
+               <div class="bottom-right-inner"></div>
+               <script>
+                 $(".bottom-right-inner").replaceWith(
+                   $(".bottom-left-inner").clone()
+                   .removeClass("bottom-left-inner")
+                   .addClass("bottom-right-inner")
+                 );
+               </script>
+             </div>
+           </div>
+         </div>
+       </div>
+     </div>
+  </body>
+</body>
 <script>
 
 var color=["red", "black","gray", "yellow", "blue"];
@@ -117,12 +329,17 @@ console.log(counter);
 
 
 $(".nav").children("div").click(function () {
+    $(".active").removeClass("active");
+    console.log(this.id);
+    $(this).addClass("active");
     $(".pactive").fadeOut(200, function () {
         $(this).removeClass("pactive");
+        console.log(this.id);
     });
     $("#p" + this.id).fadeIn(200, function () {
+      console.log(this.id);
         $(this).addClass("pactive");
+        console.log(this.id);
     });
 });
 </script>
-</body>
