@@ -15,10 +15,12 @@ new (class VisualisationHandler{
 
         this.synchronisationData = { //Tracks the nodes in a certain state for syncrhnisation
             //default node states
-            select: null,
-            highlight: null,
-            focus: null
+            selected: null,
+            highlighted: null,
+            focused: null
         };
+        this.selectedNodeListeners = []; //Functions that listen what noded is currently selected, in order to display their data
+        this.treeListeners = []; //Functions that listen to a new tree being loaded
     }
 
     /**
@@ -87,6 +89,9 @@ new (class VisualisationHandler{
             var visArea = areas[i];
             visArea.refreshVisualisation();
         }
+        for(var i=0; i<this.treeListeners.length; i++){
+            this.treeListeners[i].call(this, tree);
+        }
         return this;
     }
     // set the tree based on a data blob
@@ -98,6 +103,17 @@ new (class VisualisationHandler{
             var obj = makeTreeObj(reader.result);
             This.setTree(new Tree(obj));
         };
+        return this;
+    }
+
+    addTreeListener(func){
+        var index = this.treeListeners.indexOf(func);
+        if(index==-1) this.treeListeners.push(func);
+        return this;
+    }
+    removeTreeListener(func){
+        var index = this.treeListeners.indexOf(func);
+        if(index!=-1) this.treeListeners.splice(index, 1);
         return this;
     }
 
@@ -132,8 +148,29 @@ new (class VisualisationHandler{
             if(vis!=sourceViz)  //don't forward to the visualisation that triggered the synchronisation
                 vis.synchronizeNode(type, node, true);
         }
+
+        //change the displayed data
+        if(type=="highlighted" || (!this.synchronisationData.higlighted && type=="focused")){
+            var dataNode = this.synchronisationData.highlighted || this.synchronisationData.focused;
+            for(var i=0; i<this.selectedNodeListeners.length; i++){
+                var listener = this.selectedNodeListeners[i];
+                listener.call(this, dataNode);
+            }
+        }
+        return this;
     }
     getSynchronisationData(){
         return this.synchronisationData;
+    }
+
+    addSelectedNodeListener(func){
+        var index = this.selectedNodeListeners.indexOf(func);
+        if(index==-1) this.selectedNodeListeners.push(func);
+        return this;
+    }
+    removeSelectedNodeListener(func){
+        var index = this.selectedNodeListeners.indexOf(func);
+        if(index!=-1) this.selectedNodeListeners.splice(index, 1);
+        return this;
     }
 })();

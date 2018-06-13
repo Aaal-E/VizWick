@@ -38,11 +38,20 @@ $(function(){
     $("body").attr("id", "two");
 
     updateVisualizationAreaSizes(500);
+    //pause the hidden visualizations
+    var bottomLeft = VisualisationHandler.getVisArea("bottom-left").getVisualisation();
+    if(bottomLeft) bottomLeft.pause(true);
+    var bottomRight = VisualisationHandler.getVisArea("bottom-right").getVisualisation();
+    if(bottomRight) bottomLeft.pause(true);
   });
   $(".four-button").click(function(){
     $("body").attr("id", "four");
 
     updateVisualizationAreaSizes(500);
+    //unpause all the visualizations
+    VisualisationHandler.getExistingVisualisations().forEach(function(vis){
+      vis.start();
+    });
   });
 
   //Collapsing and appearing of the option panes
@@ -67,9 +76,18 @@ $(function(){
     var body = $("body");
     if(body.is(".fullscreen")){
       body.attr("class", body.attr("class").replace(/fullscreen.*/g, ""));
+      VisualisationHandler.getExistingVisualisations().forEach(function(vis){
+        vis.start();
+      });
     }else{
+      var quadrant = $(this).closest(".quadrant").attr("class").split(" ")[0];
       body.addClass("fullscreen")
-          .addClass("fullscreen-"+$(this).closest(".quadrant").attr("class").split(" ")[0]);
+          .addClass("fullscreen-"+quadrant);
+      VisualisationHandler.getExistingVisualisations().forEach(function(viz){
+        viz.pause(true);
+      });
+      var viz = VisualisationHandler.getVisArea(quadrant).getVisualisation();
+      if(viz) viz.start();
     }
 
     updateVisualizationAreaSizes(500);
@@ -91,10 +109,16 @@ $(function(){
   //setup visualization areas
   var areaNames = ["top-left", "top-right", "bottom-left", "bottom-right"];
   for(var i=0; i<areaNames.length; i++){
-      let areaName = areaNames[i];
-      VisualisationHandler.createVisArea(areaName, $("."+areaName+" .visualization-area"), function(options){
-          attachOptions(options, $("."+areaName));
-      });
+    let areaName = areaNames[i];
+    VisualisationHandler.createVisArea(areaName, $("."+areaName+" .visualization-area"), function(options, visualisation){
+      var quadrant = $("."+areaName);
+      attachOptions(options, quadrant);
+      if(visualisation instanceof VIZ3D.Visualisation){
+        quadrant.find(".VR-button").show();
+      }else{
+        quadrant.find(".VR-button").hide();
+      }
+    });
   }
 
   //setup available visualizations
@@ -109,6 +133,22 @@ $(function(){
       "</div>"
     );
   }
+
+  //setup VR buttons
+  $(".VR-button").click(function(){
+    if(VRCamera.hasVRSupport()){
+      var quadrant = $(this).closest(".quadrant").attr("class").split(" ")[0];
+      var viz = VisualisationHandler.getVisArea(quadrant).getVisualisation();
+      if(viz==VRCamera.getVisualisation() && VRCamera.isInVR()){
+        VRCamera.leaveVR();
+      }else{
+        VRCamera.setVisualisation(viz);
+        VRCamera.enterVR();
+      }
+    }else{
+      alert("This browser doesn't have WebVR support yet, please try using Firefox instead.");
+    }
+  });
 
 
   //Drag and drop
@@ -218,21 +258,36 @@ $(function(){
     });
   }
 
-  // //create some options for testing purposes
-  // var options = new Options();
-  // var container = $(".top-left");
-  // attachOptions(options, container);
-  //
-  // var button = new Options.Button("center").onClick(function(){
-  //   console.log("detect");
-  // });
-  // var buttonIcon = new Options.Button("parent").setIcon("arrow-circle-up").onClick(function(){
-  //   console.log("detect icon");
-  // }).setDescription("Go to the parent of the current node");
-  // var boolean = new Options.Boolean("rotate tree").onChange(function(value){
-  //   console.log(value);
-  // });
-  // options.add(button).add(buttonIcon).add(boolean);
+
+  //Statistics
+  VisualisationHandler.addSelectedNodeListener(function(node){
+    var path = [];
+    var n = node;
+    while(n){
+      path.unshift(escHtml(n.getName()));
+      n = n.getParent();
+    }
+
+    var children = [];
+    var childList = node.getChildren();
+    for(var i=0; i<childList.length; i++){
+      children.push(escHtml(childList[i].getName()));
+    }
+
+    $(".stat.name .stat-value").text(node.getName());
+    $(".stat.path .stat-value").html(path.join("<br>&gt;"));
+    $(".stat.parent .stat-value").text(node.getParent()?node.getParent().getName():"");
+    $(".stat.children .stat-value").html(children.join("<br>"));
+    $(".stat.child-count .stat-value").text(children.length);
+    $(".stat.depth .stat-value").text(node.getDepth());
+    $(".stat.height .stat-value").text(node.getHeight());
+    $(".stat.descendant-count .stat-value").text(node.getSubtreeNodeCount());
+  });
+  VisualisationHandler.addTreeListener(function(tree){
+    console.log("Detect");
+    $(".stat.general-height .stat-value").text(tree.getRoot().getHeight());
+    $(".stat.general-node-count .stat-value").text(tree.getRoot().getSubtreeNodeCount()+1);
+  });
 });
 function updateVisualizationAreaSizes(duration){
   var intervalID = setInterval(function(){
@@ -244,6 +299,9 @@ function updateVisualizationAreaSizes(duration){
   setTimeout(function(){
     clearInterval(intervalID);
   }, duration);
+}
+function escHtml(text){
+  return $('<div/>').text(text).html();
 }
 
 //options handling

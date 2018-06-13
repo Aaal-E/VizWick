@@ -75,7 +75,7 @@ class Options{
             var keys = Object.keys(this.options);
             for(var i=0; i<keys.length; i++){
                 var option = this.options[keys[i]];
-                listener.call("create", option);
+                listener.call(this, "create", option);
             }
         }
         return this;

@@ -30,6 +30,11 @@
     <script src=Tests/Visualisation/Visualisations/Tree.js></script>
 
     <script src=Tests/Visualisation/Scripts/TestTree.js></script>
+    <script>
+      $(function(){
+        VisualisationHandler.setTree(VisualisationHandler.getTree());
+      })
+    </script>
 
 
   </head>
@@ -95,6 +100,7 @@
         <div class="right-arrow">
         <div class="fa fa-chevron-right"></div>
         </div>
+<<<<<<< HEAD
         <div class="photo-area">
          photo stuff
        </div>
@@ -190,6 +196,180 @@
                          <div class="left-pane">
                            <div class="show-visualization">
                              <div class="center">
+=======
+
+
+
+<!-- Visualization page-->
+  <body id="two">
+    <div class="visualization-page" id="information-appear p3">
+      <div class="top-section">
+        <div class="buttons">
+          <div class="home-button nav" id="1">
+            <div class="center">
+                <div class="fa fa-home"></div>
+            </div>
+          </div><div class="slideshow-button nav" id="2">
+            <div class="nav center">
+                <div class="fa fa-info"></div>
+            </div>
+          </div><div class="upload-button">
+            <div class="center">
+              <div class="fa fa-upload">
+              </div>
+              <div class="upload">
+                Upload
+              </div>
+            </div>
+          </div>
+        </div><div class="visualizations">
+          <!-- will be filled in by the script -->
+        </div><div class="two-four-buttons">
+          <div class="two-button" title="Show 2 visualizations at once">
+            <div class="center">2X</div>
+          </div><div class="four-button" title="Show 4 visualizations at once">
+            <div class="center">4X</div>
+          </div>
+        </div><div class="reset-button" title="Reset sizes of visualizations">
+          <div class="center">
+            <div class="fa fa-th-large"></div>
+          </div>
+        </div>
+      </div><div class="left-section">
+        <div class="left-section-inner">
+          <div class="information-section">
+            <div class="text-part">
+              <div class="title">
+                <div class="center">Statistics</div>
+              </div>
+              <div class="information-text">
+                <div class="node-stats">
+                  <div class="node-stats-title">
+                    Selected Node
+                  </div>
+                  <div class="name stat">
+                    <div class="stat-title">Name</div>
+                    <div class="stat-value"></div>
+                  </div>
+                  <Div class="path stat">
+                    <div class="stat-title">Path</div>
+                    <div class="stat-value"></div>
+                  </div>
+                  <Div class="parent stat">
+                    <div class="stat-title">Parent</div>
+                    <div class="stat-value"></div>
+                  </div>
+                  <Div class="children stat">
+                    <div class="stat-title">Children</div>
+                    <div class="stat-value"></div>
+                  </div>
+                  <Div class="child-count stat">
+                    <div class="stat-title">Child count</div>
+                    <div class="stat-value"></div>
+                  </div>
+                  <Div class="depth stat">
+                    <div class="stat-title">Depth</div>
+                    <div class="stat-value"></div>
+                  </div>
+                  <Div class="height stat">
+                    <div class="stat-title">Height</div>
+                    <div class="stat-value"></div>
+                  </div>
+                  <Div class="descendant-count stat">
+                    <div class="stat-title">Descendant count</div>
+                    <div class="stat-value"></div>
+                  </div>
+                </div>
+                <div class="general-stats">
+                  <div class="general-stats-title">
+                    General
+                  </div>
+                  <Div class="general-name stat">
+                    <div class="stat-title">Name</div>
+                    <div class="stat-value"></div>
+                  </div>
+                  <Div class="general-size stat">
+                    <div class="stat-title">Size</div>
+                    <div class="stat-value"></div>
+                  </div>
+                  <Div class="general-height stat">
+                    <div class="stat-title">Height</div>
+                    <div class="stat-value"></div>
+                  </div>
+                  <Div class="general-node-count stat">
+                    <div class="stat-title">Node count</div>
+                    <div class="stat-value"></div>
+                  </div>
+                  <Div class="general-average-child-count stat">
+                    <div class="stat-title">Average child count</div>
+                    <div class="stat-value"></div>
+                  </div>
+                  <Div class="general-leave-count stat">
+                    <div class="stat-title">Leaf count</div>
+                    <div class="stat-value"></div>
+                  </div>
+                </div>
+              </div>
+            </div><div class="collapse-button">
+              <div class="collapse">
+                <div class="fa fa-chevron-left"></div>
+              </div>
+              <div class="appear">
+                <div class="fa fa-chevron-right"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div><div class="right-section">
+        <div class="layout">
+          <div class="top-layout-part">
+            <div class="top-left quadrant">
+              <div class="top-left-inner">
+                <div class="option-pane" id="notch">
+                  <div class="inner-option-pane">
+                    <div class="options">
+                      <div class="no-options">
+                        <div class="center">
+                          No options are available
+                        </div>
+                      </div>
+                      <div class="option-columns">
+                      </div>
+                    </div>
+                    <div class="visible-part">
+                      <div class="left-pane">
+                        <div class="show-visualization">
+                          <div class="center">
+                            None
+                          </div>
+                        </div>
+                      </div>
+                      <div class="notch noselect" title="Open the options for this visualization">
+                        <div class="center">
+                          <div class="word">
+                            Options
+                          </div>
+                          <div class="lower-arrow show-arrow">
+                            <div class="fa fa-caret-down"></div>
+                          </div>
+                          <div class="upper-arrow hide-arrow">
+                            <div class="fa fa-caret-up"></div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="right-pane">
+                        <div class="full-screen-button" title="View this visualization in fullscreen">
+                          <div class="center">
+                            <div class="fa fa-expand"></div>
+                          </div>
+                        </div>
+                        <div class="VR-button" title="View this visualization in VR" style=display:none>
+                          <div class="center">
+                            VR
+                          </div>
+                        </div>
+                        <div class="frequent-buttons">
+>>>>>>> 27f8a0eeb315251507d86bb34c2edd365baa8a4e
 
                              </div>
                            </div>
@@ -220,6 +400,7 @@
                            </div>
                            <div class="frequent-buttons">
 
+<<<<<<< HEAD
                            </div>
                          </div>
                        </div>
@@ -264,6 +445,51 @@
                          <div class="left-pane">
                            <div class="show-visualization">
                              <div class="center">
+=======
+                </div>
+                <div class="drop-indicator">
+                  <div class="drop-indicator-inner">
+                    <div class="center">
+                      Drop
+                    </div>
+                  </div>
+                </div>
+                <div class="option-pane" id="notch">
+                  <div class="inner-option-pane">
+                    <div class="visible-part">
+                      <div class="left-pane">
+                        <div class="show-visualization">
+                          <div class="center">
+                            None
+                          </div>
+                        </div>
+                      </div>
+                      <div class="notch noselect" title="Open the options for this visualization">
+                        <div class="center">
+                          <div class="word">
+                            Options
+                          </div>
+                          <div class="lower-arrow show-arrow">
+                            <div class="fa fa-caret-down"></div>
+                          </div>
+                          <div class="upper-arrow hide-arrow">
+                            <div class="fa fa-caret-up"></div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="right-pane">
+                        <div class="full-screen-button" title="View this visualization in fullscreen">
+                          <div class="center">
+                            <div class="fa fa-expand"></div>
+                          </div>
+                        </div>
+                        <div class="VR-button" title="View this visualization in VR" style=display:none>
+                          <div class="center">
+                            VR
+                          </div>
+                        </div>
+                        <div class="frequent-buttons">
+>>>>>>> 27f8a0eeb315251507d86bb34c2edd365baa8a4e
 
                              </div>
                            </div>
