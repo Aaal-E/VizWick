@@ -22,8 +22,8 @@ class AbstractVisualisation extends AbstractGraphics{    //will 'extend' concret
 
         this.maxNodeCount = 1000;
 
-        this.__setupRoot();
         this.__setupOptions(options);
+        this.__setupRoot();
 
         this.DOMEventListeners.mouseUp = (function(event){
             // console.log("detect");

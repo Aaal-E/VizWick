@@ -22,12 +22,18 @@ class Visualisation2d extends Graphics2d{
         var shape = new clas(this, node);
         return shape.add();
     }
+
+    //add default options
+    __setupOptions(options){
+        var This = this;
+    }
 }
 
 //copy methods of abstractVisualisation
 var keys = Object.getOwnPropertyNames(AbstractVisualisation.prototype);
 for(var i=0; i<keys.length; i++)
-    Visualisation2d.prototype[keys[i]] = AbstractVisualisation.prototype[keys[i]];
+    if(!Visualisation2d.prototype[keys[i]])
+        Visualisation2d.prototype[keys[i]] = AbstractVisualisation.prototype[keys[i]];
 
 //make the visualisation system public
 window.Visualisation2d = Visualisation2d;

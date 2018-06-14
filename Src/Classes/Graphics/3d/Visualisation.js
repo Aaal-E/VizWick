@@ -78,6 +78,12 @@ class Visualisation3d extends Graphics3d{
 
         super.__onUpdate(deltaTime);
     }
+
+
+    //add default options
+    __setupOptions(options){
+        var This = this;
+    }
 }
 
 //copy methods of abstractVisualisation
