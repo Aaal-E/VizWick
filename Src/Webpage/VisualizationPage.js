@@ -127,7 +127,7 @@ $(function(){
     var type = types[i].replace(/(^|\s)(.)/g, function(m, g1, g2){
       return g1+g2.toUpperCase();
     });
-    $(".visualizations").append(
+    $(".visualizations-inner").append(
       "<div class='visualization-button noselect' vizID='"+type+"'>"+
         "<div class='center'>"+type+"</div>"+
       "</div>"
@@ -154,7 +154,7 @@ $(function(){
   //Drag and drop
   {
     var dragging = null;
-    $(".visualizations").children().each(function(){
+    $(".visualizations-inner").children().each(function(){
       $(this).mousedown(function(event){
         event.preventDefault();
         var This = $(this);
@@ -292,7 +292,7 @@ $(function(){
   $(".upload-button input").change(function(){
     var blob = this.files[0];
     VisualisationHandler.readBlob(blob);
-    $(this).replace("<input type=file>");
+    $(this).replaceWith("<input type=file>");
   });
 });
 function updateVisualizationAreaSizes(duration){
@@ -353,7 +353,6 @@ function attachOptions(options, container){
 
     var el;
     if(type=="create"){
-      container.find(".no-options").hide();
       var optionType = option.getType();
 
       //create the specific option dependent on its type
@@ -410,7 +409,8 @@ function attachOptions(options, container){
     }
 
     //hide or show no options message dependent on available options
-    if(container.find(".option").length==0)
+    console.log(container.find(".option-columns .option"));
+    if(container.find(".option-columns .option").length==0)
       container.find(".no-options").show();
     else
       container.find(".no-options").hide();

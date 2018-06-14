@@ -4,6 +4,9 @@ html, body {
   height: 100%;
   margin: 0;
   overflow: hidden;
+
+  /* min-width: 940px; */
+  /* overflow-x: auto */
 }
 .noselect {
   -webkit-touch-callout: none; /* iOS Safari */
@@ -15,8 +18,30 @@ html, body {
                                   supported by Chrome and Opera */
 }
 
-/* page transitions */
+/* min screen size */
+.small-screen-overlay{
+  background-color: white;
+  position: absolute;
+  display: none;
+  z-index: 100000;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+.small-screen-message{
+  text-align: center;
+  position: relative;
+  top: 50%;
+  transform: translate(0, -50%);
+}
+@media screen and (max-width: 940px), screen and (max-height: 600px){
+  .small-screen-overlay{
+    display: block;
+  }
+}
 
+/* page transitions */
 .page{
   width: 100%;
   height: 100%;
@@ -284,7 +309,16 @@ body#four .four-button {
   box-sizing: border-box;
 }
 .visualizations{
+  vertical-align: top;
   margin-left: 10px;
+  height: calc(100% - 5px);
+  overflow-x: auto;
+  max-width: calc(100% - 470px);
+  overflow-y: hidden;
+}
+.visualizations-inner{
+  width: max-content;
+  height: 100%;
 }
 
 .home-button {
@@ -317,6 +351,7 @@ body#four .four-button {
   opacity: 0;
   display: block;
   cursor: pointer;
+  font-size: 0;
 }
 
 .upload {

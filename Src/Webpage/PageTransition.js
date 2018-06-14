@@ -19,4 +19,4 @@ $(function(){
     //animate the scrollTop such that we start seeing the new page
     body.animate({scrollTop:body.scrollTop()+nextPage.offset().top}, 1000);
   });
-})
+});

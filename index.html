@@ -3,6 +3,8 @@
 <html>
 
   <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <link rel="stylesheet" type="text/css" href="Resources/Stylesheets/Main.css">
     <link rel="stylesheet" type="text/css" href="Resources/Font Awesome/web-fonts-with-css/css/fontawesome-all.css">
     <link href="https://fonts.googleapis.com/css?family=Contrail+One" rel="stylesheet">
@@ -41,7 +43,13 @@
 
   </head>
   <body id=two>
-<!-- Welcome page -->
+    <!-- Welcome page -->
+    <div class=small-screen-overlay>
+      <div class=small-screen-message>
+        Your screen is unfortunately too small for our tool to work correctly. <br>
+        Please try using a bigger monitor, or maximising the window if it isn't already.
+      </div>
+    </div>
     <div class="welcome-page page active">
       <div class="text-subpart">
         <div class="text-align">
@@ -145,7 +153,9 @@
             <input type=file>
           </div>
         </div><div class="visualizations">
-          <!-- will be filled in by the script -->
+          <div class="visualizations-inner">
+            <!-- will be filled in by the script -->
+          </div>
         </div><div class="two-four-buttons">
           <div class="two-button" title="Show 2 visualizations at once">
             <div class="center">2X</div>
