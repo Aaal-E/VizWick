@@ -58,10 +58,10 @@ personal todo list:
     -add system to create z-index layers
     -Add default options:
         -synchronisation
-        -antialisasing
-    -options:
-        -Accommodate button 'options' showing a certain text
-        -Accommodate text 'options' to just show some status text
+        //-antialisasing; not possible
+    //-options:
+        //-Accommodate button 'options' showing a certain text
+        //-Accommodate text 'options' to just show some status text
     -safe default options for visualizations
     -add generate image system
 
