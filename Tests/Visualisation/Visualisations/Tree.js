@@ -4,7 +4,6 @@
  */
 (function(){
     var radius = 0.1;   //size of the sphere
-    var length = 0.3;   //size of the branch
     var colors = {
         branch: 0xD2691E,
         labelBG: 0xD2691E,
@@ -68,46 +67,11 @@
                     this.graphics.dragShape(This);
                     return true; //catch event
                 }
-                // console.log(down, event);
             });
-
-            //allow for physics
-            // this.__registerUpdateListener();
-            // this.storeInSpatialTree = true;
-            // this.__updateAABB();
         }
         getRadius(){
             return this.scale*radius;
         }
-        // __onUpdate(time){
-        //     if(!this.state.dragged){
-        //         var shapes = this.search(this.getScale()*0.1);
-        //
-        //         var force = new VIZ3D.Vec();
-        //
-        //         var vec = new VIZ3D.Vec();
-        //         for(var i=0; i<shapes.length; i++){
-        //             var shape = shapes[i];
-        //
-        //             if(shape instanceof VIZ3D.Line){
-        //
-        //             }else if(shape instanceof NodeShape){
-        //                 var dist = radius*(this.getScale()+shape.getScale());
-        //                 vec.set(this.getLoc()).sub(shape.getLoc());
-        //                 if(vec.getLength()<dist){
-        //                     force.add(vec.mul(0.1));
-        //                 }
-        //             }
-        //         }
-        //
-        //         vec.set(this.homeLoc).sub(this.getLoc());
-        //         force.add(vec.mul(0.2));
-        //
-        //         this.getVelo().add(force.mul(0.1));
-        //         // console.log(shapes.length);
-        //         super.__onUpdate(time);
-        //     }
-        // }
 
         __onDrag(loc, pointer){
             if(pointer=="mouse"){
@@ -141,6 +105,8 @@
 
         __connectParent(parent){
             parent = parent || this.getParent();
+            var length = this.graphics.branchLength.getValue()/100;
+            var pitch = this.graphics.branchAngle.getValue()/180*Math.PI;
             if(parent){
                 var nodeCount = parent.getNode().getChildren().length;
 
@@ -149,7 +115,7 @@
                 var f = this.scale;
                 var vec = new VIZ3D.Vec().setLength(length*f*Math.sqrt(1+nodeCount/40));
                 vec.setYaw(Math.PI*2*(this.getIndex()+0.5)/nodeCount+parent.getRot().getY())
-                    .setPitch(0.3).add(0, length*0.2*f*Math.sqrt(nodeCount/60), 0);
+                    .setPitch(pitch).add(0, length*0.2*f*Math.sqrt(nodeCount/60), 0);
 
                 // options:
                 vec.setLength(vec.getLength()*(1+1*this.getIndex()/nodeCount));
@@ -172,6 +138,7 @@
                 this.branch.setEndPoint(new VIZ3D.XYZ(0, -length, 0));
                 this.relativeLoc = new VIZ3D.Vec(0,0,0);
             }
+            this.version = this.graphics.version;
         }
 
         updateLoc(parent){
@@ -192,6 +159,10 @@
             }
         }
         __show(){
+            if(this.version!=this.graphics.version){ //keeps track of any scale related changes
+                var parent = this.node.getParent();
+                this.__connectParent(parent && parent.getShape(this.graphics.getUID()));
+            }
             this.updateLoc();
         }
 
@@ -199,7 +170,7 @@
             if(field=="focused" && val==true){
                 this.getGraphics().getCamera().setTargetLoc(this).setTargetScale(this); //focus on shape on focus
 
-                this.showFamily(Infinity, 4);
+                this.showFamily(Infinity, this.graphics.layers);
             }
 
             this.sphere.setColor(this.state.highlighted?colors.leafHighlighted:this.state.expanded?this.leafColor:colors.leafCollapsed);
@@ -234,19 +205,25 @@
         constructor(container, tree, options){
             // window.debugging = true;//for testing
             super(container, tree, options);
+            var This = this;
 
-            this.random = Math.seed(10);
+            //limit the number of nodes, keep it low for VR efficiency
+            this.maxNodeCount = 200;
+            this.layers = 4;
+            this.version = 0; //a veriable that allows nodes to be marked dirty
 
-            //rotate the camera for fun
+            //manage the camera
             var camera = this.getCamera();
+            camera.setDistance(1.2);
+
+            //rotate the camera by default i the mouse is not in the screen
             var autoRotate = true;
             this.onUpdate(function(){
                 if(autoRotate)
-                    camera.getRot().add(0, options.getValue("rotation")/30, 0);
+                    camera.getRot().add(0, options.getValue("Rotation speed")/30, 0);
             });
-            camera.setXRot(-0.6).setYRot(0.5*Math.PI);
-            camera.setDistance(1.2);
-            var This = this;
+
+            //allow for camera rotation by dragging, and zooming by scrolling
             This.dragging = false;
             this.onMousePress(function(down, event){
                 if(event && event.button==0)
@@ -274,13 +251,9 @@
                     targetDist = Math.max(targetDist, 0.2);
                     distObj.stop(true).animate({dist:targetDist}, {easing:"linear", duration:200, step:function(val){
                         camera.setDistance(val);
-                    }})
+                    }});
                 }
             });
-
-            // this.setAmbientLightIntensity(0.1); //for testing
-
-            this.maxNodeCount = 200;
 
             //add lights
             var lights = [];
@@ -313,20 +286,59 @@
             //focus on root
             var focused = VisualisationHandler.getSynchronisationData().focused||this.getShapesRoot()[0].getNode();
             this.synchronizeNode("focused", focused);
-
-            window.vis = this;//for debugging
         }
         __getNodeShapeClass(){
             return NodeShape;
         }
         __setupOptions(options){
             var This = this;
-            options.add(new Options.Button("center").onClick(function(){
-                This.synchronizeNode("focused", This.getTree().getRoot());
+            //add button to go back to the parent
+            options.add(new Options.Button("parent").setIcon("arrow-up").setDescription("Go to the parent of the current node").onClick(function(){
+                var current = This.getShape("focused");
+                var parent = current.getNode().getParent();
+                if(parent) This.synchronizeNode("focused", parent);
             }));
 
             //add rotation speed option
-            options.add(new Options.Number("rotation").setValue(0.5));
+            options.add(new Options.Number("Rotation speed").setDescription("The rotation speed when the mouse is not in the window").setValue(0.5));
+
+
+            var refocus = function(){
+                var focused = This.getShape("focused");
+                if(focused){
+                    focused.__show();
+                    This.setShapeState("focused", focused);
+                }
+            };
+
+            //add option for maximum node count
+            options.add(new Options.Number("Maximum node count", 1, 50, 20000).setDescription("The maximum number of nodes to show at once").onChange(function(val){
+                This.maxNodeCount = val;
+                refocus();
+            })).setValue(this.maxNodeCount);
+
+            //add option for how many layers to show
+            options.add(new Options.Number("Layer count", 1, 1, 20).setDescription("The number of descendant layers to show of the focused node").onChange(function(val){
+                This.layers = val;
+                refocus();
+            })).setValue(this.layers);
+
+            //add option to alter the branch length
+            this.branchLength = new Options.Number("Branch length", 1, 1, 100).setDescription("The length o the branch lengths in the visualization").onChange(function(val){
+                This.version += 1;
+                refocus();
+            }).setValue(30);
+            options.add(this.branchLength);
+
+            //add option for child size decrease
+            this.branchAngle = new Options.Number("Branch angle", 1, -90, 90).setDescription("The upwards angle that a branch has").onChange(function(val){
+                This.version += 1;
+                refocus();
+            }).setValue(18);
+            options.add(this.branchAngle);
+
+
+            window.options = options; //for debugging
         }
         __setupRoot(){
             var node = this.tree.getRoot();
