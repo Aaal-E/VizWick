@@ -95,8 +95,7 @@ html, body {
 }
 
 .fa-info, .fa-th-large {
-  position: relative;
-  top: 50%;
+  margin-top: 50%;
   transform: translate(0, -50%);
   font-size: 50px;
 }
@@ -134,7 +133,7 @@ html, body {
 }
 
 .GitHub-link {
-  width: 100%;
+  width: 300px;
   height: 30px;
   margin-top: 15px;
   padding-left: 15px;
