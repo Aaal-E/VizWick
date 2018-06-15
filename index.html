@@ -2,114 +2,126 @@
 
 <html>
 
-  <head>
-    <link rel="stylesheet" type="text/css" href="Resources/Stylesheets/Main.css">
-    <link rel="stylesheet" type="text/css" href="Resources/Font Awesome/web-fonts-with-css/css/fontawesome-all.css">
-    <link href="https://fonts.googleapis.com/css?family=Contrail+One" rel="stylesheet">
+<head>
+  <link rel="stylesheet" type="text/css" href="Resources/Stylesheets/Main.css">
+  <link rel="stylesheet" type="text/css" href="Resources/Font Awesome/web-fonts-with-css/css/fontawesome-all.css">
+  <link href="https://fonts.googleapis.com/css?family=Contrail+One" rel="stylesheet">
 
-    <!-- all the files for the visualisations -->
-    <script type="text/javascript" src="Resources/Scripts/Libraries.js"></script>
-    <script type="text/javascript" src="Resources/Scripts/Tree.js"></script>
-    <script type="text/javascript" src="Resources/Scripts/Graphics.js"></script>
-    <script type="text/javascript" src="Resources/Scripts/Resize.js"></script>
-    <script type="text/javascript" src="Resources/Scripts/VisualisationHandler.js"></script>
+  <!-- all the files for the visualisations -->
+  <script type="text/javascript" src="Resources/Scripts/Libraries.js"></script>
+  <script type="text/javascript" src="Resources/Scripts/Tree.js"></script>
+  <script type="text/javascript" src="Resources/Scripts/Graphics.js"></script>
+  <script type="text/javascript" src="Resources/Scripts/Resize.js"></script>
+  <script type="text/javascript" src="Resources/Scripts/VisualisationHandler.js"></script>
 
-    <!-- file that takes care of the actual connection with the webpage buttons, and teh actual visualizations -->
-    <!-- <script type="text/javascript" src="Resources/Scripts/Main.js"></script> -->
-    <!-- <script type="text/javascript" src=Scripts/Visualisations.js></script> -->
+  <!-- file that takes care of the actual connection with the webpage buttons, and teh actual visualizations -->
+  <!-- <script type="text/javascript" src="Resources/Scripts/Main.js"></script> -->
+  <!-- <script type="text/javascript" src=Scripts/Visualisations.js></script> -->
 
-    <!-- while debugging, use uncompiled files -->
-    <script type="text/javascript" src="Src/Webpage/VisualizationPage.js"></script>
-    <script type="text/javascript" src="Src/Webpage/PreviewPage.js"></script>
-    <script type="text/javascript" src="Src/Webpage/PageTransition.js"></script>
+  <!-- while debugging, use uncompiled files -->
+  <script type="text/javascript" src="Src/Webpage/VisualizationPage.js"></script>
+  <script type="text/javascript" src="Src/Webpage/PreviewPage.js"></script>
+  <script type="text/javascript" src="Src/Webpage/PageTransition.js"></script>
 
-    <script src=Tests/Visualisation/Visualisations/Test.js></script> <!-- while debugging -->
-    <script src=Tests/Visualisation/Visualisations/Example.js></script>
-    <script src=Tests/Visualisation/Visualisations/Example3d.js></script>
-    <script src=Tests/Visualisation/Visualisations/Froth.js></script>
-    <script src=Tests/Visualisation/Visualisations/Jesterhat.js></script>
-    <script src=Tests/Visualisation/Visualisations/Sunburst.js></script>
-    <script src=Tests/Visualisation/Visualisations/Tree.js></script>
+  <script src=Tests/Visualisation/Visualisations/Test.js></script>
+  <!-- while debugging -->
+  <script src=Tests/Visualisation/Visualisations/Example.js></script>
+  <script src=Tests/Visualisation/Visualisations/Example3d.js></script>
+  <script src=Tests/Visualisation/Visualisations/Froth.js></script>
+  <script src=Tests/Visualisation/Visualisations/Jesterhat.js></script>
+  <script src=Tests/Visualisation/Visualisations/Sunburst.js></script>
+  <script src=Tests/Visualisation/Visualisations/Tree.js></script>
 
-    <script src=Tests/Visualisation/Scripts/TestTree.js></script>
-    <script>
-      $(function(){
-        VisualisationHandler.setTree(VisualisationHandler.getTree());
-      })
-    </script>
+  <script src=Tests/Visualisation/Scripts/TestTree.js></script>
+  <script>
+    $(function() {
+      VisualisationHandler.setTree(VisualisationHandler.getTree());
+    })
+  </script>
 
 
-  </head>
-  <body id=two>
-<!-- Welcome page -->
-<div class="welcome-page page active">
-  <div class="text-section">
-    <div class="upper-text-subpart">
-      <div class="center">
-      <div class="main-text">Welcome</div>
-      <div class="description">
-        <div class="parenthesis"><div class="fa fa-quote-left"></div></div><div class="description-text">The webpage that aims to visualize hierarchical data in the most interactive and simple way possible.
-        </div><div class="parenthesis"><div class="fa fa-quote-right"></div></div>
+</head>
+
+<body id=two>
+  <!-- Welcome page -->
+  <div class="welcome-page page active">
+    <div class="text-section">
+      <div class="upper-text-subpart">
+        <div class="center">
+          <div class="main-text">Welcome</div>
+          <div class="description">
+            <div class="parenthesis">
+              <div class="fa fa-quote-left"></div>
+            </div>
+            <div class="description-text">The webpage that aims to visualize hierarchical data in the most interactive and simple way possible.
+            </div>
+            <div class="parenthesis">
+              <div class="fa fa-quote-right"></div>
+            </div>
+          </div>
+          <div class="group-members">
+            <div class="member-name">Adrian Vramulet</div>
+            <div class="member-name">Alex Thieme</div>
+            <div class="member-name">Alina Vorobiova</div>
+            <div class="member-name">Denis Shehu</div>
+            <div class="member-name">Mara Miulescu</div>
+            <div class="member-name">Mehrdad Farsadyar</div>
+            <div class="member-name">Tar van Krieken</div>
+          </div>
+        </div>
       </div>
-      <div class="group-members">
-        <div class="member-name">Adrian Vramulet</div>
-        <div class="member-name">Alex Thieme</div>
-        <div class="member-name">Alina Vorobiova</div>
-        <div class="member-name">Denis Shehu</div>
-        <div class="member-name">Mara Miulescu</div>
-        <div class="member-name">Mehrdad Farsadyar</div>
-        <div class="member-name">Tar van Krieken</div>
-      </div>
-    </div>
-    </div>
-    <div class="lower-text-subpart"  >
-      <div class="other-pages">
-        <div class="left-lower-part" gotoPage="preview-page">
-          <div class="inner-container">
-            <div class="content">
-              <div class="page-icon">
-                <div class="fa fa-info">
-                </div>
-              </div><div class="go-to">
-                <div class="go-to-text">
-                  <div class="center">
-                    Get more information for each visualization on
+      <div class="lower-text-subpart">
+        <div class="other-pages">
+          <div class="left-lower-part" gotoPage="preview-page">
+            <div class="inner-container">
+              <div class="content">
+                <div class="page-icon">
+                  <div class="fa fa-info">
                   </div>
                 </div>
-                <div class="preview-page-name">
-                  <div class="center">
-                    the Preview page
+                <div class="go-to">
+                  <div class="go-to-text">
+                    <div class="center">
+                      Get more information for each visualization on
+                    </div>
                   </div>
-                </div>
-                <div class="go-to-icon">
-                  <div class="center">
-                    <div class="fa fa-angle-down">
+                  <div class="preview-page-name">
+                    <div class="center">
+                      the Preview page
+                    </div>
+                  </div>
+                  <div class="go-to-icon">
+                    <div class="center">
+                      <div class="fa fa-angle-down">
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div><div class="right-lower-part" gotoPage="visualization-page">
-          <div class="inner-container">
-            <div class="content">
-              <div class="page-icon">
-                <div class="fa fa-th-large">
-                </div>
-              </div><div class="go-to">
-                <div class="go-to-text">
-                  <div class="center">
-                    Start messing around with the visualizations on
+          <div class="right-lower-part" gotoPage="visualization-page">
+            <div class="inner-container">
+              <div class="content">
+                <div class="page-icon">
+                  <div class="fa fa-th-large">
                   </div>
                 </div>
-                <div class="visualization-page-name">
-                  <div class="center">
-                    the Visualization page
+                <div class="go-to">
+                  <div class="go-to-text">
+                    <div class="center">
+                      Start messing around with the visualizations on
+                    </div>
                   </div>
-                </div>
-                <div class="go-to-icon">
-                  <div class="center">
-                    <div class="fa fa-angle-double-down">
+                  <div class="visualization-page-name">
+                    <div class="center">
+                      the Visualization page
+                    </div>
+                  </div>
+                  <div class="go-to-icon">
+                    <div class="center">
+                      <div class="fa fa-angle-double-down">
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -117,17 +129,17 @@
             </div>
           </div>
         </div>
-      </div>
-      <div class="GitHub-link">
-        <div class="GitHub-icon">
-          <div class="fa fa-github"></div>
-        </div>
-        <div class="GitHub-text">
+        <div class="GitHub-link">
+          <div class="GitHub-icon">
+            <div class="fa fa-github"></div>
+          </div>
+          <div class="GitHub-text">
+          </div>
         </div>
       </div>
     </div>
-  </div><div class="video-section">
-    <video width="100%" type="video/mov" src="./Resources/Media/IPhone 8 Ad.mov" controls>
+    <div class="video-section">
+      <video width="100%" type="video/mov" src="./Resources/Media/IPhone 8 Ad.mov" controls>
   </div>
 </div>
 <!-- Welcome page
@@ -164,328 +176,350 @@
       <div class="video-subpart">
          <video width="100%" type="video/mov" src="./Resources/Media/IPhone 8 Ad.mov" controls>
          </video>
-      </div>
     </div>
-     -->
+  </div>
+  -->
 
-<!-- Preview page-->
-    <div class="preview-page page">
-      <div class="navigation-subpart">
-        <div class="go-to-welcome-page" gotoPage="welcome-page">
-          <div class="go-to-arrow">
+  <!-- Preview page-->
+  <div class="preview-page page">
+    <div class="navigation-subpart">
+      <div class="go-to-welcome-page" gotoPage="welcome-page">
+        <div class="go-to-arrow">
           <div class="fa fa-chevron-up"></div>
         </div>
         <div class="arrow-description">Welcome page</div>
-        </div>
-        <div class="go-to-visualization-page" gotoPage="visualization-page">
-          <div class="arrow-description">Visualizations</div>
-          <div class="go-to-arrow">
-            <div class="fa fa-chevron-down"></div>
-          </div>
-        </div>
       </div>
-      <div class="slideshow-subpart">
-        <div class="slideshow-area">
-          <div class="left-arrow">
-            <div class="fa fa-chevron-left"></div>
-          </div>
-          <div class="right-arrow">
-            <div class="fa fa-chevron-right"></div>
-          </div>
-          <div class="photo-area">
-            photo stuff
-          </div>
-          <div class="dot-navigation">
-            <div class="dot" id="0"></div>
-            <div class="dot" id="1"></div>
-            <div class="dot" id="2"></div>
-            <div class="dot" id="3"></div>
-            <div class="dot" id="4"></div>
-          </div>
-        </div>
-        <div class="vis-name">
-          Some name
-        </div>
-        <div class="vis-description">
-          A big description
+      <div class="go-to-visualization-page" gotoPage="visualization-page">
+        <div class="arrow-description">Visualizations</div>
+        <div class="go-to-arrow">
+          <div class="fa fa-chevron-down"></div>
         </div>
       </div>
     </div>
+    <div class="slideshow-subpart">
+      <div class="slideshow-area">
+        <div class="left-arrow">
+          <div class="fa fa-chevron-left"></div>
+        </div>
+        <div class="right-arrow">
+          <div class="fa fa-chevron-right"></div>
+        </div>
+        <div class="photo-area">
+          photo stuff
+        </div>
+        <div class="dot-navigation">
+          <div class="dot" id="0"></div>
+          <div class="dot" id="1"></div>
+          <div class="dot" id="2"></div>
+          <div class="dot" id="3"></div>
+          <div class="dot" id="4"></div>
+        </div>
+      </div>
+      <div class="vis-name">
+        Some name
+      </div>
+      <div class="vis-description">
+        A big description
+      </div>
+    </div>
+  </div>
 
-    <!-- Visualization page-->
-    <div class="visualization-page page" id="information-appear">
-      <div class="top-section">
-        <div class="buttons">
-          <div class="home-button" gotoPage="welcome-page">
-            <div class="center">
-              <div class="fa fa-home"></div>
-            </div>
-          </div><div class="slideshow-button" gotoPage="preview-page">
-            <div class="center">
-              <div class="fa fa-info"></div>
-            </div>
-          </div><div class="upload-button">
-            <div class="center">
-              <div class="fa fa-upload">
-              </div>
-              <div class="upload">
-                Upload
-              </div>
-            </div>
-            <input type=file>
-          </div>
-        </div><div class="visualizations">
-          <!-- will be filled in by the script -->
-        </div><div class="two-four-buttons">
-          <div class="two-button" title="Show 2 visualizations at once">
-            <div class="center">2X</div>
-          </div><div class="four-button" title="Show 4 visualizations at once">
-            <div class="center">4X</div>
-          </div>
-        </div><div class="reset-button" title="Reset sizes of visualizations">
+  <!-- Visualization page-->
+  <div class="visualization-page page" id="information-appear">
+    <div class="top-section">
+      <div class="buttons">
+        <div class="home-button" gotoPage="welcome-page">
           <div class="center">
-            <div class="fa fa-th-large"></div>
+            <div class="fa fa-home"></div>
           </div>
         </div>
-      </div><div class="left-section">
-        <div class="left-section-inner">
-          <div class="information-section">
-            <div class="text-part">
-              <div class="title">
-                <div class="center">Statistics</div>
-              </div>
-              <div class="information-text">
-                <div class="node-stats">
-                  <div class="node-stats-title">
-                    Selected Node
-                  </div>
-                  <div class="name stat">
-                    <div class="stat-title">Name</div>
-                    <div class="stat-value"></div>
-                  </div>
-                  <Div class="path stat">
-                    <div class="stat-title">Path</div>
-                    <div class="stat-value"></div>
-                  </div>
-                  <Div class="parent stat">
-                    <div class="stat-title">Parent</div>
-                    <div class="stat-value"></div>
-                  </div>
-                  <Div class="children stat">
-                    <div class="stat-title">Children</div>
-                    <div class="stat-value"></div>
-                  </div>
-                  <Div class="child-count stat">
-                    <div class="stat-title">Child count</div>
-                    <div class="stat-value"></div>
-                  </div>
-                  <Div class="depth stat">
-                    <div class="stat-title">Depth</div>
-                    <div class="stat-value"></div>
-                  </div>
-                  <Div class="height stat">
-                    <div class="stat-title">Height</div>
-                    <div class="stat-value"></div>
-                  </div>
-                  <Div class="descendant-count stat">
-                    <div class="stat-title">Descendant count</div>
-                    <div class="stat-value"></div>
-                  </div>
+        <div class="slideshow-button" gotoPage="preview-page">
+          <div class="center">
+            <div class="fa fa-info"></div>
+          </div>
+        </div>
+        <div class="upload-button">
+          <div class="center">
+            <div class="fa fa-upload">
+            </div>
+            <div class="upload">
+              Upload
+            </div>
+          </div>
+          <input type=file>
+        </div>
+      </div>
+      <div class="visualizations">
+        <!-- will be filled in by the script -->
+      </div>
+      <div class="two-four-buttons">
+        <div class="two-button" title="Show 2 visualizations at once">
+          <div class="center">2X</div>
+        </div>
+        <div class="four-button" title="Show 4 visualizations at once">
+          <div class="center">4X</div>
+        </div>
+      </div>
+      <div class="reset-button" title="Reset sizes of visualizations">
+        <div class="center">
+          <div class="fa fa-th-large"></div>
+        </div>
+      </div>
+    </div>
+    <div class="left-section">
+      <div class="left-section-inner">
+        <div class="information-section">
+          <div class="text-part">
+            <div class="title">
+              <div class="center">Statistics</div>
+            </div>
+            <div class="information-text">
+              <div class="node-stats">
+                <div class="node-stats-title">
+                  Selected Node
                 </div>
-                <div class="general-stats">
-                  <div class="general-stats-title">
-                    General
-                  </div>
-                  <Div class="general-name stat">
-                    <div class="stat-title">Name</div>
-                    <div class="stat-value"></div>
-                  </div>
-                  <Div class="general-size stat">
-                    <div class="stat-title">Size</div>
-                    <div class="stat-value"></div>
-                  </div>
-                  <Div class="general-height stat">
-                    <div class="stat-title">Height</div>
-                    <div class="stat-value"></div>
-                  </div>
-                  <Div class="general-node-count stat">
-                    <div class="stat-title">Node count</div>
-                    <div class="stat-value"></div>
-                  </div>
-                  <Div class="general-average-child-count stat">
-                    <div class="stat-title">Average child count</div>
-                    <div class="stat-value"></div>
-                  </div>
-                  <Div class="general-leave-count stat">
-                    <div class="stat-title">Leaf count</div>
-                    <div class="stat-value"></div>
-                  </div>
+                <div class="name stat">
+                  <div class="stat-title">Name</div>
+                  <div class="stat-value"></div>
+                </div>
+                <Div class="path stat">
+                  <div class="stat-title">Path</div>
+                  <div class="stat-value"></div>
+                </div>
+                <Div class="parent stat">
+                  <div class="stat-title">Parent</div>
+                  <div class="stat-value"></div>
+                </div>
+                <Div class="children stat">
+                  <div class="stat-title">Children</div>
+                  <div class="stat-value"></div>
+                </div>
+                <Div class="child-count stat">
+                  <div class="stat-title">Child count</div>
+                  <div class="stat-value"></div>
+                </div>
+                <Div class="depth stat">
+                  <div class="stat-title">Depth</div>
+                  <div class="stat-value"></div>
+                </div>
+                <Div class="height stat">
+                  <div class="stat-title">Height</div>
+                  <div class="stat-value"></div>
+                </div>
+                <Div class="descendant-count stat">
+                  <div class="stat-title">Descendant count</div>
+                  <div class="stat-value"></div>
                 </div>
               </div>
-            </div><div class="collapse-button">
-              <div class="collapse">
-                <div class="fa fa-chevron-left"></div>
-              </div>
-              <div class="appear">
-                <div class="fa fa-chevron-right"></div>
+              <div class="general-stats">
+                <div class="general-stats-title">
+                  General
+                </div>
+                <Div class="general-name stat">
+                  <div class="stat-title">Name</div>
+                  <div class="stat-value"></div>
+                </div>
+                <Div class="general-size stat">
+                  <div class="stat-title">Size</div>
+                  <div class="stat-value"></div>
+                </div>
+                <Div class="general-height stat">
+                  <div class="stat-title">Height</div>
+                  <div class="stat-value"></div>
+                </div>
+                <Div class="general-node-count stat">
+                  <div class="stat-title">Node count</div>
+                  <div class="stat-value"></div>
+                </div>
+                <Div class="general-average-child-count stat">
+                  <div class="stat-title">Average child count</div>
+                  <div class="stat-value"></div>
+                </div>
+                <Div class="general-leave-count stat">
+                  <div class="stat-title">Leaf count</div>
+                  <div class="stat-value"></div>
+                </div>
               </div>
             </div>
           </div>
+          <div class="collapse-button">
+            <div class="collapse">
+              <div class="fa fa-chevron-left"></div>
+            </div>
+            <div class="appear">
+              <div class="fa fa-chevron-right"></div>
+            </div>
+          </div>
         </div>
-      </div><div class="right-section">
-        <div class="layout">
-          <div class="top-layout-part">
-            <div class="top-left quadrant">
-              <div class="top-left-inner">
-                <div class="option-pane" id="notch">
-                  <div class="inner-option-pane">
-                    <div class="options">
-                      <div class="no-options">
-                        <div class="center">
-                          No options are available
-                        </div>
-                      </div>
-                      <div class="option-columns">
+      </div>
+    </div>
+    <div class="right-section">
+      <div class="layout">
+        <div class="top-layout-part">
+          <div class="top-left quadrant">
+            <div class="top-left-inner">
+              <div class="option-pane" id="notch">
+                <div class="inner-option-pane">
+                  <div class="options">
+                    <div class="no-options">
+                      <div class="center">
+                        No options are available
                       </div>
                     </div>
-                    <div class="visible-part">
-                      <div class="left-pane">
-                        <div class="show-visualization">
-                          <div class="center">
-                            None
-                          </div>
-                        </div>
-                      </div>
-                      <div class="notch noselect" title="Open the options for this visualization">
+                    <div class="option-columns">
+                      <!-- will be filled with relevant options programmatically -->
+
+                      <!-- <div class="option-outer noselect">
+                            <div class="option number-type">
+                              <div class="option-name">
+                                Branch length
+                              </div>
+                              <div class="option-value">
+                                <input type=number>
+                              </div>
+                            </div>
+                          </div> -->
+                    </div>
+                  </div>
+                  <div class="visible-part">
+                    <div class="left-pane">
+                      <div class="show-visualization">
                         <div class="center">
-                          <div class="word">
-                            Options
-                          </div>
-                          <div class="lower-arrow show-arrow">
-                            <div class="fa fa-caret-down"></div>
-                          </div>
-                          <div class="upper-arrow hide-arrow">
-                            <div class="fa fa-caret-up"></div>
-                          </div>
+                          None
                         </div>
                       </div>
-                      <div class="right-pane">
-                        <div class="full-screen-button" title="View this visualization in fullscreen">
-                          <div class="center">
-                            <div class="fa fa-expand"></div>
-                          </div>
+                    </div>
+                    <div class="notch noselect" title="Open the options for this visualization">
+                      <div class="center">
+                        <div class="word">
+                          Options
                         </div>
-                        <div class="VR-button" title="View this visualization in VR" style=display:none>
-                          <div class="center">
-                            VR
-                          </div>
+                        <div class="lower-arrow show-arrow">
+                          <div class="fa fa-caret-down"></div>
                         </div>
-                        <div class="frequent-buttons">
+                        <div class="upper-arrow hide-arrow">
+                          <div class="fa fa-caret-up"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="right-pane">
+                      <div class="full-screen-button" title="View this visualization in fullscreen">
+                        <div class="center">
+                          <div class="fa fa-expand"></div>
+                        </div>
+                      </div>
+                      <div class="VR-button" title="View this visualization in VR" style=display:none>
+                        <div class="center">
+                          VR
+                        </div>
+                      </div>
+                      <div class="frequent-buttons">
 
-                           </div>
-                         </div>
-                       </div>
-                     </div>
-                   </div>
-                   <div class="visualization-area"></div>
-                   <div class="drop-indicator">
-                     <div class="drop-indicator-inner">
-                       <div class="center">
-                         Drop
-                       </div>
-                     </div>
-                   </div>
-                 </div>
-               </div>
-               <div class="top-right quadrant">
-                 <div class="top-right-inner"></div>
-                 <script>
-                   $(".top-right-inner").replaceWith(
-                     $(".top-left-inner").clone()
-                       .removeClass("top-left-inner")
-                       .addClass("top-right-inner")
-                   );
-                 </script>
-               </div>
-             </div><div class="bottom-layout-part">
-               <div class="bottom-left quadrant">
-                 <div class="bottom-left-inner">
-                   <div class="visualization-area">
-
-                </div>
-                <div class="drop-indicator">
-                  <div class="drop-indicator-inner">
-                    <div class="center">
-                      Drop
+                      </div>
                     </div>
                   </div>
                 </div>
-                <div class="option-pane" id="notch">
-                  <div class="inner-option-pane">
-                    <div class="visible-part">
-                      <div class="left-pane">
-                        <div class="show-visualization">
-                          <div class="center">
-                            None
-                          </div>
-                        </div>
-                      </div>
-                      <div class="notch noselect" title="Open the options for this visualization">
-                        <div class="center">
-                          <div class="word">
-                            Options
-                          </div>
-                          <div class="lower-arrow show-arrow">
-                            <div class="fa fa-caret-down"></div>
-                          </div>
-                          <div class="upper-arrow hide-arrow">
-                            <div class="fa fa-caret-up"></div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="right-pane">
-                        <div class="full-screen-button" title="View this visualization in fullscreen">
-                          <div class="center">
-                            <div class="fa fa-expand"></div>
-                          </div>
-                        </div>
-                        <div class="VR-button" title="View this visualization in VR" style=display:none>
-                          <div class="center">
-                            VR
-                          </div>
-                        </div>
-                        <div class="frequent-buttons">
+              </div>
+              <div class="visualization-area"></div>
+              <div class="drop-indicator">
+                <div class="drop-indicator-inner">
+                  <div class="center">
+                    Drop
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="top-right quadrant">
+            <div class="top-right-inner"></div>
+            <script>
+              $(".top-right-inner").replaceWith(
+                $(".top-left-inner").clone()
+                .removeClass("top-left-inner")
+                .addClass("top-right-inner")
+              );
+            </script>
+          </div>
+        </div>
+        <div class="bottom-layout-part">
+          <div class="bottom-left quadrant">
+            <div class="bottom-left-inner">
+              <div class="visualization-area">
 
-                           </div>
-                         </div>
-                       </div>
-                       <div class="options">
-                         <div class="no-options">
-                           <div class="center">
-                             No options are available
-                           </div>
-                         </div>
-                         <div class="option-columns">
-                         </div>
-                       </div>
-                     </div>
-                   </div>
-                 </div>
-               </div>
-               <div class="bottom-right quadrant">
-                 <div class="bottom-right-inner"></div>
-                 <script>
-                   $(".bottom-right-inner").replaceWith(
-                     $(".bottom-left-inner").clone()
-                     .removeClass("bottom-left-inner")
-                     .addClass("bottom-right-inner")
-                   );
-                 </script>
-               </div>
-             </div>
-           </div>
-         </div>
-       </div>
-    </body>
-  </body>
+              </div>
+              <div class="drop-indicator">
+                <div class="drop-indicator-inner">
+                  <div class="center">
+                    Drop
+                  </div>
+                </div>
+              </div>
+              <div class="option-pane" id="notch">
+                <div class="inner-option-pane">
+                  <div class="visible-part">
+                    <div class="left-pane">
+                      <div class="show-visualization">
+                        <div class="center">
+                          None
+                        </div>
+                      </div>
+                    </div>
+                    <div class="notch noselect" title="Open the options for this visualization">
+                      <div class="center">
+                        <div class="word">
+                          Options
+                        </div>
+                        <div class="lower-arrow show-arrow">
+                          <div class="fa fa-caret-down"></div>
+                        </div>
+                        <div class="upper-arrow hide-arrow">
+                          <div class="fa fa-caret-up"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="right-pane">
+                      <div class="full-screen-button" title="View this visualization in fullscreen">
+                        <div class="center">
+                          <div class="fa fa-expand"></div>
+                        </div>
+                      </div>
+                      <div class="VR-button" title="View this visualization in VR" style=display:none>
+                        <div class="center">
+                          VR
+                        </div>
+                      </div>
+                      <div class="frequent-buttons">
+
+                      </div>
+                    </div>
+                  </div>
+                  <div class="options">
+                    <div class="no-options">
+                      <div class="center">
+                        No options are available
+                      </div>
+                    </div>
+                    <div class="option-columns">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="bottom-right quadrant">
+            <div class="bottom-right-inner"></div>
+            <script>
+              $(".bottom-right-inner").replaceWith(
+                $(".bottom-left-inner").clone()
+                .removeClass("bottom-left-inner")
+                .addClass("bottom-right-inner")
+              );
+            </script>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
 </html>
