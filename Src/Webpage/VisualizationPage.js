@@ -112,6 +112,13 @@ $(function(){
     let areaName = areaNames[i];
     VisualisationHandler.createVisArea(areaName, $("."+areaName+" .visualization-area"), function(options, visualisation){
       var quadrant = $("."+areaName);
+      quadrant.find(".options").mousemove(function(e){
+        e.stopImmediatePropagation();
+      }).mousedown(function(e){
+        e.stopImmediatePropagation();
+      }).mouseup(function(e){
+        e.stopImmediatePropagation();
+      });
       attachOptions(options, quadrant);
       if(visualisation instanceof VIZ3D.Visualisation){
         quadrant.find(".VR-button").show();
