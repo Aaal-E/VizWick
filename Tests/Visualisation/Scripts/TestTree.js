@@ -47,9 +47,9 @@ VisualisationHandler.setTree(new Tree(obj));
 //     }, {
 //         name: "H",
 //         children: [{
-//           name: "I",
-//           children:[]
-//         }]
+//         //   name: "I",
+//         //   children:[]
+//         //}]
 //     }]
 // }));
 
@@ -70,7 +70,7 @@ VisualisationHandler.setTree(new Tree(obj));
 //         }]
 //     }]
 // }));
-
+//
 // VisualisationHandler.setTree(new Tree({
 //     name: "test",
 //     children: [{
