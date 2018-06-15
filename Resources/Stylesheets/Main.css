@@ -696,7 +696,7 @@ body#two .top-layout-part {
   position: relative;
   height: 30px;
   overflow: hidden;
-  z-index: 1000;
+  z-index: 1001;
 
   display: -webkit-box;
   display: -webkit-flex;
