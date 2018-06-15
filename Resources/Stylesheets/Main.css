@@ -186,7 +186,7 @@ html, body {
   /* background-color: green; */
 }
 
-.fa-info, .fa-th-large {
+.welcome-page .fa-info, .welcome-page .fa-th-large {
   margin-top: 50%;
   transform: translate(0, -50%);
   font-size: 50px;
@@ -212,7 +212,7 @@ html, body {
 .preview-page-name, .visualization-page-name {
   width: 100%;
   height: 30px;
-  /* background-color: gray; */
+  /* background-color: #E0E0E0; */
   font-style: italic;
   font-weight: bold;
   font-size: 20px;
@@ -238,7 +238,7 @@ html, body {
 .GitHub-icon {
   width: 50px;
   height: 100%;
-  background-color: gray;
+  background-color: #E0E0E0;
 }
 
 /*
@@ -372,24 +372,38 @@ html, body {
 .two-button {
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
-  border-right: 1px solid gray;
+  border-right: 1px solid #E0E0E0;
   width: 40px;
+  height: 100%;
+  border: 1px solid rgb(0, 0, 0, 0.5);
+  border-bottom-width: 3px;
+  box-sizing: border-box;
 }
 
 body#two .two-button {
-  box-shadow: inset 2px 2px 5px rgba(0,0,0,0.5);
-  width: 50px;
+  /* box-shadow: inset 2px 2px 5px rgba(0,0,0,0.5); */
+  /* width: 50px; */
+  border-bottom-width: 1px;
+  height: calc(100% - 2px);
+  margin-top: 2px;
 }
 
 .four-button {
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
   width: 40px;
+  height: 100%;
+  border: 1px solid rgb(0, 0, 0, 0.5);
+  border-bottom-width: 3px;
+  box-sizing: border-box;
 }
 
 body#four .four-button {
-  box-shadow: inset -2px 2px 5px rgba(0,0,0,0.5);
-  width: 50px;
+  /* box-shadow: inset -2px 2px 5px rgba(0,0,0,0.5); */
+  /* width: 50px; */
+  border-bottom-width: 1px;
+  height: calc(100% - 2px);
+  margin-top: 2px;
 }
 
 .two-button, .four-button {
@@ -478,10 +492,10 @@ margin-right: 5px;
 }
 
 .two-four-buttons {
-  background-color: white;
   border-radius: 10px;
   float: right;
   margin-right: 5px;
+  height: 32px;
 }
 
 .center {
@@ -532,7 +546,7 @@ margin-right: 5px;
   height: 30px;
   font-weight: bold;
   font-size: 30px;
-  border-bottom: 1px solid #80808057;
+  border-bottom: 1px solid #E0E0E0;
 }
 
 .title>.center{
@@ -581,7 +595,7 @@ margin-right: 5px;
   border-bottom-right-radius: 10px;
   text-align: center;
   cursor: pointer;
-  border-left: 1px solid #80808057;
+  border-left: 1px solid #E0E0E0;
 }
 
 .collapse, .appear {
@@ -732,9 +746,9 @@ body#two .top-layout-part {
   -moz-column-gap: 10px; /* Firefox */
   column-gap: 10px;
 
-  -webkit-column-rule: 1px solid #80808057; /* Chrome, Safari, Opera */
-  -moz-column-rule: 1px solid #80808057; /* Firefox */
-  column-rule: 1px solid #80808057;
+  -webkit-column-rule: 1px solid #E0E0E0; /* Chrome, Safari, Opera */
+  -moz-column-rule: 1px solid #E0E0E0; /* Firefox */
+  column-rule: 1px solid #E0E0E0;
 }
 
 .option-outer{
@@ -796,7 +810,7 @@ body#two .top-layout-part {
 }
 
 .option.toggle-type .toggle#off {
-  border: 2px solid #80808057;
+  border: 2px solid #E0E0E0;
   background-color: white;
 }
 
@@ -814,7 +828,7 @@ body#two .top-layout-part {
 }
 
 .option.toggle-type .toggle#off .circle {
-  box-shadow: 1px 1px 3px gray;
+  box-shadow: 1px 1px 3px #E0E0E0;
   margin-left: 0.5px;
 }
 
@@ -878,10 +892,10 @@ body#two .top-layout-part {
   z-index: 500;
 }
 .top-layout-part .option-pane .notch {
-    border-top: 1px solid #80808057;
+    border-top: 1px solid #E0E0E0;
 }
 .bottom-layout-part .option-pane .notch {
-    border-bottom: 1px solid #80808057;
+    border-bottom: 1px solid #E0E0E0;
 }
 
 .left-pane, .right-pane {
@@ -900,11 +914,11 @@ body#two .top-layout-part {
   width: auto;
   height: 100%;
   float: left;
-  border: 2px solid gray;
+  border: 2px solid #E0E0E0;
   padding: 5px;
   box-sizing: border-box;
   border-radius: 20px;
-  color: gray;
+  color: #E0E0E0;
 }
 .right-pane {
   padding-right: 5px;
@@ -926,10 +940,10 @@ body#two .top-layout-part {
   width: 40px;
   height: 100%;
   float: right;
-  border: 2px solid gray;
+  border: 2px solid #E0E0E0;
   box-sizing: border-box;
   border-radius: 20px;
-  color: gray;
+  color: #E0E0E0;
   cursor: pointer;
   margin-left: 5px;
 }
