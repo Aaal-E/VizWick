@@ -184,7 +184,9 @@ class Graphics3d extends AbstractGraphics{
 
                 var m = This.pointers.mouse;
                 if((m.x>=0 && m.y>=0 && m.x<=This.getWidth() && m.y<=This.getHeight()) || startedIn){
-                    event.preventDefault();
+                    if(startedIn)
+                        event.preventDefault();
+
                     if(!caught){
                         if(!isMouseDown) This.__triggerClick(event);
                         This.__triggerMousePress(isMouseDown, event);
