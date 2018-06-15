@@ -56,64 +56,40 @@ html, body {
 .welcome-page {
   width: 100%;
   height: 100%;
-  background-color: #000000;
+  background-color: black;
 }
 
-.text-subpart, .video-subpart {
+.text-section, .video-section {
   display: inline-block;
   vertical-align: middle;
 }
 
-.text-subpart {
-  width: 50%;
-  height: calc(100% - 40px);
-  margin-top: 20px;
-  margin-left: 20px;
-  margin-right: calc(5% - 40px);
-  padding: 20px;
-  box-sizing: border-box;
-  background-color: white;
-  text-align: center;
-  border-radius: 25px;
-}
-
-.text-align {
-  margin-top: 15%;
-}
-
-.parenthesis, .description-text {
-  display: inline;
-}
-
-.member-name {
-  display: inline;
-}
-
-.left-part, .right-part {
-  display: inline-block;
-  width: auto;
-}
-
-.video-subpart {
-width: 45%;
-height: auto;
-background-color: white;
+.text-section {
+  width: 60%;
+  height: calc(100% - 50px);
+  margin-top: 25px;
+  margin-left: 25px;
+  background-color: black;
 }
 
 .main-text {
   height: 150px;
   font-size: 150px;
+  margin-bottom: 5%;
 }
 
 .description {
   height: 75px;
+  margin-left: 20%;
+  margin-right: 20%;
 }
 
 .description-text {
-  font-size: 25px;
+  font-size: 30px;
 }
 
 .group-members {
+  margin-top: 5%;
   height: 100px;
 }
 
@@ -126,21 +102,150 @@ background-color: white;
   font-style: italic;
 }
 
+.description-text {
+  font-size: 25px;
+}
+
+
+.parenthesis, .description-text {
+  display: inline
+}
+
+.member-name {
+  display: inline;
+}
+
+.video-section {
+  width: calc(40% - 75px);
+  height: 300px;
+  margin-left: 25px;
+  background-color: #FFFFFF;
+}
+
+.upper-text-subpart {
+  width: 100%;
+  height: 75%;
+  margin-bottom: 25px;
+  border-radius: 25px;
+  background-color: #FFFFFF;
+}
+
+.lower-text-subpart {
+  width: 100%;
+  height: calc(25% - 25px);
+  background-color: black;
+}
+
+.other-pages {
+  width: 100%;
+  height: calc(100% - 45px);
+  border-radius: 15px;
+  background-color: black;
+}
+
+.left-lower-part, .right-lower-part {
+  width: calc(50% - 5px);
+  height: 100%;
+  display: inline-block;
+  padding: 15px;
+  box-sizing: border-box;
+}
+
+.left-lower-part {
+  margin-right: 10px;
+  border-radius: 15px;
+  background-color: #FFFFFF;
+}
+
+.right-lower-part {
+  border-radius: 15px;
+  background-color: #FFFFFF;
+}
+
+.inner-container {
+  width: 100%;
+  height: 100%;
+  /* background-color: blue; */
+}
+
+.content {
+  width: 400px;
+  height: 70px;
+  /* background-color: yellow; */
+  position: relative;
+  top: 50%;
+  transform: translate(0, -50%);
+  margin-left: calc(50% - 200px);
+}
+
+.page-icon {
+  width: 70px;
+  height: 100%;
+  text-align: center;
+  /* background-color: green; */
+}
+
+.fa-info, .fa-th-large {
+  margin-top: 50%;
+  transform: translate(0, -50%);
+  font-size: 50px;
+}
+
+.page-icon, .go-to {
+  display: inline-block;
+  vertical-align: middle;
+}
+
 .go-to {
-  height: auto;
-  margin-top: 100px;
+  width: calc(100% - 70px);
+  height: 100%;
+  /* background-color: red; */
 }
 
-.left-part {
-  margin-right: calc(25% - 100px);
+.go-to-text {
+  width: 100%;
+  height: 20px;
+  /* background-color: blue; */
 }
 
-.right-part {
-  margin-left: calc(25% - 100px);
+.preview-page-name, .visualization-page-name {
+  width: 100%;
+  height: 30px;
+  /* background-color: gray; */
+  font-style: italic;
+  font-weight: bold;
+  font-size: 20px;
 }
 
-.fa-chevron-down, .fa-chevron-up {
-  color: black;
+.go-to-icon {
+  width: 100%;
+  height: 20px;
+  /* background-color: orange; */
+}
+
+.GitHub-link {
+  width: 300px;
+  height: 30px;
+  margin-top: 15px;
+  padding-left: 15px;
+  padding-right: 15px;
+  box-sizing: border-box;
+  border-radius: 15px;
+  background-color: #FFFFFF;
+}
+
+.GitHub-icon {
+  width: 50px;
+  height: 100%;
+  background-color: gray;
+}
+
+.center {
+  /* !!!!! */
+  position: relative;
+  top: 50%;
+  transform: translate(0, -50%);
+  text-align: center;
 }
 
 /*
@@ -322,8 +427,9 @@ body#four .four-button {
 }
 
 .home-button {
-  width: 40px;
-  margin-right: 5px;
+width: 40px;
+margin-right: 5px;
+
 }
 
 .slideshow-button {
@@ -332,6 +438,7 @@ body#four .four-button {
 
 .fa-home, .fa-info {
   color: black;
+  font-size: 15px;
 }
 
 .upload-button {
