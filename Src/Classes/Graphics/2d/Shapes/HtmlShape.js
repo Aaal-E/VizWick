@@ -7,7 +7,7 @@ class HtmlShape2d extends Shape2d{
     constructor(graphics, html, preInit){
         super(graphics, null, preInit);
         this.element = $(
-            "<div class=HTMLshape style=display:inline-block;position:absolute;color:white;z-index:1000>"+
+            "<div class='HTMLshape noselect' style=display:inline-block;position:absolute;color:white;z-index:1000>"+
             "</div>"
         );
         this.setHtml(html);

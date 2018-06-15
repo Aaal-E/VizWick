@@ -353,6 +353,17 @@ var optionTemplates = {
         '</div>'+
       '</div>'+
     '</div>',
+  text:
+    '<div class="option-outer noselect">'+
+      '<div class="option text-type">'+
+        '<div class="option-name">'+
+          'Branch length'+
+        '</div>'+
+        '<div class="option-value">'+
+          '<input type=text>'+
+        '</div>'+
+      '</div>'+
+    '</div>',
 };
 function attachOptions(options, container){
   options.onOptionsChange(function(type, option){

@@ -7,7 +7,7 @@ class HtmlShape3d extends ImageShape3d{
     constructor(gfx, html, preInit){
         super(gfx, null, 0, 0.2, function(){
             this.element = $(
-                "<div class=HTMLshape style=display:inline-block;position:absolute;z-index:1000>"+
+                "<div class='HTMLshape noselect' style=display:inline-block;position:absolute;z-index:1000>"+
                     "<span class=HTMLshapeContent style=display:inline-block;color:white>"+
                     "</span>"+
                 "</div>"
