@@ -45,6 +45,7 @@ html, body {
 .page{
   width: 100%;
   height: 100%;
+  overflow: hidden;
 }
 [gotoPage]{
   cursor: pointer;
@@ -240,14 +241,6 @@ html, body {
   background-color: gray;
 }
 
-.center {
-  /* !!!!! */
-  position: relative;
-  top: 50%;
-  transform: translate(0, -50%);
-  text-align: center;
-}
-
 /*
     Slideshow page
 */
@@ -373,6 +366,7 @@ html, body {
   text-align: center;
   display: inline-block;
   cursor: pointer;
+  vertical-align: top;
 }
 
 .two-button {
