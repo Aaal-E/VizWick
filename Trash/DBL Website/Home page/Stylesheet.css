@@ -24,6 +24,49 @@ html, body {
   background-color: red;
 }
 
+.main-text {
+  height: 150px;
+  font-size: 150px;
+  margin-bottom: 5%;
+}
+
+.description {
+  height: 75px;
+  margin-left: 20%;
+  margin-right: 20%;
+}
+
+.description-text {
+  font-size: 30px;
+}
+
+.group-members {
+  margin-top: 5%;
+  height: 100px;
+}
+
+.member-name {
+  width: auto;
+  height: 30px;
+  margin-left: 10px;
+  margin-right: 10px;
+  font-size: 20px;
+  font-style: italic;
+}
+
+.description-text {
+  font-size: 25px;
+}
+
+
+.parenthesis, .description-text {
+  display: inline
+}
+
+.member-name {
+  display: inline;
+}
+
 .video-section {
   width: calc(40% - 75px);
   height: 300px;
