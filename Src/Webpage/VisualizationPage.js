@@ -341,7 +341,18 @@ var optionTemplates = {
       '<div class=center>'+
         '<div class=fa></div>'+
       '</div>'+
-    '</div>'
+    '</div>',
+  number:
+    '<div class="option-outer noselect">'+
+      '<div class="option number-type">'+
+        '<div class="option-name">'+
+          'Branch length'+
+        '</div>'+
+        '<div class="option-value">'+
+          '<input type=number>'+
+        '</div>'+
+      '</div>'+
+    '</div>',
 };
 function attachOptions(options, container){
   options.onOptionsChange(function(type, option){
@@ -395,6 +406,20 @@ function attachOptions(options, container){
             });
           }
           break;
+
+        case "number":
+          el = $(optionTemplates.number);
+          var updateValue = function(){
+            var value = $(this).val();
+            option.setValue(value);
+            $(this).val(option.getValue()); //considers rounding and such
+          };
+          el.find("input")
+            .change(updateValue)
+            .blur(updateValue)
+            .val(option.getValue());
+          break;
+
         default:
           return;
       }
@@ -409,7 +434,6 @@ function attachOptions(options, container){
     }
 
     //hide or show no options message dependent on available options
-    console.log(container.find(".option-columns .option"));
     if(container.find(".option-columns .option").length==0)
       container.find(".no-options").show();
     else

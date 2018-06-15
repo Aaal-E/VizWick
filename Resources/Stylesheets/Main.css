@@ -722,6 +722,17 @@ body#two .top-layout-part {
   background-color: white;
 }
 
+.option.number-type input{
+    display: block;
+    border: none;
+    background-color: #f0eff4;
+    height: calc(100% - 5px);
+    border-radius: 5px;
+    border-top: 2px solid #dddcdf;
+    padding-left: 5px;
+    width: 45px;
+}
+
 /* .top-right .option-pane,
 .top-right .inner-option-pane {
   border-top-left-radius: 10px;

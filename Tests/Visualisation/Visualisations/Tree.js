@@ -207,11 +207,6 @@
             super(container, tree, options);
             var This = this;
 
-            //limit the number of nodes, keep it low for VR efficiency
-            this.maxNodeCount = 200;
-            this.layers = 4;
-            this.version = 0; //a veriable that allows nodes to be marked dirty
-
             //manage the camera
             var camera = this.getCamera();
             camera.setDistance(1.2);
@@ -219,7 +214,7 @@
             //rotate the camera by default i the mouse is not in the screen
             var autoRotate = true;
             this.onUpdate(function(){
-                if(autoRotate)
+                if(autoRotate && options.getValue("Auto rotation"))
                     camera.getRot().add(0, options.getValue("Rotation speed")/30, 0);
             });
 
@@ -292,17 +287,8 @@
         }
         __setupOptions(options){
             var This = this;
-            //add button to go back to the parent
-            options.add(new Options.Button("parent").setIcon("arrow-up").setDescription("Go to the parent of the current node").onClick(function(){
-                var current = This.getShape("focused");
-                var parent = current.getNode().getParent();
-                if(parent) This.synchronizeNode("focused", parent);
-            }));
 
-            //add rotation speed option
-            options.add(new Options.Number("Rotation speed").setDescription("The rotation speed when the mouse is not in the window").setValue(0.5));
-
-
+            this.version = 0; //a veriable that allows nodes to be marked dirty
             var refocus = function(){
                 var focused = This.getShape("focused");
                 if(focused){
@@ -311,17 +297,34 @@
                 }
             };
 
+
+            //add button to go back to the parent
+            options.add(new Options.Button("parent").setIcon("arrow-up").setDescription("Go to the parent of the current node").onClick(function(){
+                var current = This.getShape("focused");
+                var parent = current.getNode().getParent();
+                if(parent) This.synchronizeNode("focused", parent);
+            }));
+
+
+            //add option to stop rotation completely
+            options.add(new Options.Boolean("Auto rotation").setDescription("Whether or not to auto rotate the visualisation when not focused").setValue(true));
+
+            //add rotation speed option
+            options.add(new Options.Number("Rotation speed").setDescription("The rotation speed when the mouse is not in the window").setValue(0.5));
+
+
+
             //add option for maximum node count
             options.add(new Options.Number("Maximum node count", 1, 50, 20000).setDescription("The maximum number of nodes to show at once").onChange(function(val){
                 This.maxNodeCount = val;
                 refocus();
-            })).setValue(this.maxNodeCount);
+            }).setValue(200));
 
             //add option for how many layers to show
             options.add(new Options.Number("Layer count", 1, 1, 20).setDescription("The number of descendant layers to show of the focused node").onChange(function(val){
                 This.layers = val;
                 refocus();
-            })).setValue(this.layers);
+            }).setValue(4));
 
             //add option to alter the branch length
             this.branchLength = new Options.Number("Branch length", 1, 1, 100).setDescription("The length o the branch lengths in the visualization").onChange(function(val){
