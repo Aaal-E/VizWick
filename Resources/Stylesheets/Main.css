@@ -287,12 +287,8 @@ html, body {
   height: 500px;
   margin-left: calc((100% - 700px)/2);
   margin-top: 15px;
-<<<<<<< HEAD
-  border: 1px solid #FFFFFF;
-=======
   border: 1px solid black;
   border-radius: 10px;
->>>>>>> af2ad4a8673ce4a810a8fede8791a1e7d5adaf30
 }
 
 .left-arrow, .right-arrow {
@@ -559,13 +555,7 @@ margin-right: 5px;
   /* height: 30px; */
   font-weight: bold;
   font-size: 30px;
-<<<<<<< HEAD
-  border-bottom: 1px solid #E0E0E0;
-  padding: 5px;
-  box-sizing: border-box;
-=======
   border-bottom: 1px solid #FFFFFF;
->>>>>>> c49c28cc923cec467bedba33a410dc0e52b5385f
 }
 
 .title>.center{
