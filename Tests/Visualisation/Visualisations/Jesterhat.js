@@ -36,10 +36,9 @@
             this.onHover(
                 function(enter){
                     if(enter){
-						this.text.setLoc(0,-40/(this.getGraphics().getCamera().scale*this.getWorldScale()),0);
-                        this.addShape(this.text);
+						this.highlight();
 					}else{
-                        this.removeShape(this.text);
+						this.dehighlight();
                     }
             });
 
@@ -53,7 +52,7 @@
                 var p = This.getParent();
                 if(p){
                     this.getGraphics().setFocussed(p);
-                    this.getGraphics().highlight(This);
+                    this.getGraphics().select(This);
 
                 }
                 return true;
@@ -64,7 +63,7 @@
         //    });
             this.onClick(function(){
                 this.getGraphics().setFocussed(this);
-                this.getGraphics().highlight(this.children[0]);
+                this.getGraphics().select(this.children[0]);
             });
 
             //update expanded (if there are no children to start with)
@@ -73,7 +72,7 @@
 
         __stateChanged(field, val, oldState){
             if(field=="focused" && val==true){
-                this.getGraphics().getCamera().setTarget(this, this, this);
+                this.getGraphics().getCamera().setTarget(this, this, 4/this.getWorldScale());
 
                 this.createDescendants(3);      //creates 3 layers of descendants
                 this.destroyDescendants(3);     //destroys any descendants above those 3 layers
@@ -84,6 +83,14 @@
 
             if(field=="expanded")
                 this.circle.setColor(this.state.expanded?0x0000ff:0xff0000)
+			
+			if(field=="highlighted")
+				if(val==true){
+					this.text.setLoc(0,-40/(this.getGraphics().getCamera().scale*this.getWorldScale()),0);
+                    this.addShape(this.text);
+				} else {
+					this.removeShape(this.text);
+				}
         }
         __connectParent(parent){
             if(parent){
@@ -121,14 +128,14 @@
             return new (this.__getClass())(this.getGraphics(), node, scale);
         }
 
-        highlight(){
+        select(){
 			this.text.setLoc(0,-40/(this.getGraphics().getCamera().scale*this.getWorldScale()),0);
             this.addShape(this.lit);
             this.lit.setZ(-100);
             this.addShape(this.text);
         }
 
-        unhighlight(){
+        unselect(){
             this.removeShape(this.lit);
             this.removeShape(this.text);
         }
@@ -137,36 +144,41 @@
         constructor(container, tree, options){
             super(container, tree, options);
             this.focussed = this.getShapesRoot()[0];
-            this.highlighted = this.getShapesRoot()[0];
+            this.selected = this.getShapesRoot()[0];
 
             this.onKeyPress(function(down, key, event){
                 if(down){
                     console.log(key);
                     if(key=="arrowleft"){
-                        if(this.highlighted.getParent()){
-                            var i = this.highlighted.getNode().getParent().getChildren().indexOf(this.highlighted.getNode()) - 1;
-                            if(i < 0) i = i + this.highlighted.getNode().getParent().getChildren().length;
-                            this.highlight(this.highlighted.getNode().getParent().getChildren()[i].getShape(this.getUID()));
+                        if(this.selected.getParent()){
+                            var i = this.selected.getNode().getParent().getChildren().indexOf(this.selected.getNode()) - 1;
+                            if(i < 0) i = i + this.selected.getNode().getParent().getChildren().length;
+                            this.select(this.selected.getNode().getParent().getChildren()[i].getShape(this.getUID()));
                         }
                     } else if(key=="arrowright"){
-                        if(this.highlighted.getParent()){
-                            var i = this.highlighted.getNode().getParent().getChildren().indexOf(this.highlighted.getNode()) + 1;
-                            if(i >= this.highlighted.getNode().getParent().getChildren().length) i = 0;
-                            this.highlight(this.highlighted.getNode().getParent().getChildren()[i].getShape(this.getUID()));
+                        if(this.selected.getParent()){
+                            var i = this.selected.getNode().getParent().getChildren().indexOf(this.selected.getNode()) + 1;
+                            if(i >= this.selected.getNode().getParent().getChildren().length) i = 0;
+                            this.select(this.selected.getNode().getParent().getChildren()[i].getShape(this.getUID()));
                             }
                     } else if(key=="arrowup"){
-                        this.setFocussed(this.highlighted);
+                        this.setFocussed(this.selected);
                         if(this.focussed.getChildren().length > 0)
-                        this.highlight(this.focussed.getChildren()[0]);
+                        this.select(this.focussed.getChildren()[0]);
                     } else if (key=="arrowdown"){
-                        this.highlight(this.focussed);
+                        this.select(this.focussed);
                         if(this.focussed.getParent())
                         this.setFocussed(this.focussed.getParent());
 
                     }
                 }
             });
+			
+			var focused = VisualisationHandler.getSynchronisationData().focused||this.getShapesRoot()[0].getNode();
+            this.synchronizeNode("focused", focused);
         }
+		
+		
         __getNodeShapeClass(VIZ){
             return NodeShape;
         }
@@ -176,10 +188,10 @@
             a.focus();
         }
 
-        highlight(b){
-            this.highlighted.unhighlight();
-            this.highlighted = b;
-            this.highlighted.highlight();
+        select(b){
+            this.selected.unselect();
+            this.selected = b;
+            this.selected.select();
         }
 
     }
