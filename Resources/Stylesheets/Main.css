@@ -57,7 +57,7 @@ html, body {
 .welcome-page {
   width: 100%;
   height: 100%;
-  background-color: black;
+  background-color: #25007A;
 }
 
 .text-section, .video-section {
@@ -70,7 +70,8 @@ html, body {
   height: calc(100% - 50px);
   margin-top: 25px;
   margin-left: 25px;
-  background-color: black;
+  /* background-color: #25007A; */
+  color: #FFFFFF;
 }
 
 .main-text {
@@ -120,7 +121,7 @@ html, body {
   width: calc(40% - 75px);
   height: 300px;
   margin-left: 25px;
-  background-color: #FFFFFF;
+  background-color: #25007A;
 }
 
 .upper-text-subpart {
@@ -128,20 +129,20 @@ html, body {
   height: 75%;
   margin-bottom: 25px;
   border-radius: 25px;
-  background-color: #FFFFFF;
+  background-color: #100130;
 }
 
 .lower-text-subpart {
   width: 100%;
   height: calc(25% - 25px);
-  background-color: black;
+  background-color: #25007A;
 }
 
 .other-pages {
   width: 100%;
   height: calc(100% - 45px);
   border-radius: 15px;
-  background-color: black;
+  background-color: #25007A;
 }
 
 .left-lower-part, .right-lower-part {
@@ -155,12 +156,12 @@ html, body {
 .left-lower-part {
   margin-right: 10px;
   border-radius: 15px;
-  background-color: #FFFFFF;
+  background-color: #100130;
 }
 
 .right-lower-part {
   border-radius: 15px;
-  background-color: #FFFFFF;
+  background-color: #100130;
 }
 
 .inner-container {
@@ -190,6 +191,7 @@ html, body {
   margin-top: 50%;
   transform: translate(0, -50%);
   font-size: 50px;
+  color: #FFFFFF;
 }
 
 .page-icon, .go-to {
@@ -200,7 +202,7 @@ html, body {
 .go-to {
   width: calc(100% - 70px);
   height: 100%;
-  /* background-color: red; */
+  /* background-color: #100130; */
 }
 
 .go-to-text {
@@ -232,13 +234,13 @@ html, body {
   padding-right: 15px;
   box-sizing: border-box;
   border-radius: 15px;
-  background-color: #FFFFFF;
+  background-color: #100130;
 }
 
 .GitHub-icon {
   width: 50px;
   height: 100%;
-  background-color: #E0E0E0;
+  background-color: #FFFFFF;
 }
 
 /*
@@ -247,20 +249,21 @@ html, body {
 .preview-page {
   width: 100%;
   height: 100%;
-  background-color: white;
+  background-color: #25007A;
   text-align: center;
   position: relative;
 }
 
 .go-to-welcome-page, .go-to-visualization-page {
   display: inline-block;
-  background-color: white;
+  background-color: #100130;
   border-radius: 10px;
   font-size: 20px;
+  color: #FFFFFF;
   width: 200px;
   height: 50px;
   margin-top: 20px;
-  border: 1px solid black;
+  border: 1px solid #FFFFFF;
 }
 
 .go-to-welcome-page {
@@ -284,7 +287,7 @@ html, body {
   height: 500px;
   margin-left: calc((100% - 700px)/2);
   margin-top: 15px;
-  border: 1px solid black;
+  border: 1px solid #FFFFFF;
 }
 
 .left-arrow, .right-arrow {
@@ -292,7 +295,7 @@ html, body {
   padding: 16px;
   width:auto;
   margin-top: -22px;
-  color: black;
+  color: #FFFFFF;
   position: absolute;
 }
 
@@ -307,7 +310,7 @@ html, body {
   width: 15px;
   margin-top: 7.5px;
   border-radius: 50%;
-  background-color: #bbb;
+  background-color: #100130;
   display: inline-block;
   cursor: pointer;
 }
@@ -316,6 +319,7 @@ html, body {
   margin-top: 15px;
   font-size: 40px;
   font-weight: bold;
+  color: #FFFFFF;
 }
 
 .vis-description {
@@ -323,7 +327,9 @@ html, body {
   height: auto;
   margin: auto;
   border-radius: 15px;
-  border: 2px solid black;
+  border: 2px solid #FFFFFF;
+  color: #FFFFFF;
+  background-color: #100130;
 }
 #p1 {
   display: run-in;
@@ -338,14 +344,14 @@ html, body {
 .visualization-page {
   width: 100%;
   height: 100%;
-  background-color: red;
+  background-color: #25007A;
 }
 
 .top-section {
   width: 100%;
   height: 40px;
   overflow: hidden;
-  background-color: red;
+  background-color: #25007A;
 }
 
 .visualizations, .two-four-buttons {
@@ -358,24 +364,26 @@ html, body {
 
 .home-button, .slideshow-button, .upload-button, .visualization-button, .reset-button, .two-button, .four-button {
   height: 30px;
-  background-color: white;
+  background-color: #100130;
   border-radius: 10px;
   font-size: 20px;
+  color: #FFFFFF;
   padding: 5px;
   box-sizing: border-box;
   text-align: center;
   display: inline-block;
   cursor: pointer;
   vertical-align: top;
+  border: 1px solid #FFFFFF;
 }
 
 .two-button {
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
-  border-right: 1px solid #E0E0E0;
+  border-right: 1px solid #FFFFFF;
   width: 40px;
   height: 100%;
-  border: 1px solid rgb(0, 0, 0, 0.5);
+  border: 1px solid #FFFFFF /*rgb(0, 0, 0, 0.5)*/;
   border-bottom-width: 3px;
   box-sizing: border-box;
 }
@@ -393,7 +401,7 @@ body#two .two-button {
   border-bottom-left-radius: 0;
   width: 40px;
   height: 100%;
-  border: 1px solid rgb(0, 0, 0, 0.5);
+  border: 1px solid #FFFFFF /*rgb(0, 0, 0, 0.5)*/;
   border-bottom-width: 3px;
   box-sizing: border-box;
 }
@@ -445,7 +453,7 @@ margin-right: 5px;
 }
 
 .fa-home, .fa-info {
-  color: black;
+  color: #FFFFFF;
   font-size: 15px;
 }
 
@@ -509,7 +517,7 @@ margin-right: 5px;
   height: calc(100% - 45px);
   transition: height 0.5s;
   position: relative;
-    width: 300px;
+  width: 300px;
 }
 .left-section-inner{
   height: 100%;
@@ -523,7 +531,7 @@ margin-right: 5px;
   width: 100%;
   height: 100%;
   margin-bottom: 10px;
-  background-color: white;
+  background-color: #100130;
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
   box-sizing: border-box;
@@ -534,11 +542,12 @@ margin-right: 5px;
 }
 
 .text-part {
-  background-color: white;
+  background-color: #100130;
   width: calc(100% - 11px);
   height: 100%;
   padding: 5px;
   box-sizing: border-box;
+  color: #FFFFFF;
 }
 
 .title {
@@ -546,7 +555,7 @@ margin-right: 5px;
   height: 30px;
   font-weight: bold;
   font-size: 30px;
-  border-bottom: 1px solid #E0E0E0;
+  border-bottom: 1px solid #FFFFFF;
 }
 
 .title>.center{
@@ -595,7 +604,8 @@ margin-right: 5px;
   border-bottom-right-radius: 10px;
   text-align: center;
   cursor: pointer;
-  border-left: 1px solid #E0E0E0;
+  border-left: 1px solid #FFFFFF;
+  color: #FFFFFF;
 }
 
 .collapse, .appear {
@@ -628,7 +638,7 @@ margin-right: 5px;
 .layout {
   width: 100%;
   height: 100%;
-  background-color: red;
+  /* background-color: #25007A; */
 }
 
 /* get rid of the handle bar line */
@@ -663,7 +673,7 @@ body#two .top-layout-part {
   display: inline-block;
   width: calc(50% - 2.5px);
   height: 100%;
-  background-color: red;
+  background-color: #25007A;
   border-radius: 10px;
   position: relative;
 }
@@ -882,7 +892,7 @@ body#two .top-layout-part {
   position: absolute;
   width: 150px;
   height: 30px;
-  background-color: white;
+  background-color: #FFFFFF;
   padding: 5px;
   box-sizing: border-box;
   text-align: center;
@@ -999,7 +1009,7 @@ body#two .top-layout-part {
 .visualization-area {
   width: 100%;
   height: 100%;
-  background-color: black;
+  background-color: #100130;
   border-radius: 10px;
   overflow: hidden;
 }
