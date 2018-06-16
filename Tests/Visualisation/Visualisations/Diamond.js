@@ -163,7 +163,7 @@
           }
       };
 
-      options.add(new Options.Button("whole").setIcon("info").setDescription("View the whole visualization").onClick(function(){
+      options.add(new Options.Button("whole").setIcon("dot-circle").setDescription("View the whole visualization").onClick(function(){
         This.getTree().getRoot().getShape(This.getUID()).focus();
       }));
 

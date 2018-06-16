@@ -51,6 +51,72 @@ html, body {
   cursor: pointer;
 }
 
+/* notification/alert styling */
+.alerts{
+    max-width: 80%;
+    width: 300px;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
+    z-index: 1003;
+}
+.alert{
+    position: relative;
+    overflow: hidden;
+    height: 0px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 5px 5px white;
+}
+.alert .alertInner{
+    /* margin-top: 5px; */
+    padding: 10px;
+
+    background-color: rgb(37, 0, 122);
+    border: 3px solid rgb(16, 1, 48);
+    color: white;
+
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+}
+.alert .message{
+    margin-bottom: 5px;
+}
+
+.alert .continueButton,
+.alert .cancelButton,
+.alert .okButton{
+    border: none;
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    float: right;
+}
+.alert .cancelButton{
+    float: left;
+}
+.alert .continueButton,
+.alert .cancelButton{
+    width: calc(50% - 5px);
+}
+
+/*different button modes*/
+.alert .continueButton,
+.alert .cancelButton{
+    display: none;
+}
+.alert.notify .okButton{
+    display: none;
+}
+.alert.verify .okButton{
+    display: none;
+}
+.alert.verify .continueButton,
+.alert.verify .cancelButton{
+    display: block;
+}
+
 /*
     Welcome page
 */
@@ -363,7 +429,7 @@ html, body {
   margin-right: 5px;
 }
 
-.home-button, .slideshow-button, .upload-button, .visualization-button, .reset-button, .two-button, .four-button {
+.home-button, .slideshow-button, .share-button, .upload-button, .visualization-button, .reset-button, .two-button, .four-button {
   height: 30px;
   background-color: #100130;
   border-radius: 10px;
@@ -444,12 +510,13 @@ body#four .four-button {
 }
 
 .home-button {
-width: 40px;
-margin-right: 5px;
+  width: 40px;
+  margin-right: 5px;
 
 }
 
-.slideshow-button {
+.slideshow-button, .share-button {
+  margin-right: 5px;
   width: 40px;
 }
 
@@ -548,6 +615,7 @@ margin-right: 5px;
   height: 100%;
   box-sizing: border-box;
   color: #FFFFFF;
+  overflow-y: auto;
 }
 
 .title {
@@ -555,7 +623,7 @@ margin-right: 5px;
   /* height: 30px; */
   font-weight: bold;
   font-size: 30px;
-  border-bottom: 1px solid #FFFFFF;
+  border-bottom: 1px solid black;
 }
 
 .title>.center{
@@ -565,10 +633,13 @@ margin-right: 5px;
 
 .information-text {
   width: 100%;
-  height: calc(100% - 40px);
+  min-height: calc(100% - 40px);
   box-sizing: border-box;
   overflow: auto;
   position: relative;
+}
+.information-text .node-stats{
+  margin-bottom: 250px;
 }
 .information-text .general-stats{
   width: 100%;
@@ -599,15 +670,14 @@ margin-right: 5px;
 }
 .information-text .stat-title{
   float: left;
-  width: 50%;
 }
 .information-text .stat-title:after{
   content: ":";
 }
 .information-text .stat-value{
-  float: left;
+  word-break: break-word;
+  float: right;
   text-align: right;
-  width: 50%;
   overflow: hidden;
   position: relative;
 }
@@ -629,7 +699,7 @@ margin-right: 5px;
   border-bottom-right-radius: 10px;
   text-align: center;
   cursor: pointer;
-  border-left: 1px solid #FFFFFF;
+  border-left: 1px solid black;
   color: #FFFFFF;
 }
 

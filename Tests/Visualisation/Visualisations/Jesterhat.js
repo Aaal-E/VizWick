@@ -29,7 +29,7 @@
                     this.getNode().getName()+
                 "</span>");
             this.text.setScale(1);
-			
+
 
             this.setZ(-this.getNode().getDepth());
 
@@ -83,7 +83,7 @@
 
             if(field=="expanded")
                 this.circle.setColor(this.state.expanded?0x0000ff:0xff0000)
-			
+
 			if(field=="highlighted")
 				if(val==true){
 					this.text.setLoc(0,-40/(this.getGraphics().getCamera().scale*this.getWorldScale()),0);
@@ -95,7 +95,8 @@
         __connectParent(parent){
             if(parent){
                 var offset = 0;
-                for (var i=0;i<this.getIndex(); i++){
+                parent.createChildren();
+                for (var i=0; i<this.getIndex(); i++){
                     offset = offset + parent.getChildren()[i].scale;
                 }
                 this.angle = 0
@@ -173,12 +174,12 @@
                     }
                 }
             });
-			
+
 			var focused = VisualisationHandler.getSynchronisationData().focused||this.getShapesRoot()[0].getNode();
             this.synchronizeNode("focused", focused);
         }
-		
-		
+
+
         __getNodeShapeClass(VIZ){
             return NodeShape;
         }
@@ -189,9 +190,11 @@
         }
 
         select(b){
-            this.selected.unselect();
+			if(this.selected)
+            	this.selected.unselect();
             this.selected = b;
-            this.selected.select();
+            if(this.selected)
+                this.selected.select();
         }
 
     }

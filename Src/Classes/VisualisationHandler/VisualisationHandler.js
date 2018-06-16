@@ -85,6 +85,10 @@ new (class VisualisationHandler{
     setTree(tree){
         this.tree = tree;
         var areas = this.getExistingVisAreas();
+        var fields = Object.keys(this.synchronisationData);
+        for(var i=0; i<fields.length; i++){
+            this.synchronisationData[fields[i]] = null;
+        }
         for(var i=0; i<areas.length; i++){
             var visArea = areas[i];
             visArea.refreshVisualisation();
@@ -100,10 +104,14 @@ new (class VisualisationHandler{
         reader.readAsText(blob);
         var This = this;
         reader.onload=function(){
-            var obj = makeTreeObj(reader.result);
-            This.setTree(new Tree(obj));
+            This.readText(reader.result);
         };
         return this;
+    }
+    readText(text){
+        this.treeSourceText = text;
+        var obj = makeTreeObj(text);
+        this.setTree(new Tree(obj));
     }
 
     addTreeListener(func){

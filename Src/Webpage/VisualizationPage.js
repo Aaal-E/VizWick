@@ -13,6 +13,23 @@ $(function(){
     quadrants.css("transition","");
   });
 
+  //catch events in the statistics
+  catchEvents($(".left-section"));
+
+  //share button
+  $(".share-button").click(function(){
+    alert({
+      type: "verify",
+      message:"If you create a sharable link your data set will become public, are you sure you want to continue?",
+      callback: function(){
+        var id = alert({message:"Your data is currently being uploaded, please wait for a moment", duration:Infinity});
+        share(function(){
+          clearAlert(id);
+        });
+      }
+    });
+  })
+
   //Collapsing and appearing the information section
   $(".collapse").click(function(){
     var duration = 500;
@@ -112,13 +129,7 @@ $(function(){
     let areaName = areaNames[i];
     VisualisationHandler.createVisArea(areaName, $("."+areaName+" .visualization-area"), function(options, visualisation){
       var quadrant = $("."+areaName);
-      quadrant.find(".options").mousemove(function(e){
-        e.stopImmediatePropagation();
-      }).mousedown(function(e){
-        e.stopImmediatePropagation();
-      }).mouseup(function(e){
-        e.stopImmediatePropagation();
-      });
+      catchEvents(quadrant.find(".option-pane"));
       attachOptions(options, quadrant);
       if(visualisation instanceof VIZ3D.Visualisation){
         quadrant.find(".VR-button").show();
@@ -151,6 +162,9 @@ $(function(){
       }else{
         VRCamera.setVisualisation(viz);
         VRCamera.enterVR();
+        if(!VRCamera.hmd){
+          alert("No VR headset is connected yet, please connect one in order to use VR.");
+        }
       }
     }else{
       alert("This browser doesn't have WebVR support yet, please try using Firefox instead.");
@@ -292,7 +306,7 @@ $(function(){
     //path transition
     var pathValue = $(".stat.path .stat-value");
     var curHeight = pathValue.height();
-    var newHeight = pathValue.height("auto").html(path.join("/<br>")).height();
+    var newHeight = pathValue.height("auto").html(path.join("\\<br>")).height();
     pathValue.stop().height(curHeight).animate({height:newHeight}, 300);
 
     //children transition
@@ -334,8 +348,12 @@ $(function(){
     // }, itemDuration);
   });
   VisualisationHandler.addTreeListener(function(tree){
-    $(".stat.general-height .stat-value").text(tree.getRoot().getHeight());
-    $(".stat.general-node-count .stat-value").text(tree.getRoot().getSubtreeNodeCount()+1);
+    if(tree){
+      $(".stat.general-height .stat-value").text(tree.getRoot().getHeight());
+      $(".stat.general-node-count .stat-value").text(tree.getRoot().getSubtreeNodeCount()+1);
+    }else{
+      $(".general-stats .stat-value").text("");
+    }
   });
 
   //upload button
@@ -360,6 +378,23 @@ function updateVisualizationAreaSizes(duration){
 }
 function escHtml(text){
   return $('<div/>').text(text).html();
+}
+function catchEvents(element){
+  element.mousemove(function(e){
+    e.stopImmediatePropagation();
+  }).mousedown(function(e){
+    e.stopImmediatePropagation();
+  }).mouseup(function(e){
+    e.stopImmediatePropagation();
+  });
+}
+function copyToClipBoard(text){
+  var inp = document.createElement('textarea');
+  document.body.appendChild(inp)
+  inp.value = text;
+  inp.select();
+  document.execCommand('copy', false);
+  inp.remove();
 }
 
 //options handling
@@ -504,3 +539,118 @@ function attachOptions(options, container){
       container.find(".no-options").hide();
   });
 }
+
+
+//share system
+function share(callback){
+  var data = VisualisationHandler.treeSourceText;
+  if(data){
+    var getVisName = function(area){
+      var viz = VisualisationHandler.getVisArea(area).getVisualisation();
+      if(viz) return viz.__proto__.constructor.description.name
+      return "";
+    };
+    var getPath = function(node, path){
+      if(!path) path = [];
+      var parent = node.getParent();
+      if(parent){
+        var children = parent.getChildren();
+        var index = children.indexOf(node);
+        getPath(parent, path);
+        path.push(index);
+      }
+      return path;
+    };
+    var text =
+      "layout:"+($("body").is("#two")?"two":"four")+","+
+      "top-left:"+getVisName("top-left")+","+
+      "top-right:"+getVisName("top-right")+","+
+      "bottom-left:"+getVisName("bottom-left")+","+
+      "bottom-right:"+getVisName("bottom-right")+","+
+      "focused-node:"+getPath(VisualisationHandler.getSynchronisationData().focused).join(";")+","+
+      "data-set:"+data;
+    $.ajax({
+      type: "post",
+      url: "https://cors-anywhere.herokuapp.com/https://pastebin.com/api/api_post.php",
+      data: {
+        api_dev_key: "8799c6fed6dd4dcc68499a11e9659398",
+        api_option: "paste",
+        api_paste_code: text,
+      },
+      success: function(text){
+        var url = text;
+        var regex = /(\.com\/)(.*)/;
+        var match = text.match(regex);
+        if(match && match[2]){
+          console.log(match[2]);
+          window.location.hash = match[2];
+          alert({
+            type:"verify",
+            message:"Your link has been generated: "+window.location.href,
+            okButtonText:"Copy url",
+            cancelButtonText:"Ok",
+            callback:function(){
+              copyToClipBoard(window.location.href);
+              // console.log("test");
+            }
+          });
+        }else{
+          alert("Something unfortunately went wrong while uploading your data: "+text);
+        }
+        if(callback) callback(!!match[1]);
+      }
+    });
+  }else{
+    alert("Please load a data set before trying to share your data.");
+  }
+}
+//load data if available
+$(function(){
+  if(window.location.hash){
+    var loadingID = alert("Linked data has been detected, please hold one while attempting to load this data.");
+    $.ajax({
+      type: "get",
+      url: "https://cors-anywhere.herokuapp.com/https://pastebin.com/raw/"+
+            window.location.hash.substring(1),
+      success: function(text){
+        // clearAlert(loadingID);
+        var start = "layout";
+        if(text.substring(0, start.length)==start){
+          var parts = text.split(",");
+
+          //distract all the data
+          var twoLayout = parts.shift().split(":")[1]=="two";
+          var topLeft = parts.shift().split(":")[1];
+          var topRight = parts.shift().split(":")[1];
+          var bottomLeft = parts.shift().split(":")[1];
+          var bottomRight = parts.shift().split(":")[1];
+          var focusedPath = parts.shift().split(":")[1].split(";");
+          var dataSet = parts.join(",");
+
+          //load all the data
+          $("[gotoPage=visualization-page]").first().click();
+          if(twoLayout) $(".two-button").click();
+          else          $(".four-button").click();
+
+          VisualisationHandler.setTree(null);
+          if(topLeft) VisualisationHandler.setVisualisationForArea("top-left", topLeft);
+          if(topRight) VisualisationHandler.setVisualisationForArea("top-right", topRight);
+          if(bottomLeft) VisualisationHandler.setVisualisationForArea("bottom-left", bottomLeft);
+          if(bottomRight) VisualisationHandler.setVisualisationForArea("bottom-right", bottomRight);
+
+          VisualisationHandler.readText(dataSet);
+          var node = VisualisationHandler.getTree().getRoot();
+          if(focusedPath[0].length>0)
+            for(var i=0; i<focusedPath.length; i++)
+              node = node.getChildren()[focusedPath[i]];
+
+          // console.log(node, focusedPath);
+          VisualisationHandler.synchronizeNode("focused", node);
+          alert("The data has loaded successfully.");
+        }else{
+          alert("The data set passed through the url is invalid or no longer exists.");
+        }
+      }
+    });
+  }
+});

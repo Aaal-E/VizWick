@@ -21,17 +21,18 @@
   <!-- <script type="text/javascript" src=Scripts/Visualisations.js></script> -->
 
   <!-- while debugging, use uncompiled files -->
+  <script type="text/javascript" src="Src/Webpage/Notifications.js"></script>
   <script type="text/javascript" src="Src/Webpage/VisualizationPage.js"></script>
   <script type="text/javascript" src="Src/Webpage/PreviewPage.js"></script>
   <script type="text/javascript" src="Src/Webpage/PageTransition.js"></script>
 
-  <script src=Tests/Visualisation/Visualisations/Test.js></script>
+  <!-- <script src=Tests/Visualisation/Visualisations/Test.js></script> -->
   <!-- while debugging -->
-  <script src=Tests/Visualisation/Visualisations/Example.js></script>
-  <script src=Tests/Visualisation/Visualisations/Example3d.js></script>
+  <!-- <script src=Tests/Visualisation/Visualisations/Example.js></script> -->
+  <!-- <script src=Tests/Visualisation/Visualisations/Example3d.js></script> -->
   <script src=Tests/Visualisation/Visualisations/Froth.js></script>
   <script src=Tests/Visualisation/Visualisations/Jesterhat.js></script>
-  <!-- <script src=Tests/Visualisation/Visualisations/Sunburst.js></script> -->
+  <script src=Tests/Visualisation/Visualisations/Diamond.js></script>
   <script src=Tests/Visualisation/Visualisations/Tree.js></script>
 
   <script src=Tests/Visualisation/Scripts/TestTree.js></script>
@@ -45,10 +46,24 @@
 </head>
 
 <body id=two>
-  <div class=small-screen-overlay>
-    <div class=small-screen-message>
+  <!-- rescale message -->
+  <div class="small-screen-overlay">
+    <div class="small-screen-message">
       Your screen is unfortunately too small for our tool to work correctly. <br> Please try using a bigger monitor, or maximising the window if it isn't already.
     </div>
+  </div>
+
+  <!-- alert dropdown -->
+  <div class=alerts>
+      <div class="alert template">
+          <div class="alertInner">
+              <div class=message>
+              </div>
+              <button class="okButton color"></button>
+              <button class="continueButton color"></button>
+              <button class="cancelButton color"></button>
+          </div>
+      </div>
   </div>
 
   <!-- Welcome page -->
@@ -230,14 +245,19 @@
   <div class="visualization-page page" id="information-appear">
     <div class="top-section">
       <div class="buttons">
-        <div class="home-button" gotoPage="welcome-page">
+        <div class="home-button" gotoPage="welcome-page" title="Return to the homepage">
           <div class="center">
             <div class="fa fa-home"></div>
           </div>
         </div>
-        <div class="slideshow-button" gotoPage="preview-page">
+        <div class="slideshow-button" gotoPage="preview-page" title="Go to the preview page">
           <div class="center">
             <div class="fa fa-info"></div>
+          </div>
+        </div>
+        <div class="share-button" title="Get sharable link for your data set">
+          <div class="center">
+            <div class="fa fa-share"></div>
           </div>
         </div>
         <div class="upload-button">
