@@ -287,7 +287,12 @@ html, body {
   height: 500px;
   margin-left: calc((100% - 700px)/2);
   margin-top: 15px;
+<<<<<<< HEAD
   border: 1px solid #FFFFFF;
+=======
+  border: 1px solid black;
+  border-radius: 10px;
+>>>>>>> af2ad4a8673ce4a810a8fede8791a1e7d5adaf30
 }
 
 .left-arrow, .right-arrow {
