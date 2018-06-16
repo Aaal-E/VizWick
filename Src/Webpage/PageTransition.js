@@ -1,5 +1,8 @@
 $(function(){
   var body = $("body");
+  $(".page").hide();
+  $(".active").show();
+
   $("[gotoPage]").click(function () {
     //retrieve the data of what page to go to
     var pageClass = $(this).attr("gotoPage");

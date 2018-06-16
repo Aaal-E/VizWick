@@ -282,13 +282,56 @@ $(function(){
     }
 
     $(".stat.name .stat-value").text(node.getName());
-    $(".stat.path .stat-value").html(path.join("<br>&gt;"));
     $(".stat.parent .stat-value").text(node.getParent()?node.getParent().getName():"");
-    $(".stat.children .stat-value").html(children.join("<br>"));
+
     $(".stat.child-count .stat-value").text(children.length);
     $(".stat.depth .stat-value").text(node.getDepth());
     $(".stat.height .stat-value").text(node.getHeight());
     $(".stat.descendant-count .stat-value").text(node.getSubtreeNodeCount());
+
+    //path transition
+    var pathValue = $(".stat.path .stat-value");
+    var curHeight = pathValue.height();
+    var newHeight = pathValue.height("auto").html(path.join("/<br>")).height();
+    pathValue.stop().height(curHeight).animate({height:newHeight}, 300);
+
+    //children transition
+    var childrenValue = $(".stat.children .stat-value");
+    var curHeight = childrenValue.height();
+    var newHeight = childrenValue.height("auto").html(children.join("<br>")).height();
+    childrenValue.stop().height(curHeight).animate({height:newHeight}, 300);
+
+
+    // Attempt at fancy transition; idea skipped for now due to upcoming deadline
+    // var pathValue = $(".stat.path .stat-value");
+    // var itemDuration = 500;
+    // var itemHeight = 20;
+    // var currentNodes = $(".stat.path .stat-value").find(".pathNode");
+    // var removeTime = currentNodes.length*itemDuration;
+    // for(var i=0; i<currentNodes.length; i++){
+    //   let curNode = $(currentNodes[currentNodes.length-1-i]);
+    //   setTimeout(function(){
+    //     curNode.animate({left: "100%"}, {duration: itemDuration, complete:function(){
+    //       $(this).remove();
+    //     }});
+    //   }, i*itemDuration);
+    // }
+    // setTimeout(function(){
+    //   pathValue.animate({height:0}, removeTime);
+    //   setTimeout(function(){
+    //     for(var i=0; i<path.length-1; i++)
+    //       path[i] += "/";
+    //     for(var i=0; i<path.length; i++){
+    //       let newEl = $("<div class=pathNode>"+path[i]+"</div>").attr("id", "path-"+i);
+    //       newEl.css({position:"absolute", top:i*itemHeight+"px", left:"100%", width:"100%"});
+    //       pathValue.append(newEl);
+    //       setTimeout(function(){
+    //         newEl.animate({left:0}, itemDuration);
+    //       }, (i+1)*itemDuration);
+    //     }
+    //     pathValue.animate({height:path.length*itemHeight}, path.length*itemDuration);
+    //   }, removeTime);
+    // }, itemDuration);
   });
   VisualisationHandler.addTreeListener(function(tree){
     $(".stat.general-height .stat-value").text(tree.getRoot().getHeight());
@@ -303,14 +346,16 @@ $(function(){
   });
 });
 function updateVisualizationAreaSizes(duration){
-  var intervalID = setInterval(function(){
+  var updateSize = function(){
     $(".visualization-area").each(function(){
       var newSize = {width:$(this).width(), height:$(this).height()};
       $(this).trigger("resize", newSize);
     });
-  });
+  };
+  var intervalID = setInterval(updateSize, 1);
   setTimeout(function(){
     clearInterval(intervalID);
+    updateSize();
   }, duration);
 }
 function escHtml(text){
@@ -438,6 +483,7 @@ function attachOptions(options, container){
             .val(option.getValue());
           break;
 
+          //other input types have yet to be implemented
         default:
           return;
       }
