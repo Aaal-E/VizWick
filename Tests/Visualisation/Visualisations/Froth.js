@@ -54,8 +54,8 @@
             //this.onClick(function(){
             //    this.focus();
             //});
-			
-			
+
+
 			this.onHover(
                 function(enter){
                     if(enter){
@@ -64,13 +64,13 @@
 						this.dehighlight();
                     }
             });
-			
+
 			this.onClick(function(){
 				this.clicked = true;
                 this.focus();
             });
 
-			
+
         }
 
         __stateChanged(field, val, oldState){
@@ -78,13 +78,13 @@
 				if(!this.clicked){
 					this.getVisualisation().camera.setLoc(this.getWorldLoc());
 					this.getVisualisation().camera.setScale(20/this.scale);
-				
+
 					this.getVisualisation().updateScreen();
 				} else {
 					this.clicked = false;
 				}
             }
-			
+
 			if(field=="highlighted")
 				if(val==true){
                     this.addShape(this.text);
@@ -134,7 +134,7 @@
                 camera.getLoc().add(new VIZ2D.Vec(offset).mul(newScale/oldScale).sub(offset));
 
                 this.updateScreen();
-                
+
 
             });
             this.onMouseMove(function(loc, event){
@@ -158,14 +158,14 @@
 			var focused = VisualisationHandler.getSynchronisationData().focused||this.getShapesRoot()[0].getNode();
             this.synchronizeNode("focused", focused);
             this.updateScreen();
-			
-			
+
+
         }
         __getNodeShapeClass(VIZ){
             return NodeShape;
         }
 
-        
+
         //update the current state of the screen
         updateScreen(){
 			this.renderdepth = 1/this.camera.getScale();

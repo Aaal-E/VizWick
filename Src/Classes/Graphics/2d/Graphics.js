@@ -148,7 +148,7 @@ class Graphics2d extends AbstractGraphics{
 
                 event.preventDefault();
             };
-            $(window).on('mousewheel', this.DOMEventListeners.scroll);
+            $(window).on('wheel', this.DOMEventListeners.scroll);
             $(window).on('keydown', this.DOMEventListeners.keypress);
             $(window).on('keyup', this.DOMEventListeners.keypress);
             $(window).on('mousedown', this.DOMEventListeners.mousedown);
@@ -165,7 +165,7 @@ class Graphics2d extends AbstractGraphics{
 
     //disposal
     destroy(){
-        $(window).off('mousewheel', this.DOMEventListeners.scroll);
+        $(window).off('wheel', this.DOMEventListeners.scroll);
         $(window).off('keydown', this.DOMEventListeners.keypress);
         $(window).off('keyup', this.DOMEventListeners.keypress);
         $(window).off('mousedown', this.DOMEventListeners.mousedown);
