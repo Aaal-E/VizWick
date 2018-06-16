@@ -18,4 +18,6 @@ var selectedIndex = 0;
 function selectIndex(index){
   selectedIndex = index;
   $('.photo-area').css('background-color', color[index]);
+  $(".dot").css('background-color','#100130');
+  $('#'+index).css('background-color','white');
 }
