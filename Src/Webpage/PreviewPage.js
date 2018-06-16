@@ -4,14 +4,12 @@ $(function(){
   });
 
   $(".fa-chevron-left").click(function(){
-  selectIndex((selectedIndex-1+color.length)%color.length);
+    selectIndex((selectedIndex-1+color.length)%color.length);
   });
 
   $(".dot").click(function(){
-    $(".dot").css('background-color','#100130');
     counter=$(this).attr('id');
     selectIndex($(this).attr('id'));
-    $('#'+$(this).attr('id')).css('background-color','white');
   });
 
 });

@@ -113,7 +113,7 @@ window.alert = function(data){
         //make alert appear
         element.animate({height:element.find(".alertInner").outerHeight(true)}, {duration:transitionDuration});
 
-        return alertID;
+        return ID;
     }
 }
 window.clearAlert = function(alertID){

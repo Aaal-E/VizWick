@@ -22,9 +22,9 @@ $(function(){
       type: "verify",
       message:"If you create a sharable link your data set will become public, are you sure you want to continue?",
       callback: function(){
-        var id = alert({message:"Your data is currently being uploaded, please wait for a moment", duration:Infinity});
+        var alertID = alert({message:"Your data is currently being uploaded, please wait for a moment", duration:Infinity});
         share(function(){
-          clearAlert(id);
+          clearAlert(alertID);
         });
       }
     });
@@ -602,6 +602,7 @@ function share(callback){
     });
   }else{
     alert("Please load a data set before trying to share your data.");
+    if(callback) callback(false);
   }
 }
 //load data if available
