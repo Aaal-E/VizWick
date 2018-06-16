@@ -298,6 +298,7 @@ html, body {
   margin-top: -22px;
   color: #FFFFFF;
   position: absolute;
+  cursor: pointer;
 }
 
 
@@ -315,6 +316,7 @@ html, body {
   display: inline-block;
   cursor: pointer;
 }
+
 
 .vis-name {
   margin-top: 15px;
