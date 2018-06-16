@@ -285,6 +285,7 @@ html, body {
   margin-left: calc((100% - 700px)/2);
   margin-top: 15px;
   border: 1px solid black;
+  border-radius: 10px;
 }
 
 .left-arrow, .right-arrow {
