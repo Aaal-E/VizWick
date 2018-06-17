@@ -6,6 +6,8 @@ if(dir)
     dir = Path.join(process.cwd(), dir);
 else
     dir = process.cwd();
+var outFile = process.argv[3];
+var asJsFile = process.argv[4] == "true";
 
 var cleanName = function(name){
     return name.replace(/\s/g, "_").replace(/\,/g, ".");
@@ -45,7 +47,8 @@ var createNewick = function(callback, dirs, out, filter){
 };
 createNewick(function(res){
     // console.log(res);
-    Fs.writeFile("directory newick.txt", res, function(err){
+    if(asJsFile) res = "dataSets.push({\n    name:\"\"\n    image:\"\",\n    data:"+JSON.stringify(res)+"});";
+    Fs.writeFile(outFile||"directory newick.txt", res, function(err){
         if(err)
             return console.log("\n Could not write to file");
 

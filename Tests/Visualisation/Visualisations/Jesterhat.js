@@ -74,11 +74,7 @@
             if(field=="focused" && val==true){
                 this.getGraphics().getCamera().setTarget(this, this, 4/this.getWorldScale());
 
-                this.createDescendants(3);      //creates 3 layers of descendants
-                this.destroyDescendants(3);     //destroys any descendants above those 3 layers
-
-                this.createAncestors(2);        //creates 2 layers of ancestors
-                this.destroyAncestors(2, true); //destroys any ancestors below those 2 layers
+				this.showFamily(2, 3); //2 ancestors, 3 layers of descendants
             }
 
             if(field=="expanded")
@@ -95,11 +91,17 @@
         __connectParent(parent){
             if(parent){
                 var offset = 0;
-                parent.createChildren();
+                // parent.createChildren();
+                var children = parent.getNode().getChildren();
+                var UID = this.graphics.getUID();
                 for (var i=0; i<this.getIndex(); i++){
-                    offset = offset + parent.getChildren()[i].scale;
+                    var child = children[i];
+                    var shape = child.getShape(UID);
+                    if(!shape)
+                        shape = parent.__createChildNodeShape(child, parent);
+                    offset = offset + shape.scale;
                 }
-                this.angle = 0
+
                 this.angle = parent.angle - (0.3) + 0.6*((offset + 0.5*this.scale)/parent.scale)
                 this.setAngle((this.angle*2+0.5)*Math.PI)
                 var w = initWidth * parent.scale

@@ -84,27 +84,38 @@ new (class VisualisationHandler{
     // set the tree, and also refreshes the visualisation areas accordingly
     setTree(tree){
         this.tree = tree;
-        var areas = this.getExistingVisAreas();
+
+        //reset synchronization data
         var fields = Object.keys(this.synchronisationData);
         for(var i=0; i<fields.length; i++){
             this.synchronisationData[fields[i]] = null;
+        }
+
+        //reload visualisation
+        var areas = this.getExistingVisAreas();
+        for(var i=0; i<areas.length; i++){
+            var visArea = areas[i];
+            visArea.deleteVisualisation();
         }
         for(var i=0; i<areas.length; i++){
             var visArea = areas[i];
             visArea.refreshVisualisation();
         }
+
+        //update data sets
         for(var i=0; i<this.treeListeners.length; i++){
             this.treeListeners[i].call(this, tree);
         }
         return this;
     }
     // set the tree based on a data blob
-    readBlob(blob){
+    readBlob(blob, callback){
         var reader = new FileReader();
         reader.readAsText(blob);
         var This = this;
         reader.onload=function(){
             This.readText(reader.result);
+            if(callback) callback();
         };
         return this;
     }

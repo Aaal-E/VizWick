@@ -1,6 +1,6 @@
 // Author: Denis Shehu
 // Student number: 1232758
-
+var dataSets = [];
 $(function(){
 
   //Resizing of the visualization areas
@@ -301,7 +301,7 @@ $(function(){
     $(".stat.child-count .stat-value").text(children.length);
     $(".stat.depth .stat-value").text(node.getDepth());
     $(".stat.height .stat-value").text(node.getHeight());
-    $(".stat.descendant-count .stat-value").text(node.getSubtreeNodeCount());
+    $(".stat.descendant-count .stat-value").text(node.getSubtreeNodeCount()-1);
 
     //path transition
     var pathValue = $(".stat.path .stat-value");
@@ -349,19 +349,93 @@ $(function(){
   });
   VisualisationHandler.addTreeListener(function(tree){
     if(tree){
-      $(".stat.general-height .stat-value").text(tree.getRoot().getHeight());
-      $(".stat.general-node-count .stat-value").text(tree.getRoot().getSubtreeNodeCount()+1);
+      var root = tree.getRoot();
+      $(".stat.general-height .stat-value").text(root.getHeight());
+      $(".stat.general-node-count .stat-value").text(root.getSubtreeNodeCount());
+      var size = VisualisationHandler.treeSourceText.length;
+      var i = 0;
+      while(size>1024){
+        size = Math.round(size/1024);
+        i++;
+      }
+      size = size+["Bytes", "KB", "MB", "GB", "TB"][i];
+      $(".stat.general-size .stat-value").text(size);
+
+      var calcProperties = function(node){
+        var children = node.getChildren();
+        var leafCount = children.length==0?1:0;
+        var averageChildCount = children.length;
+        var subTreeSize = 1;
+        for(var i=0; i<children.length; i++){
+          var child = children[i];
+          var properties = calcProperties(child);
+          averageChildCount += properties[1]*properties[2];
+          subTreeSize += properties[2];
+          leafCount += properties[0];
+        }
+        averageChildCount /= subTreeSize;
+        return [leafCount, averageChildCount, subTreeSize];
+      }
+      var properties = calcProperties(root);
+      $(".stat.general-average-child-count .stat-value").text(Math.round(properties[1]*100)/100);
+      $(".stat.general-leaf-count .stat-value").text(properties[0]);
     }else{
       $(".general-stats .stat-value").text("");
     }
   });
 
   //upload button
-  $(".upload-button input").change(function(){
+  $(".upload-button").click(function(){
+    $(".select-data").addClass("visible");
+  });
+  $(".visualization-page").click(function(){
+    if($(".select-data").offset().top>0)
+      $(".select-data").removeClass("visible");
+  });
+  $(".select-data").click(function(e){
+    e.stopImmediatePropagation();
+  });
+  $("input[type=file]").change(function(){
     var blob = this.files[0];
-    VisualisationHandler.readBlob(blob);
+    $(".stat.general-name .stat-value").text(blob.name);
+    console.log(blob);
+    var alertID = alert({message:"Please hold on while the data is being read.", duration:Infinity});
+    VisualisationHandler.readBlob(blob, function(){
+      clearAlert(alertID);
+      alert("The data has been read successfully."+(
+        VisualisationHandler.getExistingVisualisations().length==0?
+        "\nPlease drag a visualization to a dedicated area to start visualizing your data.":
+        ""
+      ));
+    });
+    $(".select-data").removeClass("visible");
     $(this).replaceWith("<input type=file>");
   });
+  //create example data sets
+  for(var i=0; i<dataSets.length; i++){
+    var dataSet = dataSets[i];
+    var el = $('<div class="example-data-set">'+
+                  '<div class="example-data-set-name">'+
+                      dataSet.name+
+                  '</div>'+
+                '</div>');
+    el.attr("id", i);
+    el.css("background-image", "url('"+dataSet.image+"')");
+    $(".example-data-sets").append(el);
+    el.click(function(){
+      var dataSet = dataSets[$(this).attr("id")];
+      VisualisationHandler.readText(dataSet.data);
+      $(".stat.general-name .stat-value").text(dataSet.name);
+
+      alert("The data has been loaded successfully."+(
+        VisualisationHandler.getExistingVisualisations().length==0?
+        "\nPlease drag a visualization to a dedicated area to start visualizing your data.":
+        ""
+      ));
+      $(".select-data").removeClass("visible");
+    });
+  }
+
 });
 function updateVisualizationAreaSizes(duration){
   var updateSize = function(){
@@ -595,9 +669,9 @@ function share(callback){
             }
           });
         }else{
-          alert("Something unfortunately went wrong while uploading your data: "+text);
+          alert({message:"Something unfortunately went wrong while uploading your data: "+text, duration:10e3});
         }
-        if(callback) callback(!!match[1]);
+        if(callback) callback(match && !!match[1]);
       }
     });
   }else{

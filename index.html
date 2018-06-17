@@ -33,16 +33,22 @@
   <script src=Tests/Visualisation/Visualisations/Froth.js></script>
   <script src=Tests/Visualisation/Visualisations/Jesterhat.js></script>
   <script src=Tests/Visualisation/Visualisations/Diamond.js></script>
+  <script src=Tests/Visualisation/Visualisations/OptimizedSunburst.js></script>
   <script src=Tests/Visualisation/Visualisations/Tree.js></script>
 
-  <script src=Tests/Visualisation/Scripts/TestTree.js></script>
+
+  <!-- <script src=Tests/Visualisation/Scripts/TestTree.js></script>
   <script>
-    $(function() {
-      VisualisationHandler.setTree(VisualisationHandler.getTree());
-    })
-  </script>
+  $(function(){
+    VisualisationHandler.setTree(VisualisationHandler.getTree());
+  })
+  </script> -->
 
 
+  <!-- load the example data sets -->
+  <!-- node createFolderData.js ../ "../Resources/Data Sets/Project Files.js" true -->
+  <script type="text/javascript" src="Resources/Data Sets/Project Files.js"></script>
+  <script type="text/javascript" src="Resources/Data Sets/Ncbi Taxonomy.js"></script>
 </head>
 
 <body id=two>
@@ -243,32 +249,53 @@
 
   <!-- Visualization page-->
   <div class="visualization-page page" id="information-appear">
+    <div class="select-data visible"> <!-- popup menu -->
+      <div class="select-example-data-section">
+        <div class="example-data-title">
+          Load one of our example data sets
+        </div>
+        <div class="example-data-sets">
+        </div>
+      </div>
+      <div class="upload-data-section">
+        <div class="upload-data-inner">
+          <div class="upload-data-center">
+            <div class="fa fa-upload"></div>
+            <div class="upload-data-message">
+              <b>Choose your own file</b> or drag it here
+            </div>
+          </div>
+          <input type=file>
+        </div>
+      </div>
+    </div>
+
     <div class="top-section">
       <div class="buttons">
-        <div class="home-button" gotoPage="welcome-page" title="Return to the homepage">
+        <div class="home-button noselect" gotoPage="welcome-page" title="Return to the homepage">
           <div class="center">
             <div class="fa fa-home"></div>
           </div>
         </div>
-        <div class="slideshow-button" gotoPage="preview-page" title="Go to the preview page">
+        <div class="slideshow-button noselect" gotoPage="preview-page" title="Go to the preview page">
           <div class="center">
             <div class="fa fa-info"></div>
           </div>
         </div>
-        <div class="share-button" title="Get sharable link for your data set">
+        <div class="share-button noselect" title="Get sharable link for your data set">
           <div class="center">
             <div class="fa fa-share"></div>
           </div>
         </div>
-        <div class="upload-button">
+        <div class="upload-button noselect">
           <div class="center">
-            <div class="fa fa-upload">
-            </div>
+            <!-- <div class="fa fa-upload">
+            </div> -->
             <div class="upload">
-              Upload
+              Select Data
             </div>
           </div>
-          <input type=file>
+          <!-- <input type=file> -->
         </div>
       </div>
       <div class="visualizations">
@@ -277,14 +304,14 @@
           <!-- will be filled in by the script -->
         </div>
       </div>
-      <div class="two-four-buttons">
+      <div class="two-four-buttons noselect">
         <div class="two-button" title="Show 2 visualizations at once">
           <div class="center">2X</div>
         </div><div class="four-button" title="Show 4 visualizations at once">
           <div class="center">4X</div>
         </div>
       </div>
-      <div class="reset-button" title="Reset sizes of visualizations">
+      <div class="reset-button noselect" title="Reset sizes of visualizations">
         <div class="center">
           <div class="fa fa-th-large"></div>
         </div>
@@ -355,11 +382,11 @@
                   <div class="stat-title">Node count</div>
                   <div class="stat-value"></div>
                 </div>
-                <Div class="general-average-child-count stat">
+                <Div class="general-average-child-count stat" style="display:none">
                   <div class="stat-title">Average child count</div>
                   <div class="stat-value"></div>
                 </div>
-                <Div class="general-leave-count stat">
+                <Div class="general-leaf-count stat">
                   <div class="stat-title">Leaf count</div>
                   <div class="stat-value"></div>
                 </div>

@@ -51,10 +51,10 @@ html, body {
   cursor: pointer;
 }
 
-/* notification/alert styling */
+/* notification/alert styling (copied from another project of Tar)*/
 .alerts{
     max-width: 80%;
-    width: 300px;
+    width: 500px;
     position: absolute;
     left: 50%;
     transform: translate(-50%, 0);
@@ -65,7 +65,7 @@ html, body {
     overflow: hidden;
     height: 0px;
     border-radius: 5px;
-    box-shadow: 0px 0px 5px 5px white;
+    box-shadow: 0px 0px 10px 5px white;
 }
 .alert .alertInner{
     /* margin-top: 5px; */
@@ -404,9 +404,11 @@ html, body {
   display: run-in;
 }
 
- #p2, #p3 {
+#p2, #p3{
   display: none;
 }
+
+
 /*
     Visualization page
 */
@@ -414,6 +416,99 @@ html, body {
   width: 100%;
   height: 100%;
   background-color: #25007A;
+  position: relative;
+}
+.select-data{
+  position: absolute;
+  left: calc(50% - 300px);
+  top: calc(-50% - 175px);
+  width: 600px;
+  height: 350px;
+  z-index: 1002;
+  border-radius: 10px;
+  color: white;
+
+  background-color: rgb(37, 0, 122);
+  border: 3px solid rgb(16, 1, 48);
+  box-shadow: 0px 0px 10px 5px white;
+  transition: top 0.5s;
+}
+.select-data.visible{
+  top: calc(50% - 175px);
+}
+.select-example-data-section,
+.upload-data-section{
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  width: 50%;
+  padding: 5px;
+  box-sizing: border-box;
+}
+.select-example-data-section{
+  left: 0px;
+}
+.upload-data-section{
+  right: 0px;
+}
+.example-data-title{
+  text-align: center;
+  padding-top: 3px;
+}
+.example-data-sets{
+  overflow-y: auto;
+  height: calc(100% - 20px);
+}
+.example-data-set{
+  cursor: pointer;
+  margin-top: 10px;
+  width: 100%;
+  height: 150px;
+  border-radius: 10px;
+  position: relative;
+  background-color: rgb(16, 1, 48);
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+}
+.example-data-set-name{
+  position: absolute;
+  background-color: rgb(0, 0, 0, 0.7);
+  bottom: 0px;
+  left: 0px;
+  padding-left: 10px;
+  padding-top: 5px;
+  height: 25px;
+  right: 0px;
+}
+.upload-data-inner{
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  border-radius: 10px;
+  border: 3px dashed white;
+}
+.upload-data-center{
+  display: inline-block;
+  left: 50%;
+  top: 50%;
+  position: relative;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+.upload-data-center .fa{
+  font-size: 50px;
+  margin-bottom: 20px;
+}
+.upload-data-section input[type=file]{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  display: block;
+  font-size: 0;
 }
 
 .top-section {
@@ -535,7 +630,7 @@ body#four .four-button {
   cursor: pointer;
   position: relative;
 }
-.upload-button input[type=file]{
+/* .upload-button input[type=file]{
   position: absolute;
   width: 100%;
   height: 100%;
@@ -545,7 +640,7 @@ body#four .four-button {
   display: block;
   cursor: pointer;
   font-size: 0;
-}
+} */
 
 .upload {
   font-family: 'Contrail One', cursive;
