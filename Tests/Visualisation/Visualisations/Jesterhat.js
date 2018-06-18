@@ -74,7 +74,7 @@
             if(field=="focused" && val==true){
                 this.getGraphics().getCamera().setTarget(this, this, 4/this.getWorldScale());
 
-				this.showFamily(2, 3); //2 ancestors, 3 layers of descendants
+				this.showFamily(2, this.getVisualisation().layers); //2 ancestors, 3 layers of descendants
             }
 
             if(field=="expanded")
@@ -181,7 +181,32 @@
             this.synchronizeNode("focused", focused);
         }
 
+		__setupOptions(options){
+			var This = this;
 
+			this.version = 0; //a veriable that allows nodes to be marked dirty
+			var refocus = function(){
+				var focused = This.getShape("focused");
+				if(focused){
+					focused.__show();
+					This.setShapeState("focused", focused);
+				}
+			};
+
+			options.add(new Options.Number("Maximum node count", 1, 50, 10000).setDescription("The number of nodes showing on the screen").onChange(function(val){
+				This.maxNodeCount = val;
+				refocus();
+			}).setValue(1000));
+
+			options.add(new Options.Number("Number of layers").setDescription("The number of layers shown").onChange(function(val){
+				This.layers = val;
+				refocus();
+			}).setValue(3));
+
+			// options.add(new Options.);
+			}
+		
+		
         __getNodeShapeClass(VIZ){
             return NodeShape;
         }

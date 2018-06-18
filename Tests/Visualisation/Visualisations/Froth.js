@@ -158,9 +158,37 @@
 			var focused = VisualisationHandler.getSynchronisationData().focused||this.getShapesRoot()[0].getNode();
             this.synchronizeNode("focused", focused);
             this.updateScreen();
+		
 
 
         }
+		
+		__setupOptions(options){
+			var This = this;
+
+			this.version = 0; //a veriable that allows nodes to be marked dirty
+			var refocus = function(){
+				var focused = This.getShape("focused");
+				if(focused){
+					focused.__show();
+					This.setShapeState("focused", focused);
+				}
+			};
+
+			options.add(new Options.Button("whole").setIcon("dot-circle").setDescription("View the whole visualization").onClick(function(){
+				this.camera.setLoc(this.getTree().getRoot().getWorldLoc());
+				this.camera.setScale(20/this.getTree().getRoot().scale);
+			}));
+		
+			options.add(new Options.Number("Maximum node count", 1, 50, 10000).setDescription("The number of nodes showing on the screen").onChange(function(val){
+				This.maxNodeCount = val;
+				refocus();
+			}).setValue(1000));
+
+      // options.add(new Options.);
+    }
+		
+		
         __getNodeShapeClass(VIZ){
             return NodeShape;
         }
