@@ -360,9 +360,9 @@
 
     //attach some data to be displayed on the webpage
     Tree.description = {
-        name: "tree",
-        description: "3D version of carreer tree",
-        image: ""   //should contain some image path relative to the page
+        name: "Acacia Tree",
+        description: "Acacia tree was designed to represent an actual tree in nature. It does this in a rather simple way. Every node is represented by a green sphere in 3d space and has a brown cylinder connecting to its parent. All nodes are laid out in a circle above their parent, and decrease in size relative to their parent. One of the core features of this visualization is that it makes use of 3d space however. By doing so, it is much less likely that nodes will overlap. We are however only seeing a 2d projection of this 3d space, so visually these nodes will instead happen to overlap more often. Humans are however very good at extracting this depth data from 2d projections, so this data is not completely lost. None the less, this makes the visualization a bit worse when only displaying a static image, as the overview will be more chaotic. But when making use of the interactive tool, the user is able to rotate the camera in 3d space in order to look at the relevant parts from the correct perspective. ", //is now some stuff copied from the report, should be a description on usage
+        image: "Resources/Images/Visualizations/Acacia Tree.png"   //should contain some image path relative to the page
     };
 
     //register the class

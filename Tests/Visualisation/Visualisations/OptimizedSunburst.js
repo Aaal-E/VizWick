@@ -33,7 +33,7 @@
         //
         __stateChanged(field, val, oldState){
             if(field=="focused" && val==true){
-                this.getVisualisation().centeralizeNode(this);
+                this.getVisualisation().centeralizeNode(this.getNode());
             }
         }
 
@@ -48,9 +48,10 @@
             var childArr = this.getChildren();
             var lhca = this.getVisualisation().layerHeadCountArr;
             for(var i=0; i < childArr.length; i++){
-                var layerNumber = childArr[i].layerNumber = this.layerNumber + 1;
-                this.PDCount += childArr[i].calcPDCount_setLayersNumbers();
-                lhca[layerNumber] = lhca[layerNumber]+1 || 1;
+                var child = childArr[i];
+                var layerNumber = child.layerNumber = this.layerNumber + 1;
+                this.PDCount += child.calcPDCount_setLayersNumbers();
+                child.layerIndex = lhca[layerNumber] = lhca[layerNumber]+1 || 1;
             }
             return this.PDCount;
         }
@@ -88,6 +89,7 @@
             var nextStartAngle = this.radialBand.getStartAngle();
             var childrenArr = this.getChildren();
             var childlayerThickness = this.calcChildLayer_Thickness();
+            var parentColor = VIZ2D.Color.fromInt(this.radialBand.getColor());
             for(var i=0; i<childrenArr.length; i++){
                 var child = childrenArr[i];
                 child.radialBand.resetProperties();
@@ -96,9 +98,17 @@
                 child.radialBand.setStartAngle(nextStartAngle);
                 var aSize = this.radialBand.getSize()*(child.getPDCount()/this.calcChildLayer_PDCount());
                 child.radialBand.setSize(aSize);
+
+                var avgAngle = nextStartAngle+aSize/2;
+                // var hue = (avgAngle/2+Math.PI*(child.layerIndex%2))/(Math.PI*2)%1;
+                var hue = (avgAngle+1.8*(child.layerIndex%2))/(Math.PI*2)%1;
+                var color = VIZ2D.Color.fromHSV(hue,1,1);
+                child.radialBand.setColor(color.mix(parentColor, 0.2).getInt());
+                // child.radialBand.setColor(VIZ2D.Color.fromHSV(Math.random(),1,1).getInt());
+
+
                 nextStartAngle += aSize; //implementation chosen for speed; could've used child.getEndAngle
                 child.setPropertiesDescendants();
-                child.radialBand.setColor(new VIZ2D.Color.fromHSV(Math.random(),1,1).getInt());
             };
         }
 
