@@ -340,21 +340,26 @@ html, body {
   margin-left: calc(25% - 100px);
 }
 
+.slideshow-subpart{
+  height: calc(100% - 72px);
+}
 .slideshow-area {
   width:70%;
-  height: 550px;
+  height: calc(100% - 300px);
   margin-left: 15%;
 }
 
 
 .photo-area{
-  background-color: red;
   width: 700px;
-  height: 500px;
-  margin-left: calc((100% - 700px)/2);
+  background-color: rgb(16, 1, 48);
+  height: calc(100% - 20px);
+  margin-left: calc(50% - 350px);
   margin-top: 15px;
   border: 1px solid black;
   border-radius: 10px;
+  background-size: cover;
+  background-position: center;
 }
 
 .left-arrow, .right-arrow {
@@ -381,6 +386,11 @@ html, body {
   background-color: #100130;
   display: inline-block;
   cursor: pointer;
+  margin-left: 3px;
+  margin-right: 3px;
+}
+.dot.selected{
+  background-color: white;
 }
 
 
@@ -396,9 +406,11 @@ html, body {
   height: auto;
   margin: auto;
   border-radius: 15px;
-  border: 2px solid #FFFFFF;
+  border: 1px solid #FFFFFF;
   color: #FFFFFF;
   background-color: #100130;
+  height: 150px;
+  padding: 15px;
 }
 #p1 {
   display: run-in;
