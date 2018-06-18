@@ -20,9 +20,9 @@ $(function(){
   $(".share-button").click(function(){
     alert({
       type: "verify",
-      message:"If you create a sharable link your data set will become public, are you sure you want to continue?",
+      message:"If you create a shareable link your data set will become public. Are you sure you want to continue?",
       callback: function(){
-        var alertID = alert({message:"Your data is currently being uploaded, please wait for a moment", duration:Infinity});
+        var alertID = alert({message:"Your data is currently being uploaded, please wait for a moment.", duration:Infinity});
         share(function(){
           clearAlert(alertID);
         });
@@ -682,7 +682,7 @@ function share(callback){
 //load data if available
 $(function(){
   if(window.location.hash){
-    var loadingID = alert("Linked data has been detected, please hold one while attempting to load this data.");
+    var loadingID = alert("Linked data has been detected, please hold on while attempting to load this data.");
     $.ajax({
       type: "get",
       url: "https://cors-anywhere.herokuapp.com/https://pastebin.com/raw/"+
@@ -721,9 +721,9 @@ $(function(){
 
           // console.log(node, focusedPath);
           VisualisationHandler.synchronizeNode("focused", node);
-          alert("The data has loaded successfully.");
+          alert("The data has been loaded successfully.");
         }else{
-          alert("The data set passed through the url is invalid or no longer exists.");
+          alert("The data set passed through the URL is invalid or no longer exists.");
         }
       }
     });
