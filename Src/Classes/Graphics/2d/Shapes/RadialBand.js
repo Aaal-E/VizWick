@@ -42,36 +42,73 @@ class RadialBand2d extends Shape2d{
             this.gfx.endFill();
 
             //check if shape is a circle
-            if (this.size == 2*Math.PI) {
+            if (this.size == 2*Math.PI && this.inRadius == 0) {
                 // if circle, then hitArea in shape of a circle
-                this.gfx.hitArea = new PIXI.Circle(0, 0, this.radius);
+                this.gfx.hitArea = new PIXI.Circle(0, 0, this.getOutRadius());
             } else {
                 // if not, then radial band-shaped polygon
-                this.gfx.hitArea = new PIXI.Polygon(this.getCoordinates());
+                var points = this.getPoints();
+                this.gfx.hitArea = new PIXI.Polygon(points);
+                // this.gfx.beginFill(0x00ff00);
+                // this.gfx.drawPolygon(points);
+                // this.gfx.endFill();
             }
         }
     }
 
-    getCoordinates() {
-        var coordinates = new Array();
-        // the inner starting point
-        coordinates[0] = this.inRadius * Math.cos(this.startAngle); // x-coordinate
-        coordinates[1] = this.inRadius * Math.sin(this.startAngle); // y-coordinate
-        // the outer starting point
-        coordinates[2] = this.getOutRadius() * Math.cos(this.startAngle);
-        coordinates[3] = this.getOutRadius() * Math.sin(this.startAngle);
+    //pixi draws clock-wise where as in mathematics it is counter-clockwise; thus
+    //swap the start and end angle.  This is like assuming the arc starts from endAngle and
+    //goes toward the startangel.
+    getPoints() {
+        //centerX = ;if center of viusalization is not 0,0 then add this to the X coordinates bellow
+        //centerY = ;if center of viusalization is not 0,0 then add this to the Y coordinates bellow
+        var startAngle = this.getEndAngle();
+        var endAngle = this.startAngle;
+        var outRadius = this.getOutRadius();
+        var pixelPrecision = 30;
+        var coordinatesArr = [];
+        var i = 0; //indexing the array
 
-        // to be added here: recursive function that divides the angle inbetween
-        // startAngle and endAngle repeatedly into smaller angles until it reaches
-        // a certain (not yet decided) angle size, then function recursively
-        // computes coordinates of each angle
-        // the inner ending point
-        coordinates[4] = this.inRadius * Math.cos(this.getEndAngle()); // between [] will be something like "i+1",
-        coordinates[5] = this.inRadius * Math.sin(this.getEndAngle()); // were "i" will be the index of the last
-        // computed coordinate
-        // the outer ending point
-        coordinates[6] = this.getOutRadius() * Math.cos(this.getEndAngle());
-        coordinates[7] = this.getOutRadius() * Math.sin(this.getEndAngle());
+        //the inner starting point
+        coordinatesArr[i++] = this.inRadius * Math.cos(startAngle); // x-coordinate
+        coordinatesArr[i++] = this.inRadius * Math.sin(startAngle); // y-coordinate
+
+        // the outer starting point
+        coordinatesArr[i++] = outRadius * Math.cos(startAngle);
+        coordinatesArr[i++] = outRadius * Math.sin(startAngle);
+
+        //points on the outer arc from start to end
+        var delta = Math.abs(startAngle - endAngle);
+        var numOfPieces = Math.floor(delta * this.getOutRadius() / pixelPrecision);
+        delta =  delta  / numOfPieces;
+        var workingAngle = startAngle - delta;
+        while(workingAngle > endAngle){
+            coordinatesArr[i++] = outRadius * Math.cos(workingAngle);
+            coordinatesArr[i++] = outRadius * Math.sin(workingAngle);
+            workingAngle  -= delta;
+        }
+
+        //the outer end angle
+        coordinatesArr[i++] = outRadius * Math.cos(endAngle);
+        coordinatesArr[i++] = outRadius * Math.sin(endAngle);
+
+        //the inner end-angle
+        coordinatesArr[i++] = this.inRadius * Math.cos(endAngle);
+        coordinatesArr[i++] = this.inRadius * Math.sin(endAngle);
+
+        //setting the points in the inner arc from end to start
+        delta = Math.abs(startAngle - endAngle);
+        numOfPieces = Math.floor(delta * this.inRadius / pixelPrecision);
+        delta =  delta  / numOfPieces;
+        workingAngle = endAngle + delta;
+        while(workingAngle < startAngle){
+            coordinatesArr[i++] = this.inRadius * Math.cos(workingAngle);
+            coordinatesArr[i++] = this.inRadius * Math.sin(workingAngle);
+            workingAngle += delta;
+        }
+
+        coordinatesArr.length = i;
+        return coordinatesArr;
     }
 
     //sets the starting angle
