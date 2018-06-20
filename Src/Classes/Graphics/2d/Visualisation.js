@@ -27,6 +27,10 @@ class Visualisation2d extends Graphics2d{
     __setupOptions(options){
         var This = this;
     }
+
+    __onUpdate(){ //make sure to use the viz2d onupdate
+        return AbstractVisualisation.prototype.__onUpdate.apply(this, arguments);
+    }
 }
 
 //copy methods of abstractVisualisation
