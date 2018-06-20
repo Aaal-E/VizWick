@@ -133,7 +133,13 @@ class Graphics3d extends AbstractGraphics{
 
                 //hover events
                 var shape = This.camera.rayTrace(This.pointers.mouse.x, This.pointers.mouse.y)[0];
-                This.__dispatchHoverEvent(shape, "mouse", event);
+
+                var m = This.pointers.mouse;
+                if(m.x>=0 && m.y>=0 && m.x<=This.getWidth() && m.y<=This.getHeight())
+                    This.__dispatchHoverEvent(shape, "mouse", event);
+                else
+                    This.__dispatchHoverEvent(null, "mouse", event);
+
             };
             this.DOMEventListeners.scroll = function(event){
                 This.__resetTransform();

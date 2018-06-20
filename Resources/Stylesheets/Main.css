@@ -1,12 +1,35 @@
+/*
+  General editting of all pages
+    Authors:
+      Alina Vorobiova
+      Denis Shehu
+      Tar van Krieken
+*/
+
+
 /* General editting of all pages */
+@font-face {
+  font-family: calibri;
+  src: url("../Fonts/calibri.ttf");
+}
 html, body {
   width: 100%;
   height: 100%;
   margin: 0;
   overflow: hidden;
-
-  /* min-width: 940px; */
-  /* overflow-x: auto */
+  font-family: calibri;
+}
+body{
+  background-color: #25007A;
+  background-image: url("../Images/Background.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.body-inner{
+  position: absolute;
+  width: 100%;
+  top: 0px;
 }
 .noselect {
   -webkit-touch-callout: none; /* iOS Safari */
@@ -44,7 +67,7 @@ html, body {
 /* page transitions */
 .page{
   width: 100%;
-  height: 100%;
+  height: 100vh;
   overflow: hidden;
 }
 [gotoPage]{
@@ -120,11 +143,9 @@ html, body {
 /*
     Welcome page
 */
-.welcome-page {
-  width: 100%;
-  height: 100%;
+/* .welcome-page {
   background-color: #25007A;
-}
+} */
 
 .text-section, .video-section {
   display: inline-block;
@@ -144,6 +165,11 @@ html, body {
   height: 150px;
   font-size: 150px;
   margin-bottom: 5%;
+
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-image: url("../Images/Logo.png");
 }
 
 .description {
@@ -185,30 +211,36 @@ html, body {
 
 .video-section {
   width: calc(40% - 75px);
-  height: 300px;
+  height: 390px;
   margin-left: 25px;
-  background-color: #25007A;
+  border-radius: 15px;
+  overflow: hidden;
+  background-color: #100130;
+}
+video{
+  width: 100%;
+  height: 100%;
 }
 
 .upper-text-subpart {
   width: 100%;
   height: 75%;
   margin-bottom: 25px;
-  border-radius: 25px;
+  border-radius: 15px;
   background-color: #100130;
 }
 
 .lower-text-subpart {
   width: 100%;
   height: calc(25% - 25px);
-  background-color: #25007A;
+  /* background-color: #25007A; */
 }
 
 .other-pages {
   width: 100%;
   height: calc(100% - 45px);
   border-radius: 15px;
-  background-color: #25007A;
+  /* background-color: #25007A; */
 }
 
 .left-lower-part, .right-lower-part {
@@ -242,8 +274,9 @@ html, body {
   /* background-color: yellow; */
   position: relative;
   top: 50%;
-  transform: translate(0, -50%);
-  margin-left: calc(50% - 200px);
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 100%;
 }
 
 .page-icon {
@@ -273,13 +306,14 @@ html, body {
 
 .go-to-text {
   width: 100%;
-  height: 20px;
+  /* height: 20px; */
   /* background-color: blue; */
 }
 
 .preview-page-name, .visualization-page-name {
   width: 100%;
-  height: 30px;
+  /* height: 30px; */
+  margin-top: 10px;
   /* background-color: #E0E0E0; */
   font-style: italic;
   font-weight: bold;
@@ -304,24 +338,40 @@ html, body {
 }
 
 .GitHub-icon {
-  width: 50px;
+  width: 30px;
   height: 100%;
-  background-color: #FFFFFF;
+  background-image: url("../Images/Github.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+.GitHub-icon, .GitHub-text{
+  color: white;
+  display: inline-block;
+  vertical-align: middle;
+}
+.GitHub-link{
+  cursor: pointer;
 }
 
 /*
     Slideshow page
 */
 .preview-page {
-  width: 100%;
-  height: 100%;
-  background-color: #25007A;
+  /* background-color: #25007A; */
   text-align: center;
   position: relative;
 }
 
+.navigation-subpart{
+  width: calc(100% - 20px);
+  position: relative;
+  max-width: 1600px;
+  left: 50%;
+  transform: translate(-50%, 0);
+  height: 90px;
+  position: relative;
+}
 .go-to-welcome-page, .go-to-visualization-page {
-  display: inline-block;
   background-color: #100130;
   border-radius: 10px;
   font-size: 20px;
@@ -332,50 +382,73 @@ html, body {
   border: 1px solid #FFFFFF;
 }
 
+.vis-name {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0);
+  margin-top: 15px;
+  font-size: 40px;
+  font-weight: bold;
+  color: #FFFFFF;
+}
+
 .go-to-welcome-page {
-  margin-right: calc(25% - 100px);
+  float: left;
 }
 
 .go-to-visualization-page {
-  margin-left: calc(25% - 100px);
+  float: right;
 }
 
 .slideshow-subpart{
   height: calc(100% - 72px);
+  width: calc(100% - 20px);
+  position: relative;
+  max-width: 1600px;
+  left: 50%;
+  transform: translate(-50%, 0);
 }
 .slideshow-area {
-  width:70%;
-  height: calc(100% - 250px);
-  margin-left: 15%;
+  position: relative;
+  width: 100%;
+  height: calc(100% - 200px);
 }
 
 
 .photo-area{
-  width: 700px;
+  width: 100%;
   background-color: rgb(16, 1, 48);
-  height: calc(100% - 20px);
-  margin-left: calc(50% - 350px);
-  margin-top: 15px;
+  height: calc(100% - 30px);
   /* border: 1px solid black; */
   border-radius: 10px;
-  background-size: cover;
+  background-size: contain;
   background-position: center;
+  background-repeat: no-repeat;
 }
 
 .left-arrow, .right-arrow {
-  top: 50%;
-  padding: 16px;
-  width:auto;
-  margin-top: -22px;
+  line-height: 100%;
+  height: calc(100% - 30px);
+  top: 0;
+  width: 80px;
+  text-align: center;
   color: #FFFFFF;
   position: absolute;
   cursor: pointer;
 }
+.left-arrow:hover, .right-arrow:hover{
+  background-color: rgba(0, 0, 0, 0.5);
+}
 
-
+.left-arrow {
+  left: 0px;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
 .right-arrow {
-  right: 15%;
-  border-radius: 3px 0 0 3px;
+  right: 0px;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
 }
 
 .dot {
@@ -393,23 +466,15 @@ html, body {
   background-color: white;
 }
 
-
-.vis-name {
-  margin-top: 15px;
-  font-size: 40px;
-  font-weight: bold;
-  color: #FFFFFF;
-}
-
 .vis-description {
-  width: 80%;
+  width: calc(100% - 30px);
   height: auto;
   margin: auto;
-  border-radius: 15px;
+  border-radius: 10px;
   /* border: 1px solid #FFFFFF; */
   color: #FFFFFF;
   background-color: #100130;
-  height: 100px;
+  min-height: 100px;
   padding: 15px;
 }
 #p1 {
@@ -425,9 +490,7 @@ html, body {
     Visualization page
 */
 .visualization-page {
-  width: 100%;
-  height: 100%;
-  background-color: #25007A;
+  /* background-color: #25007A; */
   position: relative;
 }
 .select-data{
@@ -527,7 +590,7 @@ html, body {
   width: 100%;
   height: 40px;
   overflow: hidden;
-  background-color: #25007A;
+  /* background-color: #25007A; */
 }
 
 .visualizations, .two-four-buttons {
@@ -733,6 +796,8 @@ body#four .four-button {
   font-weight: bold;
   font-size: 30px;
   border-bottom: 1px solid black;
+  padding-left: 5px;
+  box-sizing: border-box;
 }
 
 .title>.center{
@@ -748,7 +813,7 @@ body#four .four-button {
   position: relative;
 }
 .information-text .node-stats{
-  margin-bottom: 250px;
+  margin-bottom: 180px;
 }
 .information-text .general-stats{
   width: 100%;
@@ -877,7 +942,6 @@ body#two .top-layout-part {
   display: inline-block;
   width: calc(50% - 2.5px);
   height: 100%;
-  background-color: #25007A;
   border-radius: 10px;
   position: relative;
 }

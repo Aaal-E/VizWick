@@ -104,8 +104,8 @@ window.alert = function(data){
                 window.clearAlert(ID);
             }, data.duration);
         }
-        if(data.duration==Infinity && data.type=="notify"){
-            element.click(function(){
+        if(data.type=="notify"){
+            element.css("cursor", "pointer").click(function(){
                 window.clearAlert(ID);
             });
         }

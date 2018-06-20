@@ -1,6 +1,6 @@
 // Author: Denis Shehu
 // Student number: 1232758
-var dataSets = [];
+window.dataSets = [];
 $(function(){
 
   //Resizing of the visualization areas
@@ -385,8 +385,9 @@ $(function(){
   });
 
   //upload button
-  $(".upload-button").click(function(){
+  $(".upload-button").click(function(e){
     $(".select-data").addClass("visible");
+    e.stopImmediatePropagation();
   });
   $(".visualization-page").click(function(){
     if($(".select-data").offset().top>0)
@@ -652,6 +653,7 @@ function share(callback){
         api_paste_code: text,
       },
       success: function(text){
+        console.log(text);
         var url = text;
         var regex = /(\.com\/)(.*)/;
         var match = text.match(regex);
