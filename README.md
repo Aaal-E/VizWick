@@ -13,4 +13,4 @@ This project is created for a course at the [TUe](https://www.tue.nl/) by group 
 * Mehrdad Farsadyar
 * Tar van Krieken
 
-The course runs from 23-4-2018 until 17-6-2018. The project will probably, but not necessarily, be in its finished state at that time. 
+The course runs from 23-4-2018 until 22-6-2018. The project will probably, but not necessarily, be in its finished state at that time. 
