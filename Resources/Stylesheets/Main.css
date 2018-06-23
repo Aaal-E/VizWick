@@ -212,8 +212,8 @@ body{
 }
 
 .video-section {
-  width: calc(40% - 75px);
-  height: 390px;
+  width: calc(40vw - 75px);
+  height: calc(22.5vw - 42px);
   margin-left: 25px;
   border-radius: 15px;
   overflow: hidden;
