@@ -7,6 +7,7 @@ This project is a website, that can be used for visualising hierarchical data. I
 * Froth
 * Jester Hat
 * Optimized Sunburst
+
 Multiple of these visualisations can be shown side by side, and interactions with the data will be synchronized across them. As it is very difficult to show all data at once, the visualisations will only show part of the data, and allow you to smoothly zoom in and out to reveal more. 
 
 VizWick at it's core is a framework that can be used to easily create different dynamic visualizations. As part of our project, 5 different visualizations have been created. But anyone is free to use this system to add their own visualizations to it. 
