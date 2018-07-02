@@ -1,5 +1,6 @@
 # VizWick
 Project website: [VizWick](https://aaal-e.github.io/VizWick/)
+
 to "run" the tool locally, just open the index.html page.
 
 This project is a website, that can be used for visualising hierarchical data. It allows you to upload data in the [newick format](https://en.wikipedia.org/wiki/Newick_format), and choose between several different options to visualise this data. Currently 5 visualizations exists:
