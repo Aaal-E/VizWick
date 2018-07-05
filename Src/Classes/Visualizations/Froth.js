@@ -222,7 +222,7 @@
     //attach some data to be displayed on the webpage
     Froth.description = {
         name: "Froth",
-        description: "Froth is a visualization consisting of a large circle, representing the root, containing smaller circles, each representing a child. the visualization can be explored using the mouse, using click and drag to move sideways, and scrolling to zoom, similar to google maps. children are arrayed clockwise in a circular fashion, with a slight gap on the right when the count gets large to indicate which are leftmost. clicking a node will sync up other active visualizations to focus on it, and hovering over a node displays its name, and information in the sidebar. colors are chosen in such a way that layers have a single color, looping after 5 layers, this means all nodes are clearly visible.",
+        description: "Froth is a visualization consisting of a large circle, representing the root, containing smaller circles, each representing a child. The visualization can be explored using the mouse, using click and drag to move sideways, and scrolling to zoom, similar to Google Maps. Children are arrayed clockwise in a circular fashion, with a slight gap on the right when the count gets large to indicate which are leftmost. Clicking a node will sync up other active visualizations to focus on it, and hovering over a node displays its name, and information in the sidebar. Colors are chosen in such a way that layers have a single color, looping after five layers, this means all nodes are clearly visible.",
         image: "Resources/Images/Visualizations/Froth.png"   //should contain some image path relative to the page
     };
 
